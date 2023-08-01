@@ -4,7 +4,7 @@
 
 #ifndef DESPOT_WS1_UNIFIED_LASER_TAG_WORLD_H
 #define DESPOT_WS1_UNIFIED_LASER_TAG_WORLD_H
-#include <laser_tag.h>
+#include <unified_laser_tag.h>
 #include <despot/interface/world.h>
 #include <ros/ros.h>
 using namespace despot;

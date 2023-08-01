@@ -63,10 +63,6 @@ add_executable(laser_tag_controller src/robot_controller/laser_tag_controller.cp
 add_dependencies(laser_tag_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(laser_tag_controller ${catkin_LIBRARIES})
 
-## Declare a C++ executable
-add_executable(pomdp_planner src/pomdp_planner/base/base_tag.cpp src/pomdp_planner/laser_tag.cpp src/pomdp_planner/laser_tag_world.cpp src/pomdp_planner/main.cpp)
-add_dependencies(pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
 add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag.cpp src/unified_pomdp_planner/unified_laser_tag_world.cpp src/unified_pomdp_planner/main.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_manhattan_upperbound.cpp src/unified_pomdp_planner/tag_sp_particleupperbound.cpp src/unified_pomdp_planner/tag_blind_beliefpolicy.cpp)
