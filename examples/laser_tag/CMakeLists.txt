@@ -49,8 +49,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   include/robot_controller
-  include/pomdp_planner
   include/unified_pomdp_planner
+  include/ajan_pomdp_planner
+  include/ajan_jni_headers
 )
 
 ## Declare a C++ executable
@@ -70,7 +71,7 @@ add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${cat
 target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
-add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/ajan_belief.cpp include/ajan_pomdp_planner/ajan_belief.h src/ajan_pomdp_planner/ajan_state.cpp include/ajan_pomdp_planner/ajan_state.h src/ajan_pomdp_planner/ajan_agent.cpp include/ajan_pomdp_planner/ajan_agent.h src/ajan_pomdp_planner/ajan_beliefpolicy.cpp include/ajan_pomdp_planner/ajan_beliefpolicy.h src/ajan_pomdp_planner/ajan_world.cpp include/ajan_pomdp_planner/ajan_world.h src/ajan_pomdp_planner/ajan_policy.cpp include/ajan_pomdp_planner/ajan_policy.h src/ajan_pomdp_planner/ajan_upperbound.cpp include/ajan_pomdp_planner/ajan_upperbound.h src/ajan_pomdp_planner/ajan_particleupperbound.cpp include/ajan_pomdp_planner/ajan_particleupperbound.h src/ajan_pomdp_planner/ajan_helper.cpp src/ajan_pomdp_planner/ajan_helper.h)
+add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/cpp/ajan_belief.cpp src/ajan_pomdp_planner/cpp/ajan_state.cpp src/ajan_pomdp_planner/cpp/ajan_agent.cpp src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp src/ajan_pomdp_planner/cpp/ajan_world.cpp src/ajan_pomdp_planner/cpp/ajan_policy.cpp src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp src/ajan_pomdp_planner/cpp/ajan_helper.cpp src/ajan_pomdp_planner/cpp/ajan_helper.h)
 add_dependencies(ajan_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(ajan_pomdp_planner despot ${catkin_LIBRARIES})
 
