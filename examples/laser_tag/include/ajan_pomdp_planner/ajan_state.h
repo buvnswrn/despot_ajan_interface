@@ -1,11 +1,11 @@
 //
-// Created by bhuvanesh on 31.07.23.
-// Original DESPOT Implementation for State
-// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_state.h
+// Created by bhuvanesh on 01.08.23.
+// JNI Interface for State.
+// See: examples/laser_tag/include/unified_pomdp_planner/tag_sp_particleupperbound.h
 //
 
-#ifndef SRC_TAG_STATE_H
-#define SRC_TAG_STATE_H
+#ifndef SRC_AJAN_STATE_H
+#define SRC_AJAN_STATE_H
 
 #include <despot/core/particle_belief.h>
 #include <despot/core/builtin_upper_bounds.h>
@@ -18,16 +18,17 @@
 
 namespace despot {
 /* ==============================================================================
- * TagState_U class
+ * AjanState class
  * ==============================================================================*/
 
-    class TagState_U : public despot::State {
+    class AjanState : public despot::State {
     public:
-        TagState_U();
+        AjanState();
 
-        TagState_U(int _state_id);
+        AjanState(int _state_id);
 
         std::string text() const;
     };
 }
-#endif //SRC_TAG_STATE_H
+
+#endif //SRC_AJAN_STATE_H

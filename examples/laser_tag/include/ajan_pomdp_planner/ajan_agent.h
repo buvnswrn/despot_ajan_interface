@@ -1,11 +1,11 @@
 //
-// Created by bhuvanesh on 25.07.23.
-// Original DESPOT Implementation for Agent POMDP Model
-// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_agent.h
+// Created by bhuvanesh on 01.08.23.
+// JNI Interface for Agent POMDP Model.
+// See: examples/laser_tag/include/unified_pomdp_planner/unified_laser_tag.h
 //
 
-#ifndef DESPOT_WS1_UNIFIED_LASER_TAG_H
-#define DESPOT_WS1_UNIFIED_LASER_TAG_H
+#ifndef SRC_AJAN_AGENT_H
+#define SRC_AJAN_AGENT_H
 
 #include <despot/interface/pomdp.h>
 #include <despot/core/mdp.h>
@@ -15,40 +15,43 @@
 #include <despot/core/builtin_policy.h>
 #include <despot/core/builtin_upper_bounds.h>
 #include <despot/core/particle_belief.h>
-#include "tag_state.h"
+#include "ajan_state.h"
 
 namespace despot {
 /* ==============================================================================
- * UnifiedLaserTag class
+ * AjanAgent class : Similar to UnifiedLaserTag class
  * ==============================================================================*/
 
-    class LaserTag_U: public MDP,
-                             public BeliefMDP,
-                             public StateIndexer,
-                             public StatePolicy,
-                             public MMAPInferencer {
-        friend class TagState_U;
-        friend class TagSHRPolicy;
-        friend class TagSPParticleUpperBound;
-        friend class TagManhattanUpperBound;
-    private:
-        static int NBEAMS;
-        static int BITS_PER_READING;
-
-        double noise_sigma_;
-        double unit_size_;
-        std::vector<std::vector<std::vector<double> > > reading_distributions_;
+    class AjanAgent: public MDP,
+                     public BeliefMDP,
+                     public StateIndexer,
+                     public StatePolicy,
+                     public MMAPInferencer {
+        friend class AjanState;
+        friend class AjanPolicy;
+        friend class AjanParticleUpperBound;
+        friend class AjanUpperBound;
 
     protected:
-
-        std::vector<TagState_U*> states_;
+        mutable MemoryPool<AjanState> memory_pool_;
+        std::vector<AjanState*> states_; // optional
         // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
 
+
+        // region Problem-Specific
+    private:
+        static int NBEAMS; // optional
+        static int BITS_PER_READING; // optional
+
+        double noise_sigma_; // optional
+        double unit_size_; // optional
+        std::vector<std::vector<std::vector<double> > > reading_distributions_; // optional
+
+    protected:
+        // optional
         std::vector<std::vector<std::vector<State> > > transition_probabilities_; //state, action, [state, weight]
 
-
-        mutable MemoryPool<TagState_U> memory_pool_;
 
     protected:
         std::map<int, double> OppTransitionDistribution(int state) const;
@@ -56,8 +59,7 @@ namespace despot {
         void ReadConfig(std::istream& is);
         void Init(std::istream& is);
 
-        const TagState_U& MostLikelyState(const std::vector<State*>& particles) const;
-
+        const AjanState& MostLikelyState(const std::vector<State*>& particles) const;
         void PrintTransitions() const;
 
     protected:
@@ -66,18 +68,12 @@ namespace despot {
         int NextRobPosition(int rob, int opp, ACT_TYPE a) const;
 
         mutable std::vector<int> default_action_;
-
+        // endregion
     public:
-        bool robot_pos_unknown_;
-        static LaserTag_U* current_;
 
-        LaserTag_U();
-        LaserTag_U(std::string params_file);
-//        virtual ~LaserTag_U(); // virtual ~BaseTag();
-        double LaserRange(const State& state, int dir) const;
-        void Init();
-        int GetReading(int);
-        void NoiseSigma(double noise_sigma);
+        // region Problem Specific
+        static double TAG_REWARD;
+        //endregion
 
         // region MDP Functions
 
@@ -195,45 +191,9 @@ namespace despot {
 
         // endregion
 
-        inline ACT_TYPE TagAction() const {
-            return 4;
-        }
-        inline Coord GetRobPos(const State* state) const {
-            return floor_.GetCell(rob_[state->state_id]);
-        }
-
-        inline int StateIndexToOppIndex(int index) const {
-            return index % floor_.NumCells();
-        }
-        inline int StateIndexToRobIndex(int index) const {
-            return index / floor_.NumCells();
-        }
-        inline int RobOppIndicesToStateIndex(int rob, int opp) const {
-            return rob * floor_.NumCells() + opp;
-        }
-
-        static int GetReading(OBS_TYPE obs, OBS_TYPE dir);
-        static void SetReading(OBS_TYPE& obs, OBS_TYPE reading, OBS_TYPE dir);
-        int GetBucket(double noisy) const;
-
-        const Floor& floor() const;
-
-        int MostLikelyAction(const std::vector<State*>& particles) const;
-
-        void ComputeDefaultActions(std::string type) const;
-
-        friend std::ostream& operator<<(std::ostream& os, const LaserTag_U& lasertag);
-
-        Coord MostLikelyOpponentPosition(const std::vector<State*>& particles) const;
-        Coord MostLikelyRobPosition(const std::vector<State*>& particles) const;
-
-        OBS_TYPE same_loc_obs_;
-        static double TAG_REWARD;
-        Floor floor_;
-        std::vector<int> opp_;
-        std::vector<int> rob_;
     };
 
 }
 
-#endif //DESPOT_WS1_UNIFIED_LASER_TAG_H
+
+#endif //SRC_AJAN_AGENT_H

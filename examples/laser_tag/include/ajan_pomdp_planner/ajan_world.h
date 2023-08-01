@@ -1,17 +1,17 @@
 //
-// Created by bhuvanesh on 25.07.23.
-// Original DESPOT Implementation for Real World
-// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_world.h
+// Created by bhuvanesh on 01.08.23.
+// JNI Interface for World
+// @see: unified_pomdp_planner/unified_laser_tag_world.h
 //
 
-#ifndef DESPOT_WS1_UNIFIED_LASER_TAG_WORLD_H
-#define DESPOT_WS1_UNIFIED_LASER_TAG_WORLD_H
+#ifndef SRC_AJAN_WORLD_H
+#define SRC_AJAN_WORLD_H
 #include <unified_laser_tag.h>
 #include <despot/interface/world.h>
 #include <ros/ros.h>
 using namespace despot;
 
-class LaserTagWorld_U:public World {
+class AjanWorld : public World {
 public:
     ros::NodeHandlePtr nh;
     ros::ServiceClient client;
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //DESPOT_WS1_UNIFIED_LASER_TAG_WORLD_H
+#endif //SRC_AJAN_WORLD_H

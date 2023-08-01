@@ -69,6 +69,11 @@ add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag
 add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
 
+## Declare a C++ executable
+add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/ajan_belief.cpp include/ajan_pomdp_planner/ajan_belief.h src/ajan_pomdp_planner/ajan_state.cpp include/ajan_pomdp_planner/ajan_state.h src/ajan_pomdp_planner/ajan_agent.cpp include/ajan_pomdp_planner/ajan_agent.h src/ajan_pomdp_planner/ajan_beliefpolicy.cpp include/ajan_pomdp_planner/ajan_beliefpolicy.h src/ajan_pomdp_planner/ajan_world.cpp include/ajan_pomdp_planner/ajan_world.h src/ajan_pomdp_planner/ajan_policy.cpp include/ajan_pomdp_planner/ajan_policy.h src/ajan_pomdp_planner/ajan_upperbound.cpp include/ajan_pomdp_planner/ajan_upperbound.h src/ajan_pomdp_planner/ajan_particleupperbound.cpp include/ajan_pomdp_planner/ajan_particleupperbound.h src/ajan_pomdp_planner/ajan_helper.cpp src/ajan_pomdp_planner/ajan_helper.h)
+add_dependencies(ajan_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(ajan_pomdp_planner despot ${catkin_LIBRARIES})
+
 #############
 ## Testing ##
 #############

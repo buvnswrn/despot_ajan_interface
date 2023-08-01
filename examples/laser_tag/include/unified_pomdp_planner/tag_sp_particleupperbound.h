@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 31.07.23.
+// Original DESPOT Implementation for Particle UpperBound
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_particleupperbound.h
 //
 
 #ifndef SRC_TAG_SP_PARTICLEUPPERBOUND_H
@@ -15,6 +17,7 @@
 #include <cmath>
 #include <unified_laser_tag.h>
 #include <queue>
+
 namespace despot {
 /* ==============================================================================
 * TagSPParticleUpperBound class

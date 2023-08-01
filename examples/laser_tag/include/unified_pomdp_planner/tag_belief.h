@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 31.07.23.
+// Original DESPOT Implementation for Belief
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_belief.h
 //
 
 #ifndef SRC_TAG_BELIEF_H
