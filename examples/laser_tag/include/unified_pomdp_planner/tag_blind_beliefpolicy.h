@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 01.08.23.
+// Original DESPOT Implementation for Belief Policy
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_beliefpolicy.h
 //
 
 #ifndef SRC_TAG_BLIND_BELIEFPOLICY_H
@@ -32,4 +34,5 @@ namespace despot {
         despot::ValuedAction Value(const despot::Belief *belief) const;
     };
 }
+
 #endif //SRC_TAG_BLIND_BELIEFPOLICY_H

@@ -75,6 +75,14 @@ namespace despot {
         static double TAG_REWARD;
         //endregion
 
+        AjanAgent();
+        AjanAgent(std::string params_file);
+//        virtual ~AjanAgent(); // virtual ~BaseTag();
+
+
+
+
+
         // region MDP Functions
 
         int NumStates() const;

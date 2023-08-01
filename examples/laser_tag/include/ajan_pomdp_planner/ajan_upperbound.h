@@ -16,9 +16,10 @@
 #include <cmath>
 #include "ajan_agent.h"
 #include <queue>
+
 namespace despot {
 /* ==============================================================================
-* TagManhattanUpperBound class
+* AjanUpperBound class
 * ==============================================================================*/
 
     class AjanUpperBound : public despot::ParticleUpperBound, public despot::BeliefUpperBound {

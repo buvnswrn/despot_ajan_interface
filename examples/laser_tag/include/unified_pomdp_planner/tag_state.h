@@ -30,4 +30,5 @@ namespace despot {
         std::string text() const;
     };
 }
+
 #endif //SRC_TAG_STATE_H

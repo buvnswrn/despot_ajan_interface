@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 31.07.23.
+// Original DESPOT Implementation for DESPOT Tree Upperbound
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_upperbound.h
 //
 
 #ifndef SRC_TAG_MANHATTAN_UPPERBOUND_H
@@ -14,6 +16,7 @@
 #include <cmath>
 #include <unified_laser_tag.h>
 #include <queue>
+
 namespace despot {
 /* ==============================================================================
 * TagManhattanUpperBound class
@@ -34,5 +37,6 @@ namespace despot {
 
         double Value(const despot::Belief *belief) const ;
     };
+
 }
 #endif //SRC_TAG_MANHATTAN_UPPERBOUND_H

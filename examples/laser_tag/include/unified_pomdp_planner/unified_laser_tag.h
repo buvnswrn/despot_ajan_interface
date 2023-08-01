@@ -31,6 +31,15 @@ namespace despot {
         friend class TagSHRPolicy;
         friend class TagSPParticleUpperBound;
         friend class TagManhattanUpperBound;
+
+    protected:
+        mutable MemoryPool<TagState_U> memory_pool_;
+        std::vector<TagState_U*> states_;
+        // rob_[s]: robot cell index for state s
+        // opp_[s]: opponent cell index for state s
+
+
+        //region Problem-Specific
     private:
         static int NBEAMS;
         static int BITS_PER_READING;
@@ -41,14 +50,8 @@ namespace despot {
 
     protected:
 
-        std::vector<TagState_U*> states_;
-        // rob_[s]: robot cell index for state s
-        // opp_[s]: opponent cell index for state s
+    std::vector<std::vector<std::vector<State> > > transition_probabilities_; //state, action, [state, weight]
 
-        std::vector<std::vector<std::vector<State> > > transition_probabilities_; //state, action, [state, weight]
-
-
-        mutable MemoryPool<TagState_U> memory_pool_;
 
     protected:
         std::map<int, double> OppTransitionDistribution(int state) const;
@@ -57,7 +60,6 @@ namespace despot {
         void Init(std::istream& is);
 
         const TagState_U& MostLikelyState(const std::vector<State*>& particles) const;
-
         void PrintTransitions() const;
 
     protected:
@@ -66,8 +68,10 @@ namespace despot {
         int NextRobPosition(int rob, int opp, ACT_TYPE a) const;
 
         mutable std::vector<int> default_action_;
-
+        //endregion
     public:
+
+        //region Problem-Specific
         bool robot_pos_unknown_;
         static LaserTag_U* current_;
 
@@ -195,6 +199,7 @@ namespace despot {
 
         // endregion
 
+        // region Problem-Specific
         inline ACT_TYPE TagAction() const {
             return 4;
         }
@@ -232,6 +237,8 @@ namespace despot {
         Floor floor_;
         std::vector<int> opp_;
         std::vector<int> rob_;
+
+        //endregion
     };
 
 }

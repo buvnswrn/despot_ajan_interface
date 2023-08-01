@@ -9,13 +9,19 @@
 #include "ajan_agent.h"
 
 namespace despot {
-class AjanBelief : public despot::ParticleBelief {
+/* ==============================================================================
+* AjanBelief class
+* ==============================================================================*/
+
+    class AjanBelief : public despot::ParticleBelief {
     const despot::AjanAgent *tag_model_;
 public:
     AjanBelief(std::vector<despot::State *> particles, const despot::AjanAgent *model, Belief *prior =
     NULL);
+
     void Update(despot::ACT_TYPE action, despot::OBS_TYPE obs);
     };
+
 }
 
 #endif //SRC_AJAN_BELIEF_H

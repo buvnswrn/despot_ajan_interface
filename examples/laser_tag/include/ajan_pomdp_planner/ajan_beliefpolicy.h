@@ -7,6 +7,11 @@
 #ifndef SRC_AJAN_BELIEFPOLICY_H
 #define SRC_AJAN_BELIEFPOLICY_H
 
+#include "ajan_particleupperbound.h"
+#include "ajan_upperbound.h"
+#include "ajan_policy.h"
+#include "ajan_state.h"
+#include "ajan_belief.h"
 #include <despot/solver/pomcp.h>
 #include <despot/util/floor.h>
 #include <despot/util/coord.h>
@@ -15,7 +20,15 @@
 #include "ajan_agent.h"
 
 namespace despot {
+/* ==============================================================================
+* AjanBeliefPolicy class
+* ==============================================================================*/
+
     class AjanBeliefPolicy : public despot::BeliefLowerBound {
+    private:
+        std::vector<std::vector<double> > alpha_vectors_; // optional
+        const despot::AjanAgent *tag_model_; // optional
+
     public:
         AjanBeliefPolicy(const despot::AjanAgent *model) ;
         despot::ValuedAction Value(const despot::Belief *belief) const;
