@@ -3,6 +3,7 @@
 // Original DESPOT Implementation for Belief Policy
 // See: examples/laser_tag/include/ajan_pomdp_planner/ajan_beliefpolicy.cpp
 //
+
 #include "tag_blind_beliefpolicy.h"
 using namespace despot;
 

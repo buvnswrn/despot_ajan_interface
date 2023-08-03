@@ -71,17 +71,19 @@ namespace despot {
         //endregion
     public:
 
+        LaserTag_U();
+
         //region Problem-Specific
         bool robot_pos_unknown_;
         static LaserTag_U* current_;
 
-        LaserTag_U();
+
         LaserTag_U(std::string params_file);
 //        virtual ~LaserTag_U(); // virtual ~BaseTag();
         double LaserRange(const State& state, int dir) const;
         void Init();
-        int GetReading(int);
         void NoiseSigma(double noise_sigma);
+        //endregion
 
         // region MDP Functions
 

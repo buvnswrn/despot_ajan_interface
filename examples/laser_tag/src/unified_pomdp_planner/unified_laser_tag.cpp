@@ -1,6 +1,9 @@
 //
 // Created by bhuvanesh on 25.07.23.
+// Original DESPOT Implementation for Agent POMDP Model
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_agent.cpp
 //
+
 #include <queue>
 #include <unified_laser_tag.h>
 #include <cmath>
@@ -17,47 +20,61 @@
 using namespace std;
 
 namespace despot {
-    LaserTag_U* LaserTag_U::current_ = nullptr;
-
-    /* ==============================================================================
+/* ==============================================================================
  * LaserTag_U class
  * ==============================================================================*/
+
+    // region Problem-Specific
+    int LaserTag_U::NBEAMS = 8;
+    int LaserTag_U::BITS_PER_READING = 7;
     double LaserTag_U::TAG_REWARD = 10;
 
     const OBS_TYPE ONE = 1;
-    int LaserTag_U::NBEAMS = 8;
-    int LaserTag_U::BITS_PER_READING = 7;
 
-    string LaserTag_U::RandomMap(int height, int width, int obstacles) {
-        string map(height * (width + 1) - 1, '.');
-        for (int h = 1; h < height; h++)
-            map[h * (width + 1) - 1] = '\n';
+    map<int, double> LaserTag_U::OppTransitionDistribution(int state) const {
+        Coord rob = floor_.GetCell(rob_[state]), opp = floor_.GetCell(opp_[state]);
 
-        for (int i = 0; i < obstacles;) {
-            int p = Random::RANDOM.NextInt(map.length());
-            if (map[p] != '\n' && map[p] != '#') {
-                map[p] = '#';
-                i++;
-            }
+        map<int, double> distribution;
+
+        if (opp.x == rob.x) {
+            int index =
+                    floor_.Inside(opp + Coord(1, 0)) ?
+                    floor_.GetIndex(opp + Coord(1, 0)) : floor_.GetIndex(opp);
+            distribution[index] += 0.2;
+
+            index =
+                    floor_.Inside(opp + Coord(-1, 0)) ?
+                    floor_.GetIndex(opp + Coord(-1, 0)) : floor_.GetIndex(opp);
+            distribution[index] += 0.2;
+        } else {
+            int dx = opp.x > rob.x ? 1 : -1;
+            int index =
+                    floor_.Inside(opp + Coord(dx, 0)) ?
+                    floor_.GetIndex(opp + Coord(dx, 0)) : floor_.GetIndex(opp);
+            distribution[index] += 0.4;
         }
 
-        return "mapSize = " + to_string(height) + " " + to_string(width) + "\n" + to_string(map);
-    }
-    string LaserTag_U::BenchmarkMap() {
-        int height=7; int width=11; int obstacles=8;
-        string map(height * (width + 1) - 1, '.');
-        for (int h = 1; h < height; h++)
-            map[h * (width + 1) - 1] = '\n';
+        if (opp.y == rob.y) {
+            int index =
+                    floor_.Inside(opp + Coord(0, 1)) ?
+                    floor_.GetIndex(opp + Coord(0, 1)) : floor_.GetIndex(opp);
+            distribution[index] += 0.2;
 
-        int obstacles_list [] = {1+2*(width+1), 3+4*(width+1), 3+0*(width+1), 5+0*(width+1), 6+4*(width+1), 9+4*(width+1), 9+1*(width+1), 10+6*(width+1)};
-        for (int i = 0; i < obstacles;) {
-            int p = obstacles_list[i];
-            assert (map[p] != '\n' && map[p] != '#');
-            map[p] = '#';
-            i++;
+            index =
+                    floor_.Inside(opp + Coord(0, -1)) ?
+                    floor_.GetIndex(opp + Coord(0, -1)) : floor_.GetIndex(opp);
+            distribution[index] += 0.2;
+        } else {
+            int dy = opp.y > rob.y ? 1 : -1;
+            int index =
+                    floor_.Inside(opp + Coord(0, dy)) ?
+                    floor_.GetIndex(opp + Coord(0, dy)) : floor_.GetIndex(opp);
+            distribution[index] += 0.4;
         }
 
-        return "mapSize = " + to_string(height) + " " + to_string(width) + "\n" + to_string(map);
+        distribution[floor_.GetIndex(opp)] += 0.2;
+
+        return distribution;
     }
 
     void LaserTag_U::ReadConfig(istream& is) {
@@ -87,45 +104,6 @@ namespace despot {
             }
         }
     }
-
-    LaserTag_U::LaserTag_U():
-        noise_sigma_(0.5),
-        unit_size_(1.0) {
-        current_ = this;
-        istringstream iss(BenchmarkMap());
-        Init(iss);
-        robot_pos_unknown_ = false;
-    }
-
-    LaserTag_U::LaserTag_U(string params_file) :
-        noise_sigma_(0.5),
-        unit_size_(1.0) {
-        current_ = this;
-        ifstream fin(params_file.c_str(), ifstream::in);
-        Init(fin); //not sure whether this will be called
-        robot_pos_unknown_ = false;
-    }
-//    LaserTag_U::LaserTag_U(string params_file, double noise_sigma) :
-//        unit_size_(1.0) {
-//        Init();
-//        robot_pos_unknown_ = false;
-//        noise_sigma_ = noise_sigma;
-//    }
-    double LaserTag_U::LaserRange(const State& state, int dir) const {
-        Coord rob = floor_.GetCell(rob_[state.state_id]), opp = floor_.GetCell(
-                opp_[state.state_id]);
-        int d = 1;
-        while (true) {
-            Coord coord = rob + Compass::DIRECTIONS[dir] * d;
-            if (floor_.GetIndex(coord) == -1 || coord == opp)
-                break;
-            d++;
-        }
-        int x = Compass::DIRECTIONS[dir].x, y = Compass::DIRECTIONS[dir].y;
-
-        return d * sqrt(x * x + y * y);
-    }
-
     void LaserTag_U::Init(istream& is) {
         ReadConfig(is);
         TagState_U* state;
@@ -191,8 +169,252 @@ namespace despot {
             }
         }
     }
+
+    string LaserTag_U::RandomMap(int height, int width, int obstacles) {
+        string map(height * (width + 1) - 1, '.');
+        for (int h = 1; h < height; h++)
+            map[h * (width + 1) - 1] = '\n';
+
+        for (int i = 0; i < obstacles;) {
+            int p = Random::RANDOM.NextInt(map.length());
+            if (map[p] != '\n' && map[p] != '#') {
+                map[p] = '#';
+                i++;
+            }
+        }
+
+        return "mapSize = " + to_string(height) + " " + to_string(width) + "\n" + to_string(map);
+    }
+    string LaserTag_U::BenchmarkMap() {
+        int height=7; int width=11; int obstacles=8;
+        string map(height * (width + 1) - 1, '.');
+        for (int h = 1; h < height; h++)
+            map[h * (width + 1) - 1] = '\n';
+
+        int obstacles_list [] = {1+2*(width+1), 3+4*(width+1), 3+0*(width+1), 5+0*(width+1), 6+4*(width+1), 9+4*(width+1), 9+1*(width+1), 10+6*(width+1)};
+        for (int i = 0; i < obstacles;) {
+            int p = obstacles_list[i];
+            assert (map[p] != '\n' && map[p] != '#');
+            map[p] = '#';
+            i++;
+        }
+
+        return "mapSize = " + to_string(height) + " " + to_string(width) + "\n" + to_string(map);
+    }
+    int LaserTag_U::NextRobPosition(int rob, int opp, ACT_TYPE a) const {
+        Coord pos = floor_.GetCell(rob) + Compass::DIRECTIONS[a];
+        if (a != TagAction() && floor_.Inside(pos) && pos!=floor_.GetCell(opp))
+            return floor_.GetIndex(pos);
+
+        return rob;
+    }
+
+    LaserTag_U* LaserTag_U::current_ = nullptr;
+
+    // endregion
+
+    LaserTag_U::LaserTag_U():
+        noise_sigma_(0.5),
+        unit_size_(1.0) {
+        current_ = this;
+        istringstream iss(BenchmarkMap());
+        Init(iss);
+        robot_pos_unknown_ = false;
+    }
+
+    // region Problem-Specific
+
+    LaserTag_U::LaserTag_U(string params_file) :
+        noise_sigma_(0.5),
+        unit_size_(1.0) {
+        current_ = this;
+        ifstream fin(params_file.c_str(), ifstream::in);
+        Init(fin); //not sure whether this will be called
+        robot_pos_unknown_ = false;
+    }
+//    LaserTag_U::LaserTag_U(string params_file, double noise_sigma) :
+//        unit_size_(1.0) {
+//        Init();
+//        robot_pos_unknown_ = false;
+//        noise_sigma_ = noise_sigma;
+//    }
+
+    double LaserTag_U::LaserRange(const State& state, int dir) const {
+        Coord rob = floor_.GetCell(rob_[state.state_id]), opp = floor_.GetCell(
+                opp_[state.state_id]);
+        int d = 1;
+        while (true) {
+            Coord coord = rob + Compass::DIRECTIONS[dir] * d;
+            if (floor_.GetIndex(coord) == -1 || coord == opp)
+                break;
+            d++;
+        }
+        int x = Compass::DIRECTIONS[dir].x, y = Compass::DIRECTIONS[dir].y;
+
+        return d * sqrt(x * x + y * y);
+    }
+
+
 //    LaserTag_U::~LaserTag_U() {
 //    }
+
+    void LaserTag_U::NoiseSigma(double noise_sigma)
+    {
+        noise_sigma_ = noise_sigma;
+    }
+
+    //endregion
+
+    //region MDP Functions
+
+    int LaserTag_U::NumStates() const {
+        return floor_.NumCells() * floor_.NumCells();
+    }
+
+    const vector<State>& LaserTag_U::TransitionProbability(int s, ACT_TYPE a) const {
+        return transition_probabilities_[s][a];
+    }
+    double LaserTag_U::Reward(int s, ACT_TYPE action) const {
+        const TagState_U* state = states_[s];
+        double reward = 0;
+        if (action == TagAction()) {
+            if (rob_[state->state_id] == opp_[state->state_id]) {
+                reward = TAG_REWARD;
+            } else {
+                reward = -TAG_REWARD;
+            }
+        } else {
+            reward = -1;
+        }
+        cout<<"C++:Reward("<<s<<","<<action<<")="<<reward<<endl;
+        return reward;
+    }
+
+    //endregion
+
+    //region BeliefMDP
+
+    BeliefLowerBound* LaserTag_U::CreateBeliefLowerBound(string name) const {
+        if (name == "TRIVIAL") {
+            return new TrivialBeliefLowerBound(this);
+        } else if (name == "DEFAULT" || name == "BLIND") {
+            return new TagBlindBeliefPolicy(this);
+        } else {
+            cerr << "Unsupported belief lower bound: " << name << endl;
+            exit(1);
+            return NULL;
+        }
+    }
+    BeliefUpperBound* LaserTag_U::CreateBeliefUpperBound(string name) const {
+        if (name == "TRIVIAL") {
+            return new TrivialBeliefUpperBound(this);
+        } else if (name == "DEFAULT" || name == "MDP") {
+            return new MDPUpperBound(this, *this);
+        } else if (name == "MANHATTAN") {
+            return new TagManhattanUpperBound(this);
+        } else {
+            if (name != "print")
+                cerr << "Unsupported belief upper bound: " << name << endl;
+            cerr << "Supported types: TRIVIAL, MDP, MANHATTAN (default to MDP)" << endl;
+            exit(1);
+            return NULL;
+        }
+    }
+
+    /**
+    * Transition function for the belief MDP.
+    */
+    Belief* LaserTag_U::Tau(const Belief* belief, ACT_TYPE action, OBS_TYPE obs) const {
+        static vector<double> probs = vector<double>(NumStates());
+
+        const vector<State*>& particles =
+                static_cast<const ParticleBelief*>(belief)->particles();
+
+        double sum = 0;
+        for (int i = 0; i < particles.size(); i++) {
+            TagState_U* state = static_cast<TagState_U*>(particles[i]);
+            const vector<State>& distribution = transition_probabilities_[GetIndex(
+                    state)][action];
+            for (int j = 0; j < distribution.size(); j++) {
+                const State& next = distribution[j];
+                double p = state->weight * next.weight
+                           * ObsProb(obs, *(states_[next.state_id]), action);
+                probs[next.state_id] += p;
+                sum += p;
+            }
+        }
+
+        vector<State*> new_particles;
+        for (int i = 0; i < NumStates(); i++) {
+            if (probs[i] > 0) {
+                State* new_particle = Copy(states_[i]);
+                new_particle->weight = probs[i] / sum;
+                new_particles.push_back(new_particle);
+                probs[i] = 0;
+            }
+        }
+        cout<<"C++:Tau:ParticlesSize:"<<particles.size()<<endl;
+        return new ParticleBelief(new_particles, this, NULL, false);
+    }
+    /**
+    * Observation function for the belief MDP.
+    */
+    void LaserTag_U::Observe(const Belief* belief, ACT_TYPE action,
+                             std::map<OBS_TYPE, double>& obss) const {
+        cerr << "Exit: Two many observations!" << endl;
+        exit(0);
+    }
+    /**
+     * Reward function for the belief MDP.
+     */
+    double LaserTag_U::StepReward(const Belief* belief, ACT_TYPE action) const {
+        const vector<State*>& particles =
+                static_cast<const ParticleBelief*>(belief)->particles();
+        cout<<"C++:StepReward:ParticleSize:"<<particles.size()<<endl;
+        double sum = 0;
+        for (int i = 0; i < particles.size(); i++) {
+            State* particle = particles[i];
+            TagState_U* state = static_cast<TagState_U*>(particle);
+            double reward = 0;
+            if (action == TagAction()) {
+                if (rob_[state->state_id] == opp_[state->state_id]) {
+                    reward = TAG_REWARD;
+                } else {
+                    reward = -TAG_REWARD;
+                }
+            } else {
+                reward = -1;
+            }
+            sum += state->weight * reward;
+        }
+
+        return sum;
+    }
+
+    //endregion
+
+    //region StateIndexer
+        // inline functions
+    //endregion
+
+    // region StatePolicy
+    int LaserTag_U::GetAction(const State& state) const {
+        return default_action_[GetIndex(&state)];
+    }
+    //endregion
+
+    // region MMAPInferencer
+    const State* LaserTag_U::GetMMAP(const vector<State*>& particles) const {
+        Coord rob = MostLikelyRobPosition(particles);
+        Coord opp = MostLikelyOpponentPosition(particles);
+
+        int state_id = RobOppIndicesToStateIndex(floor_.GetIndex(rob),
+                                                 floor_.GetIndex(opp));
+        return states_[state_id];
+    }
+    //endregion
+
+    //region POMDP
 
     bool LaserTag_U::Step(State& s, double random_num, ACT_TYPE action,
                        double& reward) const {
@@ -259,6 +481,9 @@ namespace despot {
 
         return terminal;
     }
+    // NumActions is in region MDP
+
+    // Reward is in region MDP
 
     double LaserTag_U::ObsProb(OBS_TYPE obs, const State& state, ACT_TYPE action) const {
         if (rob_[state.state_id] == opp_[state.state_id])
@@ -276,92 +501,30 @@ namespace despot {
         return prod;
     }
 
-    int LaserTag_U::NumStates() const {
-        return floor_.NumCells() * floor_.NumCells();
-    }
-
-    const vector<State>& LaserTag_U::TransitionProbability(int s, ACT_TYPE a) const {
-        return transition_probabilities_[s][a];
-    }
-
-    int LaserTag_U::NextRobPosition(int rob, int opp, ACT_TYPE a) const {
-        Coord pos = floor_.GetCell(rob) + Compass::DIRECTIONS[a];
-        if (a != TagAction() && floor_.Inside(pos) && pos!=floor_.GetCell(opp))
-            return floor_.GetIndex(pos);
-
-        return rob;
-    }
-
-    const Floor& LaserTag_U::floor() const {
-        return floor_;
-    }
-    map<int, double> LaserTag_U::OppTransitionDistribution(int state) const {
-        Coord rob = floor_.GetCell(rob_[state]), opp = floor_.GetCell(opp_[state]);
-
-        map<int, double> distribution;
-
-        if (opp.x == rob.x) {
-            int index =
-                    floor_.Inside(opp + Coord(1, 0)) ?
-                    floor_.GetIndex(opp + Coord(1, 0)) : floor_.GetIndex(opp);
-            distribution[index] += 0.2;
-
-            index =
-                    floor_.Inside(opp + Coord(-1, 0)) ?
-                    floor_.GetIndex(opp + Coord(-1, 0)) : floor_.GetIndex(opp);
-            distribution[index] += 0.2;
-        } else {
-            int dx = opp.x > rob.x ? 1 : -1;
-            int index =
-                    floor_.Inside(opp + Coord(dx, 0)) ?
-                    floor_.GetIndex(opp + Coord(dx, 0)) : floor_.GetIndex(opp);
-            distribution[index] += 0.4;
-        }
-
-        if (opp.y == rob.y) {
-            int index =
-                    floor_.Inside(opp + Coord(0, 1)) ?
-                    floor_.GetIndex(opp + Coord(0, 1)) : floor_.GetIndex(opp);
-            distribution[index] += 0.2;
-
-            index =
-                    floor_.Inside(opp + Coord(0, -1)) ?
-                    floor_.GetIndex(opp + Coord(0, -1)) : floor_.GetIndex(opp);
-            distribution[index] += 0.2;
-        } else {
-            int dy = opp.y > rob.y ? 1 : -1;
-            int index =
-                    floor_.Inside(opp + Coord(0, dy)) ?
-                    floor_.GetIndex(opp + Coord(0, dy)) : floor_.GetIndex(opp);
-            distribution[index] += 0.4;
-        }
-
-        distribution[floor_.GetIndex(opp)] += 0.2;
-
-        return distribution;
-    }
-
-    void LaserTag_U::PrintTransitions() const {
-        for (int s = 0; s < NumStates(); s++) {
-            cout << "State " << s << endl;
-            PrintState(*GetState(s));
-            for (int a = 0; a < NumActions(); a++) {
-                cout << "Applying action " << a << " on " << endl;
-                for (int i = 0; i < transition_probabilities_[s][a].size();
-                     i++) {
-                    const State& next = transition_probabilities_[s][a][i];
-                    cout << s << "-" << a << "-" << next.state_id << "-"
-                         << next.weight << endl;
-                    PrintState(*GetState(next.state_id));
-                }
-            }
-        }
-    }
-
     State* LaserTag_U::CreateStartState(string type) const {
         int n = Random::RANDOM.NextInt(states_.size());
         return new TagState_U(*states_[n]);
     }
+
+    Belief* LaserTag_U::InitialBelief(const State* start, string type) const {
+        //assert(start != NULL);
+
+        vector<State*> particles;
+        int N = floor_.NumCells();
+        double wgt = 1.0 / N / N;
+        for (int rob = 0; rob < N; rob++) {
+            for (int opp = 0; opp < N; opp++) {
+                TagState_U* state = static_cast<TagState_U*>(Allocate(
+                        RobOppIndicesToStateIndex(rob, opp), wgt));
+                particles.push_back(state);
+            }
+        }
+        cout<<"Initial belief particles size:"<<particles.size()<<endl; // 4761 particles - matching with Java
+        ParticleBelief* belief = new ParticleBelief(particles, this);
+        belief->state_indexer(this);
+        return belief;
+    }
+
 
     ParticleUpperBound* LaserTag_U::CreateParticleUpperBound(string name) const {
         if (name == "TRIVIAL") {
@@ -380,6 +543,7 @@ namespace despot {
             return nullptr;
         }
     }
+
     ScenarioUpperBound* LaserTag_U::CreateScenarioUpperBound(string name,
                                                           string particle_bound_name) const {
         if (name == "TRIVIAL" || name == "DEFAULT" || name == "MDP" ||
@@ -393,21 +557,6 @@ namespace despot {
                 cerr << "Unsupported upper bound: " << name << endl;
             cerr << "Supported types: TRIVIAL, MDP, SP, MANHATTAN, LOOKAHEAD (default to SP)" << endl;
             cerr << "With base upper bound: LOOKAHEAD" << endl;
-            exit(1);
-            return NULL;
-        }
-    }
-    BeliefUpperBound* LaserTag_U::CreateBeliefUpperBound(string name) const {
-        if (name == "TRIVIAL") {
-            return new TrivialBeliefUpperBound(this);
-        } else if (name == "DEFAULT" || name == "MDP") {
-            return new MDPUpperBound(this, *this);
-        } else if (name == "MANHATTAN") {
-            return new TagManhattanUpperBound(this);
-        } else {
-            if (name != "print")
-                cerr << "Unsupported belief upper bound: " << name << endl;
-            cerr << "Supported types: TRIVIAL, MDP, MANHATTAN (default to MDP)" << endl;
             exit(1);
             return NULL;
         }
@@ -466,23 +615,6 @@ namespace despot {
         }
     }
 
-    BeliefLowerBound* LaserTag_U::CreateBeliefLowerBound(string name) const {
-        if (name == "TRIVIAL") {
-            return new TrivialBeliefLowerBound(this);
-        } else if (name == "DEFAULT" || name == "BLIND") {
-            return new TagBlindBeliefPolicy(this);
-        } else {
-            cerr << "Unsupported belief lower bound: " << name << endl;
-            exit(1);
-            return NULL;
-        }
-    }
-
-    void LaserTag_U::PrintObs(const State& state, OBS_TYPE obs, ostream& out) const {
-        for (int i = 0; i < NBEAMS; i++)
-            out << GetReading(obs, i) << " ";
-        out << endl;
-    }
     void LaserTag_U::PrintState(const State& s, ostream& out) const {
         const TagState_U& state = static_cast<const TagState_U&>(s);
 
@@ -504,6 +636,21 @@ namespace despot {
                     out << ".";
             }
             out << endl;
+        }
+    }
+    void LaserTag_U::PrintObs(const State& state, OBS_TYPE obs, ostream& out) const {
+        for (int i = 0; i < NBEAMS; i++)
+            out << GetReading(obs, i) << " ";
+        out << endl;
+    }
+    void LaserTag_U::PrintAction(ACT_TYPE action, ostream& out) const {
+        switch(action) {
+            case 0: out << "North" << endl; break;
+            case 1: out << "East" << endl; break;
+            case 2: out << "South" << endl; break;
+            case 3: out << "West" << endl; break;
+            case 4: out << "Tag" << endl; break;
+            default: out << "Wrong action" << endl; exit(1);
         }
     }
     void LaserTag_U::PrintBelief(const Belief& belief, ostream& out) const {
@@ -561,52 +708,6 @@ namespace despot {
             cout<< endl;
         }
     }
-    void LaserTag_U::PrintAction(ACT_TYPE action, ostream& out) const {
-        switch(action) {
-            case 0: out << "North" << endl; break;
-            case 1: out << "East" << endl; break;
-            case 2: out << "South" << endl; break;
-            case 3: out << "West" << endl; break;
-            case 4: out << "Tag" << endl; break;
-            default: out << "Wrong action" << endl; exit(1);
-        }
-    }
-
-
-    int LaserTag_U::GetReading(OBS_TYPE obs, OBS_TYPE dir) {
-        return (obs >> (dir * BITS_PER_READING)) & ((ONE << BITS_PER_READING) - 1);
-    }
-
-    void LaserTag_U::SetReading(OBS_TYPE& obs, OBS_TYPE reading, OBS_TYPE dir) {
-        // Clear bits
-        obs &= ~(((ONE << BITS_PER_READING) - 1) << (dir * BITS_PER_READING));
-        // Set bits
-        obs |= reading << (dir * BITS_PER_READING);
-    }
-
-    int LaserTag_U::GetBucket(double noisy) const {
-        return (int) std::floor(noisy / unit_size_);
-    }
-
-    Belief* LaserTag_U::InitialBelief(const State* start, string type) const {
-        //assert(start != NULL);
-
-        vector<State*> particles;
-        int N = floor_.NumCells();
-        double wgt = 1.0 / N / N;
-        for (int rob = 0; rob < N; rob++) {
-            for (int opp = 0; opp < N; opp++) {
-                TagState_U* state = static_cast<TagState_U*>(Allocate(
-                        RobOppIndicesToStateIndex(rob, opp), wgt));
-                particles.push_back(state);
-            }
-        }
-        cout<<"Initial belief particles size:"<<particles.size()<<endl; // 4761 particles - matching with Java
-        ParticleBelief* belief = new ParticleBelief(particles, this);
-        belief->state_indexer(this);
-        return belief;
-    }
-
 
     State* LaserTag_U::Allocate(int state_id, double weight) const {
         TagState_U* state = memory_pool_.Allocate();
@@ -614,22 +715,56 @@ namespace despot {
         state->weight = weight;
         return state;
     }
-
     State* LaserTag_U::Copy(const State* particle) const {
         TagState_U* state = memory_pool_.Allocate();
         *state = *static_cast<const TagState_U*>(particle);
         state->SetAllocated();
         return state;
     }
-
     void LaserTag_U::Free(State* particle) const {
         memory_pool_.Free(static_cast<TagState_U*>(particle));
     }
-
     int LaserTag_U::NumActiveParticles() const {
         return memory_pool_.num_allocated();
     }
 
+    //endregion
+
+    //region Problem-Specific
+
+    int LaserTag_U::GetReading(OBS_TYPE obs, OBS_TYPE dir) {
+        return (obs >> (dir * BITS_PER_READING)) & ((ONE << BITS_PER_READING) - 1);
+    }
+    void LaserTag_U::SetReading(OBS_TYPE& obs, OBS_TYPE reading, OBS_TYPE dir) {
+        // Clear bits
+        obs &= ~(((ONE << BITS_PER_READING) - 1) << (dir * BITS_PER_READING));
+        // Set bits
+        obs |= reading << (dir * BITS_PER_READING);
+    }
+    int LaserTag_U::GetBucket(double noisy) const {
+        return (int) std::floor(noisy / unit_size_);
+    }
+
+    const Floor& LaserTag_U::floor() const {
+        return floor_;
+    }
+
+    void LaserTag_U::PrintTransitions() const {
+        for (int s = 0; s < NumStates(); s++) {
+            cout << "State " << s << endl;
+            PrintState(*GetState(s));
+            for (int a = 0; a < NumActions(); a++) {
+                cout << "Applying action " << a << " on " << endl;
+                for (int i = 0; i < transition_probabilities_[s][a].size();
+                     i++) {
+                    const State& next = transition_probabilities_[s][a][i];
+                    cout << s << "-" << a << "-" << next.state_id << "-"
+                         << next.weight << endl;
+                    PrintState(*GetState(next.state_id));
+                }
+            }
+        }
+    }
 
     void LaserTag_U::ComputeDefaultActions(string type) const {
         if (type == "MDP") {
@@ -666,8 +801,20 @@ namespace despot {
         }
     }
 
-    int LaserTag_U::GetAction(const State& state) const {
-        return default_action_[GetIndex(&state)];
+    ostream& operator<<(ostream& os, const LaserTag_U& lasertag) {
+        for (int s = 0; s < lasertag.NumStates(); s++) {
+            os << "State " << s << " " << lasertag.opp_[s] << " "
+               << lasertag.rob_[s] << " " << lasertag.floor_.NumCells() << endl;
+            lasertag.PrintState(*lasertag.states_[s], os);
+
+            for (int d = 0; d < lasertag.NBEAMS; d++) {
+                os << d;
+                for (int i = 0; i < lasertag.reading_distributions_[s][d].size(); i++)
+                    os << " " << lasertag.reading_distributions_[s][d][i];
+                os << endl;
+            }
+        }
+        return os;
     }
 
     Coord LaserTag_U::MostLikelyOpponentPosition(
@@ -740,112 +887,6 @@ namespace despot {
         return *states_[bestId];
     }
 
-    const State* LaserTag_U::GetMMAP(const vector<State*>& particles) const {
-        Coord rob = MostLikelyRobPosition(particles);
-        Coord opp = MostLikelyOpponentPosition(particles);
+    //endregion
 
-        int state_id = RobOppIndicesToStateIndex(floor_.GetIndex(rob),
-                                                 floor_.GetIndex(opp));
-        return states_[state_id];
-    }
-
-    Belief* LaserTag_U::Tau(const Belief* belief, ACT_TYPE action, OBS_TYPE obs) const {
-        static vector<double> probs = vector<double>(NumStates());
-
-        const vector<State*>& particles =
-                static_cast<const ParticleBelief*>(belief)->particles();
-
-        double sum = 0;
-        for (int i = 0; i < particles.size(); i++) {
-            TagState_U* state = static_cast<TagState_U*>(particles[i]);
-            const vector<State>& distribution = transition_probabilities_[GetIndex(
-                    state)][action];
-            for (int j = 0; j < distribution.size(); j++) {
-                const State& next = distribution[j];
-                double p = state->weight * next.weight
-                           * ObsProb(obs, *(states_[next.state_id]), action);
-                probs[next.state_id] += p;
-                sum += p;
-            }
-        }
-
-        vector<State*> new_particles;
-        for (int i = 0; i < NumStates(); i++) {
-            if (probs[i] > 0) {
-                State* new_particle = Copy(states_[i]);
-                new_particle->weight = probs[i] / sum;
-                new_particles.push_back(new_particle);
-                probs[i] = 0;
-            }
-        }
-        cout<<"C++:Tau:ParticlesSize:"<<particles.size()<<endl;
-        return new ParticleBelief(new_particles, this, NULL, false);
-    }
-
-    void LaserTag_U::Observe(const Belief* belief, ACT_TYPE action,
-                           std::map<OBS_TYPE, double>& obss) const {
-        cerr << "Exit: Two many observations!" << endl;
-        exit(0);
-    }
-
-    double LaserTag_U::StepReward(const Belief* belief, ACT_TYPE action) const {
-        const vector<State*>& particles =
-                static_cast<const ParticleBelief*>(belief)->particles();
-        cout<<"C++:StepReward:ParticleSize:"<<particles.size()<<endl;
-        double sum = 0;
-        for (int i = 0; i < particles.size(); i++) {
-            State* particle = particles[i];
-            TagState_U* state = static_cast<TagState_U*>(particle);
-            double reward = 0;
-            if (action == TagAction()) {
-                if (rob_[state->state_id] == opp_[state->state_id]) {
-                    reward = TAG_REWARD;
-                } else {
-                    reward = -TAG_REWARD;
-                }
-            } else {
-                reward = -1;
-            }
-            sum += state->weight * reward;
-        }
-
-        return sum;
-    }
-
-    double LaserTag_U::Reward(int s, ACT_TYPE action) const {
-        const TagState_U* state = states_[s];
-        double reward = 0;
-        if (action == TagAction()) {
-            if (rob_[state->state_id] == opp_[state->state_id]) {
-                reward = TAG_REWARD;
-            } else {
-                reward = -TAG_REWARD;
-            }
-        } else {
-            reward = -1;
-        }
-        cout<<"C++:Reward("<<s<<","<<action<<")="<<reward<<endl;
-        return reward;
-    }
-
-    ostream& operator<<(ostream& os, const LaserTag_U& lasertag) {
-        for (int s = 0; s < lasertag.NumStates(); s++) {
-            os << "State " << s << " " << lasertag.opp_[s] << " "
-               << lasertag.rob_[s] << " " << lasertag.floor_.NumCells() << endl;
-            lasertag.PrintState(*lasertag.states_[s], os);
-
-            for (int d = 0; d < lasertag.NBEAMS; d++) {
-                os << d;
-                for (int i = 0; i < lasertag.reading_distributions_[s][d].size(); i++)
-                    os << " " << lasertag.reading_distributions_[s][d][i];
-                os << endl;
-            }
-        }
-        return os;
-    }
-
-    void LaserTag_U::NoiseSigma(double noise_sigma)
-    {
-        noise_sigma_ = noise_sigma;
-    }
 }

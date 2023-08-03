@@ -16,8 +16,8 @@
 #include <despot/util/floor.h>
 #include <despot/util/coord.h>
 #include <cmath>
-#include <queue>
 #include "ajan_agent.h"
+#include <queue>
 
 namespace despot {
 /* ==============================================================================

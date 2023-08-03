@@ -27,14 +27,14 @@ namespace despot {
                      public StateIndexer,
                      public StatePolicy,
                      public MMAPInferencer {
-        friend class AjanState;
+        friend class AjanAgentState;
         friend class AjanPolicy;
         friend class AjanParticleUpperBound;
         friend class AjanUpperBound;
 
     protected:
-        mutable MemoryPool<AjanState> memory_pool_;
-        std::vector<AjanState*> states_; // optional
+        mutable MemoryPool<AjanAgentState> memory_pool_;
+        std::vector<AjanAgentState*> states_; // optional
         // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
 
@@ -59,7 +59,7 @@ namespace despot {
         void ReadConfig(std::istream& is);
         void Init(std::istream& is);
 
-        const AjanState& MostLikelyState(const std::vector<State*>& particles) const;
+        const AjanAgentState& MostLikelyState(const std::vector<State*>& particles) const;
         void PrintTransitions() const;
 
     protected:

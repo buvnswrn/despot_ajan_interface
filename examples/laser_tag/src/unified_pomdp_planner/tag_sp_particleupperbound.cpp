@@ -3,6 +3,7 @@
 // Original DESPOT Implementation for Particle UpperBound
 // See: examples/laser_tag/include/ajan_pomdp_planner/ajan_particleupperbound.cpp
 //
+
 #include "tag_sp_particleupperbound.h"
 
 namespace despot {
