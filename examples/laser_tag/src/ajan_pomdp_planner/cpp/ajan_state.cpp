@@ -5,3 +5,19 @@
 //
 
 #include "ajan_state.h"
+
+namespace despot {
+/* ==============================================================================
+ * AjanAgentState class
+ * ==============================================================================*/
+    AjanAgentState::AjanAgentState() = default;
+
+    AjanAgentState::AjanAgentState(int _state_id) {
+        state_id = _state_id;
+    }
+
+    std::string AjanAgentState::text() const {
+        // TODO: Implement AjanAgentState::text using JNI
+        return to_string(state_id);
+    }
+}

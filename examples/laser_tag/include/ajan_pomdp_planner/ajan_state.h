@@ -21,11 +21,11 @@ namespace despot {
  * AjanState class
  * ==============================================================================*/
 
-    class AjanState : public despot::State {
+    class AjanAgentState : public despot::State {
     public:
-        AjanState();
+        AjanAgentState();
 
-        AjanState(int _state_id);
+        AjanAgentState(int _state_id);
 
         std::string text() const;
     };
