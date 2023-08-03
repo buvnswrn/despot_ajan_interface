@@ -37,58 +37,16 @@ namespace despot {
         std::vector<AjanAgentState*> states_; // optional
         // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
-
-
-        // region Problem-Specific
-    private:
-        static int NBEAMS; // optional
-        static int BITS_PER_READING; // optional
-
-        double noise_sigma_; // optional
-        double unit_size_; // optional
-        std::vector<std::vector<std::vector<double> > > reading_distributions_; // optional
-
-    protected:
-        // optional
-        std::vector<std::vector<std::vector<State> > > transition_probabilities_; //state, action, [state, weight]
-
-
-    protected:
-        std::map<int, double> OppTransitionDistribution(int state) const;
-
-        void ReadConfig(std::istream& is);
-        void Init(std::istream& is);
-
-        const AjanAgentState& MostLikelyState(const std::vector<State*>& particles) const;
-        void PrintTransitions() const;
-
-    protected:
-        std::string RandomMap(int height, int width, int obstacles);
-        std::string BenchmarkMap();
-        int NextRobPosition(int rob, int opp, ACT_TYPE a) const;
-
-        mutable std::vector<int> default_action_;
-        // endregion
     public:
-
-        // region Problem Specific
-        static double TAG_REWARD;
-        //endregion
 
         AjanAgent();
         AjanAgent(std::string params_file);
 //        virtual ~AjanAgent(); // virtual ~BaseTag();
 
-
-
-
-
         // region MDP Functions
 
         int NumStates() const;
-        inline int NumActions() const {
-            return 5;
-        }
+        int NumActions() const;
         const std::vector<State>& TransitionProbability(int s, ACT_TYPE a) const;
         double Reward(int s, ACT_TYPE a) const;
 
@@ -119,12 +77,8 @@ namespace despot {
         // region StateIndexer
 
         // NumStates is in region MDP
-        inline int GetIndex(const State* state) const {
-            return state->state_id;
-        }
-        inline const State* GetState(int index) const {
-            return states_[index];
-        }
+        int GetIndex(const State* state) const;
+        const State* GetState(int index) const;
 
         // endregion
 
@@ -157,13 +111,9 @@ namespace despot {
 
         Belief* InitialBelief(const State* start, std::string type = "DEFAULT") const;
 
-        inline double GetMaxReward() const {
-            return TAG_REWARD;
-        }
+        double GetMaxReward() const;
 
-        inline ValuedAction GetBestAction() const {
-            return ValuedAction(0, -1);
-        }
+        ValuedAction GetBestAction() const;
 
         ParticleUpperBound* CreateParticleUpperBound(std::string name = "DEFAULT") const;
 
