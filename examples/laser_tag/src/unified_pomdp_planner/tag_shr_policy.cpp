@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 31.07.23.
+// Original DESPOT Implementation for Agent Policy
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_policy.cpp
 //
 
 #include "tag_state.h"

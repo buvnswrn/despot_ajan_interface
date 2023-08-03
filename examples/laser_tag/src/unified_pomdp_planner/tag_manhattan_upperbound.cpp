@@ -1,5 +1,7 @@
 //
 // Created by bhuvanesh on 31.07.23.
+// Original DESPOT Implementation for DESPOT Tree Upperbound
+// See: examples/laser_tag/include/ajan_pomdp_planner/ajan_upperbound.cpp
 //
 #include "tag_manhattan_upperbound.h"
 
