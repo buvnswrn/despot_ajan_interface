@@ -5,7 +5,6 @@
 //
 
 #include "ajan_agent.h"
-
 using namespace std;
 namespace despot {
 /* ==============================================================================
