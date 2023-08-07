@@ -8,6 +8,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 public class ROSConnector {
+    public static final int TAG_ACTION = 4;
+    public static final int NUM_LASER_DIRECTIONS = 8;
 
     private static String postRequest(String URI) throws IOException {
         ResponseHandler<String> responseHandler= new BasicResponseHandler();
@@ -15,12 +17,12 @@ public class ROSConnector {
         HttpPost httpPost = new HttpPost(URI);
         return httpClient.execute(httpPost, responseHandler);
     }
-    private static String InitializeROSClient() throws IOException{
+    public static String InitializeROSClient() throws IOException{
         String URI = "http://127.0.0.1:8000/AJAN/ros/initialize-service-client/?service_name=laser_tag_action_obs";
         return postRequest(URI);
     }
 
-    private static String ExecuteAction(int action) throws IOException {
+    public static String ExecuteAction(int action) throws IOException {
         String URI = "http://127.0.0.1:8000/AJAN/ros/call-service/?service_name=laser_tag_action_obs&action="+ action;
         return postRequest(URI);
     }
