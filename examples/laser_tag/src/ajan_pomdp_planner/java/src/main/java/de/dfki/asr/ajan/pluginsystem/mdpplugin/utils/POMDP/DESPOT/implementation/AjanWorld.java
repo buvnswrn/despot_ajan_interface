@@ -13,6 +13,11 @@ import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSC
 public class AjanWorld extends World {
     ROSConnector rosConnector = new ROSConnector();
     public long currentObservation;
+    AjanAgent ajanAgent;
+
+    protected AjanWorld(AjanAgent ajanAgent){
+        this.ajanAgent = ajanAgent;
+    }
 
     @Override
     protected boolean Connect() {
