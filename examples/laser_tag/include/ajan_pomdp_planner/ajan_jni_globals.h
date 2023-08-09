@@ -7,46 +7,46 @@
 #include <string>
 using namespace std;
 
-const string STRING = "java/lang/String";
+static const string STRING = "java/lang/String";
 extern const string VECTOR = "java/util/Vector";
-const string OBJECT = "java/lang/Object";
+static const string OBJECT = "java/lang/Object";
 
-const string PACKAGE_NAME = "de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/";
-const string IMPL_PKG = PACKAGE_NAME + "implementation/";
-const string CORE_PKG = PACKAGE_NAME + "core/";
-const string UTIL_PKG = PACKAGE_NAME + "util/";
-const string INTF_PKG = PACKAGE_NAME + "interface_/";
+static const string PACKAGE_NAME = "de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/";
+static const string IMPL_PKG = PACKAGE_NAME + "implementation/";
+static const string CORE_PKG = PACKAGE_NAME + "core/";
+static const string UTIL_PKG = PACKAGE_NAME + "util/";
+static const string INTF_PKG = PACKAGE_NAME + "interface_/";
 
 // region core
-const string GLOBALS = CORE_PKG + "Globals";
-const string HISTORY = CORE_PKG + "History";
+static const string GLOBALS = CORE_PKG + "Globals";
+static const string HISTORY = CORE_PKG + "History";
 //endregion
 
 //region implementation
 
-const string AJAN_AGENT_STATE = IMPL_PKG + "AjanAgentState";
-const string AJAN_AGENT = IMPL_PKG + "AjanAgent";
-const string AJAN_BELIEF = IMPL_PKG + "AjanBelief";
-const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
-const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
-const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
-const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
-const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
+static const string AJAN_AGENT_STATE = IMPL_PKG + "AjanAgentState";
+static const string AJAN_AGENT = IMPL_PKG + "AjanAgent";
+static const string AJAN_BELIEF = IMPL_PKG + "AjanBelief";
+static const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
+static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
+static const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
+static const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
+static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
 
 //endregion
 
 //region interface_
 
-const string STATE = INTF_PKG + "State";
-const string BELIEF = INTF_PKG + "Belief";
-const string VALUED_ACTION = INTF_PKG + "ValuedAction";
+static const string STATE = INTF_PKG + "State";
+static const string BELIEF = INTF_PKG + "Belief";
+static const string VALUED_ACTION = INTF_PKG + "ValuedAction";
 
 //endregion
 
 //region util
 
-const string COORD = UTIL_PKG + "Coord";
-const string Floor = UTIL_PKG + "Floor";
+static const string COORD = UTIL_PKG + "Coord";
+static const string FLOOR = UTIL_PKG + "Floor";
 
 //endregion
 #endif //LASER_TAG_AJAN_JNI_GLOBALS_H
