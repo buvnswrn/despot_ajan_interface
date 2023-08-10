@@ -37,8 +37,8 @@ static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
 
 //region interface_
 
-static const string STATE = INTF_PKG + "State";
-static const string BELIEF = INTF_PKG + "Belief";
+static const string STATE = INTF_PKG + "State"; // Abstract class
+static const string BELIEF = INTF_PKG + "Belief"; // Abstract class
 static const string VALUED_ACTION = INTF_PKG + "ValuedAction";
 
 //endregion
