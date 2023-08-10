@@ -48,7 +48,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     //region Belief MDP
 
     @Override
-    public BeliefLowerBound CreateBeliefLowerBound(String name) {
+    public AjanBeliefPolicy CreateBeliefLowerBound(String name) {
         // TODO: Implement AjanAgent::CreateBeliefLowerBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
         /*
@@ -68,8 +68,8 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public Belief Tau(Belief belief, int action, long obs) {
-        // TODO: Implement AjanAgent::Tau to call JNI
+    public AjanBelief Tau(Belief belief, int action, long obs) {
+        // TODO: Implement AjanAgent::Tau to call JNI - Try this or use getTauParticles Method
         // WARN: See how to manipulate belief and history particles efficiently
         /*
          * Calculates the sum of current weight * next weight * observation probability given state and action.
@@ -211,7 +211,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public ParticleUpperBound CreateParticleUpperBound(String name) {
+    public AjanParticleUpperBound CreateParticleUpperBound(String name) {
         //TODO: Implement AjanAgent::CreateParticleUpperBound function to call JNI
         /*
          * Based on the name given, initialize TrivialParticleUpperBound,MDPUpperBound or custom upperbound
@@ -230,11 +230,11 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
 
     @Override
     public ParticleLowerBound CreateParticleLowerBound(String name) {
-        return null;
+        return null; 
     }
 
     @Override
-    public ScenarioLowerBound CreateScenarioLowerBound(String bound_name, String particle_bound_name) {
+    public AjanPolicy CreateScenarioLowerBound(String bound_name, String particle_bound_name) {
         //TODO: Implement AjanAgent::CreateScenarioUpperBound function to call JNI
         /*
          * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
