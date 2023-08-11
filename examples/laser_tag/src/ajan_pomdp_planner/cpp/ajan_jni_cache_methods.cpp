@@ -51,6 +51,8 @@ void AjanHelper::GetAllMethodID() {
     GetAllVectorMethodID();
     GetAllParticleUpperBoundMethodID();
     GetAllAjanPolicyMethodID();
+    GetAllCoordMethodID();
+    GetAllHistoryMethodID();
 }
 
 /**
@@ -244,7 +246,7 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
  * Corresponding Java Class: Coord.java
  */
 void AjanHelper::GetAllCoordMethodID() {
-    cout << "Initializing the AJAN Policy methods" << std::endl;
+    cout << "Initializing the AJAN Coord methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
             {"<init>", "(II)V"}
@@ -254,6 +256,24 @@ void AjanHelper::GetAllCoordMethodID() {
         coordMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getCoordClass(),
                                                                                  methodName[0].c_str(),
                                                                                  methodName[1].c_str()));
+    }
+    cout << "Initialization of Coord methods Complete" << std::endl;
+}
+
+/**
+ * Corresponding Java Class: History.java
+ */
+void AjanHelper::GetAllHistoryMethodID() {
+    cout << "Initializing the AJAN History methods" << std::endl;
+    const int totalMethod = 2;
+    string methodNames1[totalMethod][2] = {
+            {"<init>", "(J)V"}
+    };
+
+    for (auto &methodName: methodNames1) {
+        historyMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getHistoryClass(),
+                                                                            methodName[0].c_str(),
+                                                                            methodName[1].c_str()));
     }
     cout << "Initialization of Coord methods Complete" << std::endl;
 }
@@ -276,6 +296,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return stateMethods[methodName];
     } else if (clazz == "Coord") {
         return coordMethods[methodName];
+    } else if (clazz == "History") {
+        return historyMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;
         return nullptr;

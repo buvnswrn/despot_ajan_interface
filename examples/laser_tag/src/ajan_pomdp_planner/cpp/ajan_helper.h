@@ -22,6 +22,7 @@ class AjanHelper {
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
     static map<string, jmethodID> coordMethods;
+    static map<string, jmethodID> historyMethods;
 //endregion
 
 static JNIEnv* ajanJavaEnv;
@@ -108,10 +109,55 @@ static void setEnv(JNIEnv *&env);
     void static GetAllParticleUpperBoundMethodID();
     void static GetAllAjanPolicyMethodID();
     void static GetAllCoordMethodID();
+    void static GetAllHistoryMethodID();
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 
 //endregion
+
+//region JNI Converters
+
+// TODO: To Java String
+    static jstring toJavaString(const string& string1);
+// TODO: From Java String
+    static string getString(jobject javaString);
+// TODO: DESPOT State to Java State
+    jobject toJavaState(const State& state);
+// TODO: Java State to DESPOT State
+    State* getState(jobject javaState);
+// TODO: Java Ajan Agent State to DESPOT Ajan Agent State
+    AjanAgentState getAjanAgentState(jobject javaAgentState);
+// TODO: DESPOT Ajan Agent State to Java Ajan Agent State
+    jobject toJavaAjanAgentState(AjanAgentState agentState);
+// TODO: To and From Coord
+    jobject toJavaCoord(Coord coord);
+    Coord fromJavaCoord(jobject javaCoord);
+
+// TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
+    jobject toJavaAgentStateVector(const vector<State *> &particles);
+    vector < State*> getAgentStateVector(jobject javaAgentStateVector);
+
+// TODO: Java History to DESPOT History
+    History getHistory(jobject javaHistory);
+// TODO: DESPOT Valued Action to Java Valued Action
+
+// TODO: DESPOT Belief to Java Belief
+
+// TODO: Java Belief to DESPOT Belief
+
+// Optionals
+// TODO: to and from Ajan Upper Bound
+// TODO: to and from Ajan Particle Upper Bound
+// TODO: to and from Ajan Belief Policy
+// TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
+// TODO: To and from AJAN_Agent
+// TODO: To and From Floor
+
+
+//endregion
+public:
+// TODO: DESPOT History to Java History : either store the history address or copy complete particles
+    static jobject toJavaHistory(const History& history);
 
 };
 

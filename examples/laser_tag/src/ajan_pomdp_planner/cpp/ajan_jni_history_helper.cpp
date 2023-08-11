@@ -63,3 +63,9 @@ JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POM
         AjanHelper helper = AjanHelper();
         return helper.toJavaHistory(suffixedHistory);
 }
+
+JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_History_deleteHistory
+        (JNIEnv * env, jobject thisHistoryObject, jlong historyPtr) {
+    auto* history = reinterpret_cast<History*>(historyPtr);
+    delete history;
+}
