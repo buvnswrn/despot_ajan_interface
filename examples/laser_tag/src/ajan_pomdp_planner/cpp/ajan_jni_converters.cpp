@@ -103,10 +103,23 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return historyObject;
 }
 
-[[maybe_unused]] History AjanHelper::getHistory([[maybe_unused]] jobject javaHistory) {
+[[maybe_unused]] History AjanHelper::getHistory(jobject javaHistory) {
     jfieldID historyPtrField = getEnv()->GetFieldID(getHistoryClass(),"historyPointer","J");
     long historyPtr = getEnv()->GetLongField(javaHistory, historyPtrField);
     return reinterpret_cast<History&&>(historyPtr);
+}
+
+[[maybe_unused]] jobject AjanHelper::toJavaValuedAction(ValuedAction valuedAction) {
+    jobject valuedActionObject = getEnv()->NewObject(getValuedActionClass(), getMethodID("ValuedAction","<init>"),valuedAction.action, valuedAction.value);
+    return valuedActionObject;
+}
+
+[[maybe_unused]] ValuedAction AjanHelper::getValuedAction(jobject javaValuedAction) {
+    jfieldID actionFieldID = getEnv()->GetFieldID(getValuedActionClass(), "action","I");
+    jfieldID valueFieldID = getEnv()->GetFieldID(getValuedActionClass(), "value","J");
+    jint action = getEnv()->GetIntField(javaValuedAction, actionFieldID);
+    jdouble value = getEnv()->GetDoubleField(javaValuedAction, valueFieldID);
+    return {action,value};
 }
 
 

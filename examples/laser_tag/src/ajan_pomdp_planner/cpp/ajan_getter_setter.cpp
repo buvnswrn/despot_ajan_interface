@@ -54,4 +54,7 @@ void AjanHelper::setFloorClass(jclass floorClass1) { floorClass = floorClass1; }
 jclass AjanHelper::getHistoryClass() { return historyClass; }
 void AjanHelper::setHistoryClass(jclass historyClass1) { historyClass = historyClass1; }
 
+jclass AjanHelper::getValuedActionClass() { return valuedActionClass; }
+void AjanHelper::setValuedActionClass(jclass valuedActionClass1) { valuedActionClass = valuedActionClass1; }
+
 // endregion

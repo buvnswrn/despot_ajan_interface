@@ -39,6 +39,7 @@ void  AjanHelper::getJavaClassReferences() {
     setPolicyClass( getEnv()->FindClass(getSig(AJAN_POLICY).c_str()));
     setParticleUpperBoundClass( getEnv()->FindClass(getSig(AJAN_PARTICLE_UPPER_BOUND).c_str()));
     setHistoryClass(getEnv()->FindClass(getSig(HISTORY).c_str()));
+    setValuedActionClass(getEnv()->FindClass(getSig(VALUED_ACTION).c_str()));
     cout << "Initializing the Java methods" << endl;
     GetAllMethodID();
 }
@@ -53,6 +54,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllAjanPolicyMethodID();
     GetAllCoordMethodID();
     GetAllHistoryMethodID();
+    GetAllValuedActionMethodID();
 }
 
 /**
@@ -275,7 +277,25 @@ void AjanHelper::GetAllHistoryMethodID() {
                                                                             methodName[0].c_str(),
                                                                             methodName[1].c_str()));
     }
-    cout << "Initialization of Coord methods Complete" << std::endl;
+    cout << "Initialization of History methods Complete" << std::endl;
+}
+
+/**
+ * Corresponding Java Class: ValuedAction.java
+ */
+void AjanHelper::GetAllValuedActionMethodID() {
+    cout << "Initializing the AJAN ValuedAction methods" << std::endl;
+    const int totalMethod = 2;
+    string methodNames1[totalMethod][2] = {
+            {"<init>", "(IJ)V"}
+    };
+
+    for (auto &methodName: methodNames1) {
+        valuedActionMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getHistoryClass(),
+                                                                              methodName[0].c_str(),
+                                                                              methodName[1].c_str()));
+    }
+    cout << "Initialization of ValuedAction methods Complete" << std::endl;
 }
 
 jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName) {
@@ -298,6 +318,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return coordMethods[methodName];
     } else if (clazz == "History") {
         return historyMethods[methodName];
+    } else if (clazz == "ValuedAction") {
+        return valuedActionMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;
         return nullptr;

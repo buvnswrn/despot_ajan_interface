@@ -23,6 +23,7 @@ class AjanHelper {
     static map<string, jmethodID> vectorMethods;
     static map<string, jmethodID> coordMethods;
     static map<string, jmethodID> historyMethods;
+    static map<string, jmethodID> valuedActionMethods;
 //endregion
 
 static JNIEnv* ajanJavaEnv;
@@ -92,6 +93,10 @@ static void setEnv(JNIEnv *&env);
     static jclass getHistoryClass();
     static void setHistoryClass(jclass historyClass1);
 
+    static jclass valuedActionClass;
+    static jclass getValuedActionClass();
+    static void setValuedActionClass(jclass historyClass1);
+
 //endregion
 
 //region JNI Cache Methods
@@ -110,6 +115,7 @@ static void setEnv(JNIEnv *&env);
     void static GetAllAjanPolicyMethodID();
     void static GetAllCoordMethodID();
     void static GetAllHistoryMethodID();
+    void static GetAllValuedActionMethodID();
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 
@@ -140,9 +146,10 @@ static void setEnv(JNIEnv *&env);
     [[maybe_unused]] static vector < State*> getAgentStateVector(jobject javaAgentStateVector);
 
 // TODO: Java History to DESPOT History
-    [[maybe_unused]] static History getHistory([[maybe_unused]] jobject javaHistory);
+    [[maybe_unused]] static History getHistory(jobject javaHistory);
 // TODO: DESPOT Valued Action to Java Valued Action
-
+    [[maybe_unused]] static jobject toJavaValuedAction(ValuedAction valuedAction);
+    [[maybe_unused]] static ValuedAction getValuedAction(jobject javaValuedAction);
 // TODO: DESPOT Belief to Java Belief
 
 // TODO: Java Belief to DESPOT Belief
