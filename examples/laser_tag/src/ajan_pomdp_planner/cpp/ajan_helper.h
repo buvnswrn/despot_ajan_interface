@@ -7,7 +7,11 @@
 #include <string>
 #include <jni.h>
 #include <map>
+#include <despot/interface/pomdp.h>
+#include "ajan_state.h"
+
 using namespace std;
+using namespace despot;
 class AjanHelper {
 //region Map to store all the methodIDS [Static]
     static map<string, jmethodID> plannerMethods;
@@ -17,6 +21,7 @@ class AjanHelper {
     static map<string, jmethodID> ajanPolicyMethods;
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
+    static map<string, jmethodID> coordMethods;
 //endregion
 
 static JNIEnv* ajanJavaEnv;
@@ -64,23 +69,27 @@ static void setEnv(JNIEnv *&env);
 
     static jclass stateClass;
     static jclass getStateClass();
-    static void setStateClass(jclass plannerClass1);
+    static void setStateClass(jclass stateClass1);
 
     static jclass particleUpperBoundClass;
     static jclass getParticleUpperBoundClass();
-    static void setParticleUpperBoundClass(jclass plannerClass1);
+    static void setParticleUpperBoundClass(jclass particleUpperBoundClass1);
 
     static jclass ajanPolicyClass;
     static jclass getPolicyClass();
-    static void setPolicyClass(jclass plannerClass1);
+    static void setPolicyClass(jclass policyClass1);
 
     static jclass coordClass;
     static jclass getCoordClass();
-    static void setCoordClass(jclass plannerClass1);
+    static void setCoordClass(jclass coordClass1);
 
     static jclass floorClass;
     static jclass getFloorClass();
-    static void setFloorClass(jclass plannerClass1);
+    static void setFloorClass(jclass floorClass1);
+
+    static jclass historyClass;
+    static jclass getHistoryClass();
+    static void setHistoryClass(jclass historyClass1);
 
 //endregion
 
@@ -98,6 +107,7 @@ static void setEnv(JNIEnv *&env);
     void static GetAllVectorMethodID();
     void static GetAllParticleUpperBoundMethodID();
     void static GetAllAjanPolicyMethodID();
+    void static GetAllCoordMethodID();
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 

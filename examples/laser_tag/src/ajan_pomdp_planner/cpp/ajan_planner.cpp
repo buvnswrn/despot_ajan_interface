@@ -27,7 +27,7 @@ public:
             return InitializePOMDPWorld(world_type, model, options);
         } else {
             cout<<"Create a world as defined and implemented by the user"<<endl;
-            AjanWorld* world = new AjanWorld();
+            auto* world = new AjanWorld();
             cout<<"Establish connection with external system"<<endl;
             world->Connect();
             cout<<"Initialize the state of the external system"<<endl;

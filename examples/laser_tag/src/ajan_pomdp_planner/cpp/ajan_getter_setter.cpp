@@ -39,7 +39,7 @@ jclass AjanHelper::getVectorClass() { return vectorClass; }
 void AjanHelper::setVectorClass(jclass vectorClass1) { vectorClass = vectorClass1; }
 
 jclass AjanHelper::getStateClass() { return stateClass; }
-void AjanHelper::setStateClass(jclass plannerClass1) { plannerClass = plannerClass1; }
+void AjanHelper::setStateClass(jclass stateClass1) { stateClass = stateClass1; }
 
 jclass AjanHelper::getParticleUpperBoundClass() { return particleUpperBoundClass; }
 void AjanHelper::setParticleUpperBoundClass(jclass particleUpperBoundClass1) { particleUpperBoundClass = particleUpperBoundClass1; }
@@ -52,5 +52,8 @@ void AjanHelper::setCoordClass(jclass coordClass1) { coordClass = coordClass1; }
 
 jclass AjanHelper::getFloorClass() { return floorClass; }
 void AjanHelper::setFloorClass(jclass floorClass1) { floorClass = floorClass1; }
+
+jclass AjanHelper::getHistoryClass() { return historyClass; }
+void AjanHelper::setHistoryClass(jclass historyClass1) { historyClass = historyClass1; }
 
 // endregion

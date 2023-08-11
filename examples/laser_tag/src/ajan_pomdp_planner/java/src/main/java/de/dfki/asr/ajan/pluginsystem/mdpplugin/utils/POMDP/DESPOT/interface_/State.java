@@ -1,9 +1,9 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
 public abstract class State {
-    int state_id;
-    int scenario_id;
-    double weight;
+    public int state_id;
+    public int scenario_id;
+    public double weight;
 
     /**
      * Default State constructor

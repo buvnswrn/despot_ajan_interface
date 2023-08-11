@@ -38,6 +38,7 @@ void  AjanHelper::getJavaClassReferences() {
     setFloorClass( getEnv()->FindClass(getSig(FLOOR).c_str()));
     setPolicyClass( getEnv()->FindClass(getSig(AJAN_POLICY).c_str()));
     setParticleUpperBoundClass( getEnv()->FindClass(getSig(AJAN_PARTICLE_UPPER_BOUND).c_str()));
+    setHistoryClass(getEnv()->FindClass(getSig(HISTORY).c_str()));
     cout << "Initializing the Java methods" << endl;
     GetAllMethodID();
 }
@@ -148,7 +149,8 @@ void AjanHelper::GetAllStateMethodID() {
     cout << "Initializing the State methods" << std::endl;
     const int totalMethod = 2;
     string methodNames[totalMethod][2] = {
-            {"<init>","()V"},
+//            {"<init>","()V"},
+            {"<init>","(IIJ)V"},
             {"text", "(ID)" + getSig(STRING)}
     };
     for (auto &methodName: methodNames) {
@@ -238,6 +240,24 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
     cout << "Initialization of AJAN Policy methods Complete" << std::endl;
 }
 
+/**
+ * Corresponding Java Class: Coord.java
+ */
+void AjanHelper::GetAllCoordMethodID() {
+    cout << "Initializing the AJAN Policy methods" << std::endl;
+    const int totalMethod = 2;
+    string methodNames1[totalMethod][2] = {
+            {"<init>", "(II)V"}
+    };
+
+    for (auto &methodName: methodNames1) {
+        coordMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getCoordClass(),
+                                                                                 methodName[0].c_str(),
+                                                                                 methodName[1].c_str()));
+    }
+    cout << "Initialization of Coord methods Complete" << std::endl;
+}
+
 jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName) {
 //    cout<<"Calling "<<methodName<<" for "<<clazz<<endl;
     if (clazz == "Agent") {
@@ -254,6 +274,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return ajanPolicyMethods[methodName];
     } else if (clazz == "State") {
         return stateMethods[methodName];
+    } else if (clazz == "Coord") {
+        return coordMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;
         return nullptr;
