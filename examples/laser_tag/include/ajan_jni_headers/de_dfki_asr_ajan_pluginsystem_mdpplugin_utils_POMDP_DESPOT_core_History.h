@@ -85,7 +85,7 @@ JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POM
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_History_deleteHistory
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
 }

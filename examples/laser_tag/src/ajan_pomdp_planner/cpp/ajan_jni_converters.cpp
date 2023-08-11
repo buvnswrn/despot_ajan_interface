@@ -3,6 +3,8 @@
 //
 
 #include "ajan_helper.h"
+#include "ajan_jni_globals.h"
+#include "ajan_belief.h"
 
 [[maybe_unused]] jstring AjanHelper::toJavaString(const string& string1) {
     return getEnv()->NewStringUTF(string1.c_str());
@@ -98,6 +100,7 @@ jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState& agentState) {
 
 jobject AjanHelper::toJavaHistory(const History& history) {
     // cannot access the internals of history to copy it
+    // If you come back here for changing to History* then see toJavaAgentModel and implement like that.
     auto* historyPtr = new History(history);
     jobject historyObject = getEnv()->NewObject(getHistoryClass(), getMethodID("History","<init>"),reinterpret_cast<jlong>(historyPtr));
     return historyObject;
@@ -120,6 +123,45 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     jint action = getEnv()->GetIntField(javaValuedAction, actionFieldID);
     jdouble value = getEnv()->GetDoubleField(javaValuedAction, valueFieldID);
     return {action,value};
+}
+
+[[maybe_unused]] jobject AjanHelper::toJavaBelief(const Belief* belief) {
+    // converts belief to Ajan Belief in Java. Basically, adds up the particle vector, but more or less the same.
+    jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getMethodID("AjanBelief","<init>"),reinterpret_cast<jlong>(belief));
+    jobject historyObject = toJavaHistory(belief->history_);
+    jobject modelObject = toJavaAgentModel(belief->model_);
+    jfieldID  historyField = getEnv()->GetFieldID(getAjanBeliefClass(),"history_", getSig(AJAN_BELIEF).c_str());
+    getEnv()->SetObjectField(beliefObject,historyField,historyObject);
+    jfieldID  modelField = getEnv()->GetFieldID(getAjanBeliefClass(),"model_", getSig(AJAN_AGENT).c_str());
+    getEnv()->SetObjectField(beliefObject,historyField,modelObject);
+    getEnv()->SetObjectField(beliefObject, modelField, historyObject);
+    getEnv()->DeleteLocalRef(historyObject);
+    getEnv()->DeleteLocalRef(modelObject);
+    return beliefObject;
+}
+
+//[[maybe_unused]] Belief AjanHelper::getBelief(jobject javaBelief) {
+//    jfieldID historyFieldID = getEnv()->GetFieldID(getAjanBeliefClass(),"history_", getSig(AJAN_BELIEF).c_str());
+//    jfieldID modelFieldID = getEnv()->GetFieldID(getAjanBeliefClass(),"model_", getSig(AJAN_AGENT).c_str());
+//    jobject historyObject = getEnv()->GetObjectField(javaBelief,historyFieldID);
+//    jobject modelObject = getEnv()->GetObjectField(javaBelief,modelFieldID);
+//    History history = getHistory(historyObject);
+//    DSPOMDP* model = getAgentModel(modelObject);
+//    vector<State*> state;
+//    AjanBelief ajanBelief = AjanBelief(state,dynamic_cast<AjanAgent *>(model));
+//    return ajanBelief;
+//}
+
+jobject AjanHelper::toJavaAgentModel(const DSPOMDP *model) {
+    auto modelPtr = reinterpret_cast<jlong>(model);
+    jobject modelObject = getEnv()->NewObject(getHistoryClass(), getMethodID("Agent","<init>"),reinterpret_cast<jlong>(modelPtr));
+    return modelObject;
+}
+
+DSPOMDP *AjanHelper::getAgentModel(jobject modelObject) {
+    jfieldID historyPtrField = getEnv()->GetFieldID(getAgentClass(),"agentModelPointer","J");
+    long modelPtr = getEnv()->GetLongField(modelObject, historyPtrField);
+    return reinterpret_cast<DSPOMDP*>(modelPtr);
 }
 
 

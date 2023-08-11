@@ -109,7 +109,7 @@ target_link_libraries(ajan_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ Library
 file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
-add_library(ajan_planner SHARED ${CPP_SOURCE_FILES})
+add_library(ajan_planner SHARED ${CPP_SOURCE_FILES} )
 target_link_libraries(ajan_planner despot ${catkin_LIBRARIES})
 # Link the JNI library
 target_include_directories(ajan_planner PRIVATE ${JNI_INCLUDE_DIRS})

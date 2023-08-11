@@ -13,6 +13,11 @@ public class AjanBelief extends ParticleBelief {
         super(particles, model, prior, false);
         // TODO: Implement AjanBelief::AjanBelief to call using JNI
     }
+
+    public AjanBelief() {
+        super();
+    }
+
     @Override
     protected void Update(int action, long obs) {
         // TODO: Implement AjanBelief::Update using JNI

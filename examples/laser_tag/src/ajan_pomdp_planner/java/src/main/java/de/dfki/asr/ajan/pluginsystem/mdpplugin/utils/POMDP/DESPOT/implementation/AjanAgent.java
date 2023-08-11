@@ -3,16 +3,20 @@ package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementatio
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core.*;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.*;
 
+import java.lang.ref.Cleaner;
 import java.util.Map;
 import java.util.Vector;
 
-public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMAPInferencer {
+public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMAPInferencer, Cleaner.Cleanable  {
 
-
-    AjanAgent() {
+    public long agentModelPointer;
+    public AjanAgent() {
         // TODO: Implement AjanAgent constructor to call JNI
         // read the Benchmark map
         // run init function
+    }
+    public AjanAgent(long modelPointer) {
+        this.agentModelPointer= modelPointer;
     }
 
     // region MDP Functions
@@ -75,6 +79,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
          * Calculates the sum of current weight * next weight * observation probability given state and action.
          * Updates the particles and creates new belief
          */
+        AjanBelief belief1 = new AjanBelief();
         return null;
     }
 
@@ -269,5 +274,12 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
         return 0;
     }
 
+    @Override
+    public void clean() {
+        if(agentModelPointer != 0){
+            deleteAgent(agentModelPointer);
+        }
+    }
+    native static void deleteAgent(long agentPointer);
     //endregion
 }

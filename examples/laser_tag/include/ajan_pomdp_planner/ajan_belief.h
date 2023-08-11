@@ -16,7 +16,7 @@ namespace despot {
     class AjanBelief : public despot::ParticleBelief {
     const despot::AjanAgent *tag_model_;
 public:
-        [[maybe_unused]] AjanBelief(std::vector<despot::State *> particles, const despot::AjanAgent *model, Belief *prior =
+        [[maybe_unused]] [[maybe_unused]] AjanBelief(std::vector<despot::State *> particles, const despot::AjanAgent *model, Belief *prior =
     nullptr);
 
     void Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) override;

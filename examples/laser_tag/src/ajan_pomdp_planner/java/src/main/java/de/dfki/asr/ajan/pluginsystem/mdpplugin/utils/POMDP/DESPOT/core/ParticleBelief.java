@@ -1,5 +1,6 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core;
 
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanAgent;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.Belief;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.DSPOMDP;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.State;
@@ -21,19 +22,12 @@ public abstract class ParticleBelief extends Belief {
         split = true;
     }
 
-    @Override
-    protected Vector<State> Sample(int num) {
-        // TODO: write code to contact c++ class itself
-        return null;
+    public ParticleBelief() {
+        super(0);
     }
 
-    @Override
-    protected String text() {
-        return null;
-    }
-
-    @Override
-    protected Belief MakeCopy() {
-        return null;
-    }
+//    @Override
+//    protected String text() {
+//        return null;
+//    }
 }

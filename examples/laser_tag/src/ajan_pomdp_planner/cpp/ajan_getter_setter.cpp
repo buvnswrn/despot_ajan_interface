@@ -57,4 +57,7 @@ void AjanHelper::setHistoryClass(jclass historyClass1) { historyClass = historyC
 jclass AjanHelper::getValuedActionClass() { return valuedActionClass; }
 void AjanHelper::setValuedActionClass(jclass valuedActionClass1) { valuedActionClass = valuedActionClass1; }
 
+jclass AjanHelper::getAjanBeliefClass() { return ajanBeliefClass; }
+void AjanHelper::setAjanBeliefClass(jclass ajanBeliefClass1) { ajanBeliefClass = ajanBeliefClass1; }
+
 // endregion

@@ -40,6 +40,7 @@ void  AjanHelper::getJavaClassReferences() {
     setParticleUpperBoundClass( getEnv()->FindClass(getSig(AJAN_PARTICLE_UPPER_BOUND).c_str()));
     setHistoryClass(getEnv()->FindClass(getSig(HISTORY).c_str()));
     setValuedActionClass(getEnv()->FindClass(getSig(VALUED_ACTION).c_str()));
+    setAjanBeliefClass(getEnv()->FindClass(getSig(AJAN_BELIEF).c_str()));
     cout << "Initializing the Java methods" << endl;
     GetAllMethodID();
 }
@@ -55,6 +56,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllCoordMethodID();
     GetAllHistoryMethodID();
     GetAllValuedActionMethodID();
+    GetAllAjanBeliefMethodID();
 }
 
 /**
@@ -86,6 +88,7 @@ void AjanHelper::GetAllAgentMethodID() {
     cout << "Initializing of Agent methods" << std::endl;
     const int totalMethod = 30;
     string methodNames[totalMethod][2] = {
+            {"<init>","(J)V"},
             //region  MDP Functions
             {"NumStates",                 "()I"},
             {"NumActions",                "()I"},
@@ -298,6 +301,24 @@ void AjanHelper::GetAllValuedActionMethodID() {
     cout << "Initialization of ValuedAction methods Complete" << std::endl;
 }
 
+/**
+ * Corresponding Java Class: AjanBelief.java
+ */
+void AjanHelper::GetAllAjanBeliefMethodID() {
+    cout << "Initializing the AjanBelief methods" << std::endl;
+    const int totalMethod = 2;
+    string methodNames1[totalMethod][2] = {
+            {"<init>", "(J)V"}
+    };
+
+    for (auto &methodName: methodNames1) {
+        ajanBeliefMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getHistoryClass(),
+                                                                                   methodName[0].c_str(),
+                                                                                   methodName[1].c_str()));
+    }
+    cout << "Initialization of AjanBelief methods Complete" << std::endl;
+}
+
 jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName) {
 //    cout<<"Calling "<<methodName<<" for "<<clazz<<endl;
     if (clazz == "Agent") {
@@ -320,6 +341,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return historyMethods[methodName];
     } else if (clazz == "ValuedAction") {
         return valuedActionMethods[methodName];
+    }else if (clazz == "AjanBelief") {
+        return ajanBeliefMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;
         return nullptr;
