@@ -49,8 +49,8 @@ public:
     }
 };
 
-JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanPlanner_RunPlanner
-        (JNIEnv * env, jobject thisObject, jobject agentObject, jobject worldObject) {
+[[maybe_unused]] JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanPlanner_RunPlanner
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisObject, [[maybe_unused]]  jobject agentObject, [[maybe_unused]]  jobject worldObject) {
     char* argv[] = {strdup("AJAN_Planner") };
     cout<<"Starting the AJAN-DESPOT Planner" <<endl;
     return AjanPlanner().RunEvaluation(1, argv);

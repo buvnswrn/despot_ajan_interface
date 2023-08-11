@@ -31,24 +31,24 @@ static void setEnv(JNIEnv *&env);
 
 //region AJAN Reference Objects [Non-Static]
     jobject *ajanJavaPlannerObject;
-    jobject getAjanJavaPlannerObject();
+    [[maybe_unused]]  jobject getAjanJavaPlannerObject();
     void setAjanJavaPlannerObject(jobject *plannerObject);
 
     jobject *ajanJavaAgentObject;
-    jobject getAjanJavaAgentObject();
+    [[maybe_unused]] jobject getAjanJavaAgentObject();
     void setAjanJavaAgentObject(jobject *plannerObject);
 
     jobject *ajanJavaWorldObject;
-    jobject getAjanJavaWorldObject();
+    [[maybe_unused]] jobject getAjanJavaWorldObject();
     void setAjanJavaWorldObject(jobject *plannerObject);
 
-    jobject ajanParticleUpperBound;
-    jobject getAjanParticleUpperBound();
-    void setAjanParticleUpperBound(jobject *plannerObject);
+    [[maybe_unused]] jobject ajanParticleUpperBound;
+    [[maybe_unused]] jobject getAjanParticleUpperBound();
+    [[maybe_unused]] void setAjanParticleUpperBound(jobject *plannerObject);
 
     jobject ajanPolicyObject;
-    jobject getAjanPolicyObject();
-    void setAjanPolicyObject(jobject *plannerObject);
+    [[maybe_unused]] jobject getAjanPolicyObject();
+    [[maybe_unused]] void setAjanPolicyObject(jobject *plannerObject);
 //endregion
 
 //region AJAN Reference Classes
@@ -85,7 +85,7 @@ static void setEnv(JNIEnv *&env);
     static void setCoordClass(jclass coordClass1);
 
     static jclass floorClass;
-    static jclass getFloorClass();
+    [[maybe_unused]] static jclass getFloorClass();
     static void setFloorClass(jclass floorClass1);
 
     static jclass historyClass;
@@ -118,27 +118,29 @@ static void setEnv(JNIEnv *&env);
 //region JNI Converters
 
 // TODO: To Java String
-    static jstring toJavaString(const string& string1);
+    [[maybe_unused]] static jstring toJavaString(const string& string1);
 // TODO: From Java String
-    static string getString(jobject javaString);
+    [[maybe_unused]] static string getString(jobject javaString);
 // TODO: DESPOT State to Java State
-    jobject toJavaState(const State& state);
+    [[maybe_unused]] static jobject toJavaState(const State& state);
 // TODO: Java State to DESPOT State
-    State* getState(jobject javaState);
+    static State* getState(jobject javaState);
 // TODO: Java Ajan Agent State to DESPOT Ajan Agent State
-    AjanAgentState getAjanAgentState(jobject javaAgentState);
+    [[maybe_unused]] static AjanAgentState getAjanAgentState(jobject javaAgentState);
 // TODO: DESPOT Ajan Agent State to Java Ajan Agent State
-    jobject toJavaAjanAgentState(AjanAgentState agentState);
+    static jobject toJavaAjanAgentState(const AjanAgentState& agentState);
 // TODO: To and From Coord
-    jobject toJavaCoord(Coord coord);
-    Coord fromJavaCoord(jobject javaCoord);
+    [[maybe_unused]] static jobject toJavaCoord(Coord coord);
+
+    [[maybe_unused]] static Coord fromJavaCoord(jobject javaCoord);
 
 // TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
-    jobject toJavaAgentStateVector(const vector<State *> &particles);
-    vector < State*> getAgentStateVector(jobject javaAgentStateVector);
+    [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
+
+    [[maybe_unused]] static vector < State*> getAgentStateVector(jobject javaAgentStateVector);
 
 // TODO: Java History to DESPOT History
-    History getHistory(jobject javaHistory);
+    [[maybe_unused]] static History getHistory([[maybe_unused]] jobject javaHistory);
 // TODO: DESPOT Valued Action to Java Valued Action
 
 // TODO: DESPOT Belief to Java Belief

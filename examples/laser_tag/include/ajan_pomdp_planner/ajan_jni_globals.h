@@ -18,7 +18,7 @@ static const string UTIL_PKG = PACKAGE_NAME + "util/";
 static const string INTF_PKG = PACKAGE_NAME + "interface_/";
 
 // region core
-static const string GLOBALS = CORE_PKG + "Globals";
+[[maybe_unused]] static const string GLOBALS = CORE_PKG + "Globals";
 static const string HISTORY = CORE_PKG + "History";
 //endregion
 
@@ -31,7 +31,7 @@ static const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
 static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
 static const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
 static const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
-static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
+[[maybe_unused]] static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
 
 //endregion
 

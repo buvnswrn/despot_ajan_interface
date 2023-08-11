@@ -1,9 +1,7 @@
 //
 // Created by bhuvanesh on 09.08.23.
 //
-#include <iostream>
 #include "ajan_helper.h"
-#include "ajan_jni_globals.h"
 using namespace std;
 
 // region Getter and Setter
@@ -11,20 +9,20 @@ using namespace std;
 JNIEnv *AjanHelper::getEnv() {return ajanJavaEnv;}
 void AjanHelper::setEnv(JNIEnv *&env) {ajanJavaEnv = env;}
 
-jobject AjanHelper::getAjanJavaPlannerObject() { return *ajanJavaPlannerObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanJavaPlannerObject() { return *ajanJavaPlannerObject; }
 void AjanHelper::setAjanJavaPlannerObject(jobject *plannerObject) { ajanJavaPlannerObject = plannerObject; }
 
-jobject AjanHelper::getAjanJavaAgentObject() { return *ajanJavaAgentObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanJavaAgentObject() { return *ajanJavaAgentObject; }
 void AjanHelper::setAjanJavaAgentObject(jobject *plannerObject) { ajanJavaAgentObject = plannerObject; }
 
-jobject AjanHelper::getAjanJavaWorldObject() { return *ajanJavaWorldObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanJavaWorldObject() { return *ajanJavaWorldObject; }
 void AjanHelper::setAjanJavaWorldObject(jobject *plannerObject) { ajanJavaWorldObject = plannerObject; }
 
-jobject AjanHelper::getAjanParticleUpperBound() { return *ajanJavaWorldObject; }
-void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanParticleUpperBound() { return *ajanJavaWorldObject; }
+[[maybe_unused]] void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
 
-jobject AjanHelper::getAjanPolicyObject() { return ajanPolicyObject; }
-void AjanHelper::setAjanPolicyObject(jobject *plannerObject) { ajanPolicyObject = *plannerObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanPolicyObject() { return ajanPolicyObject; }
+[[maybe_unused]] void AjanHelper::setAjanPolicyObject(jobject *plannerObject) { ajanPolicyObject = *plannerObject; }
 
 jclass AjanHelper::getPlannerClass() { return plannerClass; }
 void AjanHelper::setPlannerClass(jclass plannerClass1) {plannerClass = plannerClass1;}
@@ -50,7 +48,7 @@ void AjanHelper::setPolicyClass(jclass ajanPolicyClass1) { ajanPolicyClass = aja
 jclass AjanHelper::getCoordClass() { return coordClass; }
 void AjanHelper::setCoordClass(jclass coordClass1) { coordClass = coordClass1; }
 
-jclass AjanHelper::getFloorClass() { return floorClass; }
+[[maybe_unused]] jclass AjanHelper::getFloorClass() { return floorClass; }
 void AjanHelper::setFloorClass(jclass floorClass1) { floorClass = floorClass1; }
 
 jclass AjanHelper::getHistoryClass() { return historyClass; }
