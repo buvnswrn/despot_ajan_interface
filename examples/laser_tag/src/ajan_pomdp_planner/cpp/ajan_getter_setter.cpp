@@ -24,6 +24,15 @@ void AjanHelper::setAjanJavaWorldObject(jobject *plannerObject) { ajanJavaWorldO
 [[maybe_unused]] jobject AjanHelper::getAjanPolicyObject() { return ajanPolicyObject; }
 [[maybe_unused]] void AjanHelper::setAjanPolicyObject(jobject *plannerObject) { ajanPolicyObject = *plannerObject; }
 
+jclass AjanHelper::getDoubleClass() { return doubleClass; }
+void AjanHelper::setDoubleClass(jclass doubleClass1) {doubleClass = doubleClass1;}
+
+jclass AjanHelper::getIntegerClass() { return integerClass; }
+void AjanHelper::setIntegerClass(jclass integerClass1) {integerClass = integerClass1;}
+
+jclass AjanHelper::getLongClass() { return longClass; }
+void AjanHelper::setLongClass(jclass longClass1) {longClass = longClass1;}
+
 jclass AjanHelper::getPlannerClass() { return plannerClass; }
 void AjanHelper::setPlannerClass(jclass plannerClass1) {plannerClass = plannerClass1;}
 

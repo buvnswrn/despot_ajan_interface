@@ -10,6 +10,7 @@
 #include <despot/interface/pomdp.h>
 #include "ajan_state.h"
 #include "ajan_agent.h"
+#include "ajan_particleupperbound.h"
 
 using namespace std;
 using namespace despot;
@@ -22,6 +23,8 @@ class AjanHelper {
     static map<string, jmethodID> ajanPolicyMethods;
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
+    static map<string, jmethodID> doubleMethods;
+    static map<string, jmethodID> integerMethods;
     static map<string, jmethodID> coordMethods;
     static map<string, jmethodID> historyMethods;
     static map<string, jmethodID> valuedActionMethods;
@@ -53,7 +56,19 @@ static void setEnv(JNIEnv *&env);
     [[maybe_unused]] jobject getAjanPolicyObject();
     [[maybe_unused]] void setAjanPolicyObject(jobject *plannerObject);
 //endregion
+// region Java Reference Classes
+    static jclass doubleClass;
+    static jclass getDoubleClass();
+    static  void setDoubleClass(jclass doubleClass1);
 
+    static jclass integerClass;
+    static jclass getIntegerClass();
+    static  void setIntegerClass(jclass integerClass1);
+
+    static jclass longClass;
+    static jclass getLongClass();
+    static  void setLongClass(jclass longClass1);
+//endregion
 //region AJAN Reference Classes
     static jclass plannerClass;
     static jclass getPlannerClass();
@@ -116,6 +131,8 @@ static void setEnv(JNIEnv *&env);
     void static GetAllStateMethodID();
     void static GetAllWorldMethodID();
     void static GetAllVectorMethodID();
+    void static GetAllDoubleMethodID();
+    void static GetAllIntegerMethodID();
     void static GetAllParticleUpperBoundMethodID();
     void static GetAllAjanPolicyMethodID();
     void static GetAllCoordMethodID();
@@ -128,7 +145,7 @@ static void setEnv(JNIEnv *&env);
 //endregion
 
 //region JNI Converters
-
+public:
 // TODO: To Java String
     [[maybe_unused]] static jstring toJavaString(const string& string1);
 // TODO: From Java String
@@ -143,13 +160,22 @@ static void setEnv(JNIEnv *&env);
     static jobject toJavaAjanAgentState(const AjanAgentState& agentState);
 // TODO: To and From Coord
     [[maybe_unused]] static jobject toJavaCoord(Coord coord);
-
     [[maybe_unused]] static Coord fromJavaCoord(jobject javaCoord);
 
+// TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
+    [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
     [[maybe_unused]] static vector < State*> getAgentStateVector(jobject javaAgentStateVector);
+
+    [[maybe_unused]] static jobject toJavaDoubleVector(const vector<double> &particles);
+    [[maybe_unused]] [[maybe_unused]] static jobject toJavaIntegerVector(const vector<int> &particles);
+    [[maybe_unused]] static vector <double> getDoubleVector(jobject javaDoubleVector);
+    [[maybe_unused]] [[maybe_unused]] static vector <int> getIntVector(jobject javaDoubleVector);
 
 // TODO: Java History to DESPOT History
     [[maybe_unused]] static History getHistory(jobject javaHistory);
+// TODO: DESPOT History to Java History : either store the history address or copy complete particles
+    static jobject toJavaHistory(const History& history);
+
 // TODO: DESPOT Valued Action to Java Valued Action
     [[maybe_unused]] static jobject toJavaValuedAction(ValuedAction valuedAction);
     [[maybe_unused]] static ValuedAction getValuedAction(jobject javaValuedAction);
@@ -157,8 +183,10 @@ static void setEnv(JNIEnv *&env);
 // TODO: Java Belief to DESPOT Belief
 //    [[maybe_unused]] static Belief getBelief(jobject javaBelief);
 // Optionals
-// TODO: to and from Ajan Upper Bound
+// [Not Needed] to and from Ajan Upper Bound
 // TODO: to and from Ajan Particle Upper Bound
+    [[maybe_unused]] static jobject toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound);
+static AjanParticleUpperBound* getAjanParticleUpperBound(const jobject particleUpperBoundObject);
 // TODO: to and from Ajan Belief Policy
 // TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
 // TODO: To and from AJAN_Agent
@@ -170,16 +198,16 @@ static void setEnv(JNIEnv *&env);
 
 
 //endregion
-public:
-// TODO: DESPOT History to Java History : either store the history address or copy complete particles
-    static jobject toJavaHistory(const History& history);
 
 
 // TODO: DESPOT Belief to Java Belief
     [[maybe_unused]] static jobject toJavaBelief(const Belief* belief);
+//    Belief getBelief(jobject javaBelief);
 
-// TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
-    [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
+    static jobject toJavaDouble(double value);
+    static jobject toJavaInteger(int value);
+
+    [[maybe_unused]] static jobject toJavaLong(long value);
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H

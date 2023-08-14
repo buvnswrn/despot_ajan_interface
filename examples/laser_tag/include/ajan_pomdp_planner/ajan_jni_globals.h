@@ -9,6 +9,9 @@ using namespace std;
 
 static const string STRING = "java/lang/String";
 extern const string VECTOR = "java/util/Vector";
+extern const string DOUBLE = "java/lang/Double";
+extern const string INTEGER = "java/lang/Integer";
+extern const string LONG = "java/lang/Long";
 static const string OBJECT = "java/lang/Object";
 
 static const string PACKAGE_NAME = "de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/";

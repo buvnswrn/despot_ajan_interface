@@ -33,6 +33,9 @@ void AjanHelper::Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject
 
 void  AjanHelper::getJavaClassReferences() {
     setVectorClass(getEnv()->FindClass(getSig(VECTOR).c_str()));
+    setDoubleClass(getEnv()->FindClass(getSig(DOUBLE).c_str()));
+    setIntegerClass(getEnv()->FindClass(getSig(INTEGER).c_str()));
+    setLongClass(getEnv()->FindClass(getSig(LONG).c_str()));
     setStateClass( getEnv()->FindClass(getSig(AJAN_AGENT_STATE).c_str()));
     setCoordClass( getEnv()->FindClass(getSig(COORD).c_str()));
     setFloorClass( getEnv()->FindClass(getSig(FLOOR).c_str()));
@@ -51,6 +54,8 @@ void AjanHelper::GetAllMethodID() {
     GetAllStateMethodID();
     GetAllWorldMethodID();
     GetAllVectorMethodID();
+    GetAllDoubleMethodID();
+    GetAllIntegerMethodID();
     GetAllParticleUpperBoundMethodID();
     GetAllAjanPolicyMethodID();
     GetAllCoordMethodID();
@@ -209,14 +214,49 @@ void AjanHelper::GetAllVectorMethodID() {
     cout << "Initialization of Vector methods Complete" << std::endl;
 }
 
+void AjanHelper::GetAllDoubleMethodID() {
+    cout << "Initializing the Double methods" << std::endl;
+
+    const int totalMethod = 4;
+    string methodNames[totalMethod][2] = {
+            {"<init>", "()V",},
+            {"doubleValue",   "()D",},
+            {"intValue",    "()I"} // any methods available. Ref: https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html
+    };
+    for (auto &methodName: methodNames) {
+        doubleMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getDoubleClass(),
+                                                                             methodName[0].c_str(),
+                                                                             methodName[1].c_str()));
+    }
+    cout << "Initialization of Double methods Complete" << std::endl;
+}
+
+void AjanHelper::GetAllIntegerMethodID() {
+    cout << "Initializing the Integer methods" << std::endl;
+
+    const int totalMethod = 4;
+    string methodNames[totalMethod][2] = {
+            {"<init>", "()V",},
+            {"doubleValue",   "()D",},
+            {"intValue",    "()I"} // any methods available. Ref:
+    };
+    for (auto &methodName: methodNames) {
+        doubleMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getIntegerClass(),
+                                                                             methodName[0].c_str(),
+                                                                             methodName[1].c_str()));
+    }
+    cout << "Initialization of Integer methods Complete" << std::endl;
+}
+
 /**
  * Corresponding Java Class: AjanParticleUpperBound.java
  */
 void AjanHelper::GetAllParticleUpperBoundMethodID() {
     cout << "Initializing the ParticleUpperBound methods" << std::endl;
-    const int totalMethod = 1;
+    const int totalMethod = 2;
     string methodNames[totalMethod][2] = {
 //            {"Value", "(I)D"},
+            {"<init>","(J)V"},
             {"Value", "("+ getSig(STATE)+")D"}
     };
     for (auto &methodName: methodNames) {
@@ -329,6 +369,10 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return worldMethods[methodName];
     } else if (clazz == "Vector") {
         return vectorMethods[methodName];
+    }  else if (clazz == "Double") {
+        return doubleMethods[methodName];
+    }   else if (clazz == "Integer") {
+        return integerMethods[methodName];
     } else if (clazz == "ParticleUpperBound") {
         return particleUpperBoundMethods[methodName];
     } else if (clazz == "Policy") {

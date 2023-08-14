@@ -61,6 +61,30 @@ jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState& agentState) {
     return ajanAgentState;
 }
 
+jobject AjanHelper::toJavaDouble(const double value){
+    jclass javaDoubleClass = getDoubleClass();
+    jobject javaDoubleObject = getEnv()->NewObject(javaDoubleClass,
+                                                   getMethodID("Double","<init>"),
+                                                   value);
+    return javaDoubleObject;
+}
+
+jobject AjanHelper::toJavaInteger(const int value){
+    jclass javaIntegerClass = getIntegerClass();
+    jobject javaIntegerObject = getEnv()->NewObject(javaIntegerClass,
+                                                    getMethodID("Integer","<init>"),
+                                                    value);
+    return javaIntegerObject;
+}
+
+[[maybe_unused]] jobject AjanHelper::toJavaLong(const long value){
+    jclass javaLongClass = getLongClass();
+    jobject javaLongObject = getEnv()->NewObject(javaLongClass,
+                                                 getMethodID("Long","<init>"),
+                                                 value);
+    return javaLongObject;
+}
+
 [[maybe_unused]] jobject AjanHelper::toJavaCoord(Coord coord) {
     jclass javaCoordClass = getCoordClass();
     jobject javaCoord = getEnv()->NewObject(javaCoordClass, getMethodID("Coord","<init>"),coord.x, coord.y);
@@ -80,6 +104,26 @@ jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState& agentState) {
     jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID("Vector","<init>"));
     for (auto particle : particles) {
         jobject ajanStateObject = toJavaAjanAgentState((AjanAgentState &&) particle); // WARN: Potential scope issue here
+        getEnv()->CallBooleanMethod(vectorObject, getMethodID("Vector","add"), ajanStateObject);
+        getEnv()->DeleteLocalRef(ajanStateObject);
+    }
+    return vectorObject;
+}
+
+[[maybe_unused]] jobject AjanHelper::toJavaDoubleVector(const vector<double> &particles){
+    jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID("Vector","<init>"));
+    for (auto particle : particles) {
+        jobject ajanStateObject = toJavaDouble( particle); // WARN: Potential scope issue here
+        getEnv()->CallBooleanMethod(vectorObject, getMethodID("Vector","add"), ajanStateObject);
+        getEnv()->DeleteLocalRef(ajanStateObject);
+    }
+    return vectorObject;
+}
+
+[[maybe_unused]] jobject AjanHelper::toJavaIntegerVector(const vector<int> &particles){
+    jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID("Vector","<init>"));
+    for (auto particle : particles) {
+        jobject ajanStateObject = toJavaInteger( particle); // WARN: Potential scope issue here
         getEnv()->CallBooleanMethod(vectorObject, getMethodID("Vector","add"), ajanStateObject);
         getEnv()->DeleteLocalRef(ajanStateObject);
     }
@@ -164,6 +208,58 @@ DSPOMDP *AjanHelper::getAgentModel(jobject modelObject) {
     return reinterpret_cast<DSPOMDP*>(modelPtr);
 }
 
+[[maybe_unused]] jobject AjanHelper::toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound) {
+    auto particleUpperBoundPtr = reinterpret_cast<jlong>(particleUpperBound);
+    jobject particleUpperBoundObject = getEnv()->NewObject(getParticleUpperBoundClass(),
+                                                     getMethodID("ParticleUpperBound","<init>"), particleUpperBoundPtr);
+    jobject modelObject = toJavaAgentModel(particleUpperBound->tag_model_);
+    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
+    getEnv()->SetObjectField(particleUpperBoundObject,modelID,modelObject);
+    getEnv()->DeleteLocalRef(modelObject);
+    // Have to write for value_
+    jobject valueVectorObject = toJavaDoubleVector(particleUpperBound->value_);
+    jfieldID valueID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"value_", getSig(VECTOR).c_str());
+    getEnv()->SetObjectField(particleUpperBoundObject,valueID,valueVectorObject);
+    getEnv()->DeleteLocalRef(valueVectorObject);
+    return particleUpperBoundObject;
+}
+
+AjanParticleUpperBound* AjanHelper::getAjanParticleUpperBound(const jobject particleUpperBoundObject) {
+    // WARN: May be some issues here for not having Java Double vector initialized for value_
+    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
+    jobject modelObject = getEnv()->GetObjectField(particleUpperBoundObject, modelID);
+    DSPOMDP* agentModel = getAgentModel(modelObject);
+
+    jfieldID doubleVectorID = getEnv()->GetFieldID(getVectorClass(),"value_", getSig(VECTOR).c_str());
+    jobject doubleVectorObject = getEnv()->GetObjectField(particleUpperBoundObject, doubleVectorID);
+    vector<double> valueVectorObject = getDoubleVector(doubleVectorObject);
+    auto * particleUpperBound = new AjanParticleUpperBound((AjanAgent *)agentModel);
+    return particleUpperBound;
+}
+
+vector<double> AjanHelper::getDoubleVector(jobject javaDoubleVector) {
+    vector<double> result;
+    jint size = getEnv()->CallIntMethod(javaDoubleVector, getMethodID("Vector","size"));
+    for (int i = 0; i < size; i++) {
+        jobject javaDouble = getEnv()->CallObjectMethod(javaDoubleVector, getMethodID("Vector","get"),i);
+        jdouble value = getEnv()->CallDoubleMethod(javaDouble, getMethodID("Double","doubleValue"));
+        result.push_back(value);
+        getEnv()->DeleteLocalRef(javaDouble);
+    }
+    return result;
+}
+
+[[maybe_unused]] vector<int> AjanHelper::getIntVector(jobject javaIntegerVector) {
+    vector<int> result;
+    jint size = getEnv()->CallIntMethod(javaIntegerVector, getMethodID("Vector", "size"));
+    for (int i = 0; i < size; i++) {
+        jobject javaInt = getEnv()->CallObjectMethod(javaIntegerVector, getMethodID("Vector", "get"), i);
+        jint value = getEnv()->CallIntMethod(javaInt, getMethodID("Integer", "intValue"));
+        result.push_back(value);
+        getEnv()->DeleteLocalRef(javaInt);
+    }
+    return result;
+}
 
 
 

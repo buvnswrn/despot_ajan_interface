@@ -23,7 +23,7 @@ namespace despot {
 * AjanParticleUpperBound class
 * ==============================================================================*/
     class AjanParticleUpperBound: public despot::ParticleUpperBound { // Shortest path
-    protected:
+    public:
         const despot::AjanAgent *tag_model_;
         std::vector<double> value_;
     public:
