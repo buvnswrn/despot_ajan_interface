@@ -10,7 +10,7 @@
     return getEnv()->NewStringUTF(string1.c_str());
 }
 
-[[maybe_unused]] string AjanHelper::getString(jobject javaString) {
+[[maybe_unused]] string AjanHelper::fromJavaString(jobject javaString) {
     auto solverName = (jstring) javaString;
     return getEnv()->GetStringUTFChars(solverName, nullptr);
 }
@@ -29,7 +29,7 @@
     return ajanState;
 }
 
-State* AjanHelper::getState(jobject javaState) {
+State* AjanHelper::fromJavaState(jobject javaState) {
     auto *state = new State;
     jfieldID state_id = getEnv()->GetFieldID(getStateClass(), "state_id", "I");
     jfieldID scenario_id = getEnv()->GetFieldID(getStateClass(), "scenario_id", "I");
@@ -40,7 +40,7 @@ State* AjanHelper::getState(jobject javaState) {
     return state;
 }
 
-[[maybe_unused]] AjanAgentState AjanHelper::getAjanAgentState(jobject javaAgentState) {
+[[maybe_unused]] AjanAgentState AjanHelper::fromJavaAjanAgentState(jobject javaAgentState) {
     AjanAgentState agentState;
     jfieldID state_id = getEnv()->GetFieldID(getStateClass(), "state_id", "I");
     jfieldID scenario_id = getEnv()->GetFieldID(getStateClass(), "scenario_id", "I");
@@ -130,13 +130,13 @@ jobject AjanHelper::toJavaInteger(const int value){
     return vectorObject;
 }
 
-[[maybe_unused]] vector<State *> AjanHelper::getAgentStateVector(jobject javaAgentStateVector) {
+[[maybe_unused]] vector<State *> AjanHelper::fromJavaAgentStateVector(jobject javaAgentStateVector) {
     vector<State * > vectorOfStates;
     jint size = getEnv()->CallIntMethod(javaAgentStateVector, getMethodID("Vector","size"));
     jmethodID getMethod = getMethodID("Vector","get");
     for (int i = 0; i < size; i++) {
         jobject state = getEnv()->CallObjectMethod(javaAgentStateVector, getMethod, i);
-        State * cstate = getState(state);
+        State * cstate = fromJavaState(state);
         vectorOfStates.push_back(cstate);
     }
     return vectorOfStates;
@@ -150,7 +150,7 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return historyObject;
 }
 
-[[maybe_unused]] History AjanHelper::getHistory(jobject javaHistory) {
+[[maybe_unused]] History AjanHelper::fromJavaHistory(jobject javaHistory) {
     jfieldID historyPtrField = getEnv()->GetFieldID(getHistoryClass(),"historyPointer","J");
     long historyPtr = getEnv()->GetLongField(javaHistory, historyPtrField);
     return reinterpret_cast<History&&>(historyPtr);
@@ -161,7 +161,7 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return valuedActionObject;
 }
 
-[[maybe_unused]] ValuedAction AjanHelper::getValuedAction(jobject javaValuedAction) {
+[[maybe_unused]] ValuedAction AjanHelper::fromJavaValuedAction(jobject javaValuedAction) {
     jfieldID actionFieldID = getEnv()->GetFieldID(getValuedActionClass(), "action","I");
     jfieldID valueFieldID = getEnv()->GetFieldID(getValuedActionClass(), "value","J");
     jint action = getEnv()->GetIntField(javaValuedAction, actionFieldID);
@@ -189,8 +189,8 @@ jobject AjanHelper::toJavaHistory(const History& history) {
 //    jfieldID modelFieldID = getEnv()->GetFieldID(getAjanBeliefClass(),"model_", getSig(AJAN_AGENT).c_str());
 //    jobject historyObject = getEnv()->GetObjectField(javaBelief,historyFieldID);
 //    jobject modelObject = getEnv()->GetObjectField(javaBelief,modelFieldID);
-//    History history = getHistory(historyObject);
-//    DSPOMDP* model = getAgentModel(modelObject);
+//    History history = fromJavaHistory(historyObject);
+//    DSPOMDP* model = fromJavaAgentModel(modelObject);
 //    vector<State*> state;
 //    AjanBelief ajanBelief = AjanBelief(state,dynamic_cast<AjanAgent *>(model));
 //    return ajanBelief;
@@ -202,7 +202,7 @@ jobject AjanHelper::toJavaAgentModel(const DSPOMDP *model) {
     return modelObject;
 }
 
-DSPOMDP *AjanHelper::getAgentModel(jobject modelObject) {
+DSPOMDP *AjanHelper::fromJavaAgentModel(jobject modelObject) {
     jfieldID historyPtrField = getEnv()->GetFieldID(getAgentClass(),"agentModelPointer","J");
     long modelPtr = getEnv()->GetLongField(modelObject, historyPtrField);
     return reinterpret_cast<DSPOMDP*>(modelPtr);
@@ -224,20 +224,20 @@ DSPOMDP *AjanHelper::getAgentModel(jobject modelObject) {
     return particleUpperBoundObject;
 }
 
-AjanParticleUpperBound* AjanHelper::getAjanParticleUpperBound(const jobject particleUpperBoundObject) {
+AjanParticleUpperBound* AjanHelper::fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject) {
     // WARN: May be some issues here for not having Java Double vector initialized for value_
     jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
     jobject modelObject = getEnv()->GetObjectField(particleUpperBoundObject, modelID);
-    DSPOMDP* agentModel = getAgentModel(modelObject);
+    DSPOMDP* agentModel = fromJavaAgentModel(modelObject);
 
     jfieldID doubleVectorID = getEnv()->GetFieldID(getVectorClass(),"value_", getSig(VECTOR).c_str());
     jobject doubleVectorObject = getEnv()->GetObjectField(particleUpperBoundObject, doubleVectorID);
-    vector<double> valueVectorObject = getDoubleVector(doubleVectorObject);
+    vector<double> valueVectorObject = fromJavaDoubleVector(doubleVectorObject);
     auto * particleUpperBound = new AjanParticleUpperBound((AjanAgent *)agentModel);
     return particleUpperBound;
 }
 
-vector<double> AjanHelper::getDoubleVector(jobject javaDoubleVector) {
+vector<double> AjanHelper::fromJavaDoubleVector(jobject javaDoubleVector) {
     vector<double> result;
     jint size = getEnv()->CallIntMethod(javaDoubleVector, getMethodID("Vector","size"));
     for (int i = 0; i < size; i++) {
@@ -249,11 +249,11 @@ vector<double> AjanHelper::getDoubleVector(jobject javaDoubleVector) {
     return result;
 }
 
-[[maybe_unused]] vector<int> AjanHelper::getIntVector(jobject javaIntegerVector) {
+[[maybe_unused]] vector<int> AjanHelper::fromJavaIntegerVector(jobject javaDoubleVector) {
     vector<int> result;
-    jint size = getEnv()->CallIntMethod(javaIntegerVector, getMethodID("Vector", "size"));
+    jint size = getEnv()->CallIntMethod(javaDoubleVector, getMethodID("Vector", "size"));
     for (int i = 0; i < size; i++) {
-        jobject javaInt = getEnv()->CallObjectMethod(javaIntegerVector, getMethodID("Vector", "get"), i);
+        jobject javaInt = getEnv()->CallObjectMethod(javaDoubleVector, getMethodID("Vector", "get"), i);
         jint value = getEnv()->CallIntMethod(javaInt, getMethodID("Integer", "intValue"));
         result.push_back(value);
         getEnv()->DeleteLocalRef(javaInt);

@@ -146,39 +146,38 @@ static void setEnv(JNIEnv *&env);
 
 //region JNI Converters
 public:
-// TODO: To Java String
+// TODO: Check String methods
     [[maybe_unused]] static jstring toJavaString(const string& string1);
-// TODO: From Java String
-    [[maybe_unused]] static string getString(jobject javaString);
-// TODO: DESPOT State to Java State
+    [[maybe_unused]] static string fromJavaString(jobject javaString);
+
+// TODO: Check State methods
     [[maybe_unused]] static jobject toJavaState(const State& state);
-// TODO: Java State to DESPOT State
-    static State* getState(jobject javaState);
-// TODO: Java Ajan Agent State to DESPOT Ajan Agent State
-    [[maybe_unused]] static AjanAgentState getAjanAgentState(jobject javaAgentState);
-// TODO: DESPOT Ajan Agent State to Java Ajan Agent State
+    static State* fromJavaState(jobject javaState);
+
+// TODO: Check Ajan Agent State
     static jobject toJavaAjanAgentState(const AjanAgentState& agentState);
+    [[maybe_unused]] static AjanAgentState fromJavaAjanAgentState(jobject javaAgentState);
+
 // TODO: To and From Coord
     [[maybe_unused]] static jobject toJavaCoord(Coord coord);
     [[maybe_unused]] static Coord fromJavaCoord(jobject javaCoord);
 
 // TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
     [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
-    [[maybe_unused]] static vector < State*> getAgentStateVector(jobject javaAgentStateVector);
+    [[maybe_unused]] static vector < State*> fromJavaAgentStateVector(jobject javaAgentStateVector);
 
     [[maybe_unused]] static jobject toJavaDoubleVector(const vector<double> &particles);
+    [[maybe_unused]] static vector <double> fromJavaDoubleVector(jobject javaDoubleVector);
     [[maybe_unused]] [[maybe_unused]] static jobject toJavaIntegerVector(const vector<int> &particles);
-    [[maybe_unused]] static vector <double> getDoubleVector(jobject javaDoubleVector);
-    [[maybe_unused]] [[maybe_unused]] static vector <int> getIntVector(jobject javaDoubleVector);
+    [[maybe_unused]] [[maybe_unused]] static vector <int> fromJavaIntegerVector(jobject javaDoubleVector);
 
-// TODO: Java History to DESPOT History
-    [[maybe_unused]] static History getHistory(jobject javaHistory);
-// TODO: DESPOT History to Java History : either store the history address or copy complete particles
+// TODO: Check History Methods: either store the history address or copy complete particles
     static jobject toJavaHistory(const History& history);
+    [[maybe_unused]] static History fromJavaHistory(jobject javaHistory);
 
-// TODO: DESPOT Valued Action to Java Valued Action
+// TODO: Check Valued Action Methods
     [[maybe_unused]] static jobject toJavaValuedAction(ValuedAction valuedAction);
-    [[maybe_unused]] static ValuedAction getValuedAction(jobject javaValuedAction);
+    [[maybe_unused]] static ValuedAction fromJavaValuedAction(jobject javaValuedAction);
 
 // TODO: Java Belief to DESPOT Belief
 //    [[maybe_unused]] static Belief getBelief(jobject javaBelief);
@@ -186,19 +185,15 @@ public:
 // [Not Needed] to and from Ajan Upper Bound
 // TODO: to and from Ajan Particle Upper Bound
     [[maybe_unused]] static jobject toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound);
-static AjanParticleUpperBound* getAjanParticleUpperBound(const jobject particleUpperBoundObject);
+static AjanParticleUpperBound* fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject);
 // TODO: to and from Ajan Belief Policy
 // TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
 // TODO: To and from AJAN_Agent
     static jobject toJavaAgentModel(const DSPOMDP *model);
-    static DSPOMDP *getAgentModel(jobject modelObject);
+    static DSPOMDP *fromJavaAgentModel(jobject modelObject);
 //    static jobject toJavaAgentModel(const AjanAgent model);
 //    static jobject toJavaAgentModel(const long modelPtr);
 // TODO: To and From Floor
-
-
-//endregion
-
 
 // TODO: DESPOT Belief to Java Belief
     [[maybe_unused]] static jobject toJavaBelief(const Belief* belief);
@@ -206,8 +201,9 @@ static AjanParticleUpperBound* getAjanParticleUpperBound(const jobject particleU
 
     static jobject toJavaDouble(double value);
     static jobject toJavaInteger(int value);
-
     [[maybe_unused]] static jobject toJavaLong(long value);
+
+//endregion
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H
