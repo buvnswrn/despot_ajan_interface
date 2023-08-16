@@ -5,6 +5,7 @@
 #include <iostream>
 #include "ajan_helper.h"
 #include "ajan_jni_globals.h"
+#include "ajan_jni_method_globals.h"
 
 // Need function to pass State variable to Java
 // Need function to pass the particles and make some computations using JNI.
@@ -13,7 +14,7 @@
 
 using namespace std;
 
-string AjanHelper::getSig(const string &method) { return ("L"+ method +";"); }
+
 
 void AjanHelper::Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
 
@@ -72,10 +73,10 @@ void AjanHelper::GetAllPlannerMethodID() {
     cout << "Initializing of Planner methods" << std::endl;
     const int totalMethod = 5;
     string methodNames[totalMethod][2] = {
-            {"InitializeModel", "()Z"},
-            {"InitializeWorld", "(" + getSig(STRING) + ")Z",},
-            {"ChooseSolver",    "()" + getSig(STRING)},
-            {"getWorldType",    "()" + getSig(STRING)}
+            {InitializeModel,InitializeModel_Sig},
+            {InitializeWorld,InitializeWorld_Sig},
+            {ChooseSolver,ChooseSolver_Sig},
+            {GetWorldType,GetWorldType_Sig}
     };
     for (auto &methodName: methodNames) {
         plannerMethods[methodName[0]] = (methodName[0], ajanJavaEnv->GetMethodID(getPlannerClass(),
@@ -93,54 +94,55 @@ void AjanHelper::GetAllAgentMethodID() {
     cout << "Initializing of Agent methods" << std::endl;
     const int totalMethod = 30;
     string methodNames[totalMethod][2] = {
-            {"<init>","(J)V"},
-            //region  MDP Functions
-            {"NumStates",                 "()I"},
-            {"NumActions",                "()I"},
-            {"TransitionProbability",     "(II)" + getSig(VECTOR)},
-            {"Reward",                    "(II)D"},
-            //endregion
-            //region Belief MDP
-            {"CreateBeliefLowerBound",  "(" + getSig(STRING) + ")" + getSig(AJAN_BELIEF_POLICY)}, // WARN: Need to check whether BeliefLowerBound class can be created. Can throw error here.
-            {"CreateBeliefUpperBound",  "(" + getSig(STRING) + ")" + getSig(AJAN_UPPER_BOUND)},
-            {"Tau", "(" + getSig(AJAN_BELIEF)+ "IJ)" + getSig(BELIEF)}, // WARN:This may not work
+            {Init_Agent, Init_Agent_Sig},
+
+            // MDP Functions
+            {NumStates, NumStates_Sig},
+            {NumActions, NumActions_Sig},
+            {TransitionProbability, TransitionProbability_Sig},
+            {Reward, Reward_Sig},
+
+            // Belief MDP
+            {CreateBeliefLowerBound, CreateBeliefLowerBound_Sig},
+            {CreateBeliefUpperBound, CreateBeliefUpperBound_Sig},
+            {Tau, Tau_Sig}, // WARN:This may not work
             //            {"getTauParticles",           "(" + getSig(VECTOR) + "II)" + getSig(VECTOR)}, // Not available till now but can be created
-            {"Observe",             "()" + getSig(AJAN_AGENT)}, // see what is it for map
-            {"StepReward","("+ getSig(BELIEF)+"I)"+"D"},
+            {Observe, Observe_Sig}, // see what is it for map
+            {StepReward, StepReward_Sig},
 //            {"StepRewardFromParticles",             "("+ getSig(VECTOR)+"I)D"},
 //            {"StepRewardFromParticles",   "(" + getSig(VECTOR) + "I)D"},
             //endregion
             //region StateIndexer
-            {"GetIndex",                  "("+ getSig(STATE)+")I"}, // WARN: State is an abstract class, see whether AjanAgentState can be used instead
-            {"GetState",                  "(I)"+ getSig(STATE)},
+            {GetIndex, GetIndex_Sig}, // WARN: State is an abstract class, see whether AjanAgentState can be used instead
+            {GetState, GetState_Sig},
             //endregion
             //region StatePolicy
-            {"GetAction",                 "(" + getSig(STATE) + ")I"},
+            {GetAction, GetAction_Sig},
             //endregion
             //region MMAPInferencer
-            {"GetMMAP",                   "(" + getSig(VECTOR) + ")" + getSig(AJAN_AGENT_STATE)},
+            {GetMMAP, GetMMAP_Sig},
             //endregion
             //region POMDP
-            {"Step",                      "(" + getSig(AJAN_AGENT_STATE) + "DIDJ)Z"},
+            {Step, Step_Sig},
 //            {"Step",                      "(" + getSig(AJAN_AGENT_STATE) + "DID)Z"}, // not possible to call by same name according to this method
 //            {"Step",                      "(" + getSig(AJAN_AGENT_STATE) + "IDJ)Z"}, // not possible to call by same name according to this method
 //                {"Reward","("+ getSig(STATE)+"I)D"}, // cached in region MDP with other params. not possible to call by same name according to this method. Call directly
-            {"ObsProb",                   "(J" + getSig(AJAN_AGENT_STATE) + "I)D"},
-            {"CreateStartState",          "(" + getSig(STRING) + ")" + getSig(AJAN_AGENT_STATE)}, // WARN: Return type is State
-            {"InitialBelief","("+ getSig(STATE)+ getSig(STRING)+")"+ getSig(BELIEF)},// WARN: Belief and State are abstract classes - Might not be possible to create objects
+            {ObsProb, ObsProb_Sig},
+            {CreateStartState, CreateStartState_Sig}, // WARN: Return type is State
+            {InitialBelief, InitialBelief_Sig},// WARN: Belief and State are abstract classes - Might not be possible to create objects
 //            {"getInitialBeliefParticles", "(" + getSig(STATE) + getSig(STRING) + ")" + getSig(VECTOR)},
-            {"GetMaxReward",              "()D"},
-            {"GetBestAction",             "()" + getSig(VALUED_ACTION)},
-            {"CreateParticleUpperBound",  "("+ getSig(STRING)+")"+ getSig(AJAN_PARTICLE_UPPER_BOUND)},// WARN: Return type is Particle Upperbound which is abstract
-            {"CreateScenarioUpperBound",  "("+ getSig(STRING)+ getSig(STRING)+")"+ getSig(STRING)}, // WARN: This does not exist as of now
-            {"CreateParticleLowerBound",  "("+ getSig(STRING)+")"+ getSig(STRING)}, // WARN: This does not exist as of now
-            {"CreateScenarioLowerBound",  "(" + getSig(STRING) + getSig(STRING) + ")" + getSig(AJAN_POLICY)}, // WARN: Return type is ScenarioLowerBound
-            {"PrintState",                "(" + getSig(STATE) + ")V"},
-            {"PrintObs",                  "(" + getSig(STATE) + "J)V"},
-            {"PrintAction",               "(I)V"},
-            {"PrintBelief",               "(" + getSig(BELIEF) + ")V"},
+            {GetMaxReward, GetMaxReward_Sig},
+            {GetBestAction, GetBestAction_Sig},
+            {CreateParticleUpperBound, CreateParticleUpperBound_Sig},// WARN: Return type is Particle Upperbound which is abstract
+            {CreateScenarioUpperBound, CreateScenarioUpperBound_Sig}, // WARN: This does not exist as of now
+            {CreateParticleLowerBound, CreateParticleLowerBound_Sig}, // WARN: This does not exist as of now
+            {CreateScenarioLowerBound, CreateScenarioLowerBound_Sig}, // WARN: Return type is ScenarioLowerBound
+            {PrintState, PrintState_Sig},
+            {PrintObs, PrintObs_Sig},
+            {PrintAction, PrintAction_Sig},
+            {PrintBelief, PrintBelief_Sig},
 //            {"Observe","("+ getSig()+"II)"+ getSig()},
-            {"NumActiveParticles","()I"},
+            {NumActiveParticles, NumActiveParticles_Sig}
 //            {"PrintMethod",               "()V"},
             //endregion
     };
@@ -161,9 +163,9 @@ void AjanHelper::GetAllStateMethodID() {
     cout << "Initializing the State methods" << std::endl;
     const int totalMethod = 2;
     string methodNames[totalMethod][2] = {
-//            {"<init>","()V"},
-            {"<init>","(IIJ)V"},
-            {"text", "(ID)" + getSig(STRING)}
+//            {Init_,"()V"},
+            {Init_State,Init_State_Sig},
+            {Text_State, Text_State_Sig}
     };
     for (auto &methodName: methodNames) {
         stateMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getStateClass(),
@@ -180,12 +182,12 @@ void AjanHelper::GetAllWorldMethodID() {
     cout << "Initializing the World methods" << std::endl;
     const int totalMethod = 6;
     string methodNames[totalMethod][2] = {
-            {"Connect",               "()Z"},
-            {"Initialize",            "()" + getSig(STATE)},
-            {"GetCurrentState",       "()" + getSig(STATE)},
-            {"ExecuteAction",         "(II)Z",},
-            {"getCurrentObservation", "()J"},
-            {"setCurrentObservation", "(J)Z"}
+            {Connect,Connect_Sig},
+            {Initialize,Initialize_Sig},
+            {GetCurrentState,GetCurrentState_Sig},
+            {ExecuteAction,ExecuteAction_Sig},
+            {GetCurrentObservation,GetCurrentObservation_Sig},
+            {SetCurrentObservation,SetCurrentObservation_Sig}
     };
 
     for (auto &methodName: methodNames) {
@@ -201,10 +203,10 @@ void AjanHelper::GetAllVectorMethodID() {
 
     const int totalMethod = 4;
     string methodNames[totalMethod][2] = {
-            {"size",   "()I",},
-            {"<init>", "()V",},
-            {"get",    "(I)" + getSig(OBJECT)},
-            {"add",    "(" + getSig(OBJECT) + ")Z"}
+            {Size,  Size_Sig},
+            {Init_, Init_Void_Sig,},
+            {Get,   Get_Sig},
+            {Add,   Add_Sig}
     };
     for (auto &methodName: methodNames) {
         vectorMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getVectorClass(),
@@ -219,9 +221,9 @@ void AjanHelper::GetAllDoubleMethodID() {
 
     const int totalMethod = 4;
     string methodNames[totalMethod][2] = {
-            {"<init>", "()V",},
-            {"doubleValue",   "()D",},
-            {"intValue",    "()I"} // any methods available. Ref: https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html
+            {Init_, Init_Void_Sig},
+            {DoubleValue,DoubleValue_Sig},
+            {IntValue,IntValue_Sig} // any methods available. Ref: https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html
     };
     for (auto &methodName: methodNames) {
         doubleMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getDoubleClass(),
@@ -236,9 +238,9 @@ void AjanHelper::GetAllIntegerMethodID() {
 
     const int totalMethod = 4;
     string methodNames[totalMethod][2] = {
-            {"<init>", "()V",},
-            {"doubleValue",   "()D",},
-            {"intValue",    "()I"} // any methods available. Ref:
+            {Init_, Init_Void_Sig},
+            {DoubleValue,DoubleValue_Sig},
+            {IntValue,IntValue_Sig} // any methods available. Ref:
     };
     for (auto &methodName: methodNames) {
         doubleMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getIntegerClass(),
@@ -256,8 +258,8 @@ void AjanHelper::GetAllParticleUpperBoundMethodID() {
     const int totalMethod = 2;
     string methodNames[totalMethod][2] = {
 //            {"Value", "(I)D"},
-            {"<init>","(J)V"},
-            {"Value", "("+ getSig(STATE)+")D"}
+            {Init_,Init_Long_Void_Sig},
+            {Value, Value_State_Double_Sig}
     };
     for (auto &methodName: methodNames) {
         particleUpperBoundMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getParticleUpperBoundClass(),
@@ -275,7 +277,7 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
-            {"Action", "(" + getSig(VECTOR) + getSig(HISTORY)+")I"}
+            {Action, Action_Sig}
 //            {"TestMethod", "()I"}
     };
 
@@ -294,7 +296,7 @@ void AjanHelper::GetAllCoordMethodID() {
     cout << "Initializing the AJAN Coord methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
-            {"<init>", "(II)V"}
+            {Init_, Init_Int_Int_Void_Sig}
     };
 
     for (auto &methodName: methodNames1) {
@@ -312,7 +314,7 @@ void AjanHelper::GetAllHistoryMethodID() {
     cout << "Initializing the AJAN History methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
-            {"<init>", "(J)V"}
+            {Init_, Init_Long_Void_Sig}
     };
 
     for (auto &methodName: methodNames1) {
@@ -330,7 +332,7 @@ void AjanHelper::GetAllValuedActionMethodID() {
     cout << "Initializing the AJAN ValuedAction methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
-            {"<init>", "(IJ)V"}
+            {Init_, Init_Int_Long_Void_Sig}
     };
 
     for (auto &methodName: methodNames1) {
@@ -348,7 +350,7 @@ void AjanHelper::GetAllAjanBeliefMethodID() {
     cout << "Initializing the AjanBelief methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
-            {"<init>", "(J)V"}
+            {Init_, Init_Long_Void_Sig}
     };
 
     for (auto &methodName: methodNames1) {
