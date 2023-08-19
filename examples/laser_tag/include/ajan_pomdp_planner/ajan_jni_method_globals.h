@@ -141,6 +141,7 @@ static const string Add_Sig = "(" + getSig(OBJECT) + ")Z";
 
 //region Double Methods
 static const string DoubleValue = "doubleValue";
+static const string LongValue = "longValue";
 static const string IntValue = "intValue";
 static const string Value = "Value";
 

@@ -25,6 +25,7 @@ class AjanHelper {
     static map<string, jmethodID> vectorMethods;
     static map<string, jmethodID> doubleMethods;
     static map<string, jmethodID> integerMethods;
+    static map<string, jmethodID> longMethods;
     static map<string, jmethodID> coordMethods;
     static map<string, jmethodID> historyMethods;
     static map<string, jmethodID> valuedActionMethods;
@@ -133,6 +134,7 @@ static JNIEnv* ajanJavaEnv;
     void static GetAllVectorMethodID();
     void static GetAllDoubleMethodID();
     void static GetAllIntegerMethodID();
+    void static GetAllLongMethodID();
     void static GetAllParticleUpperBoundMethodID();
     void static GetAllAjanPolicyMethodID();
     void static GetAllCoordMethodID();

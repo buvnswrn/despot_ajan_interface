@@ -57,6 +57,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllVectorMethodID();
     GetAllDoubleMethodID();
     GetAllIntegerMethodID();
+    GetAllLongMethodID();
     GetAllParticleUpperBoundMethodID();
     GetAllAjanPolicyMethodID();
     GetAllCoordMethodID();
@@ -243,11 +244,29 @@ void AjanHelper::GetAllIntegerMethodID() {
             {IntValue,IntValue_Sig} // any methods available. Ref:
     };
     for (auto &methodName: methodNames) {
-        doubleMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getIntegerClass(),
+        integerMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getIntegerClass(),
                                                                              methodName[0].c_str(),
                                                                              methodName[1].c_str()));
     }
     cout << "Initialization of Integer methods Complete" << std::endl;
+}
+
+void AjanHelper::GetAllLongMethodID() {
+    cout << "Initializing the Integer methods" << std::endl;
+
+    const int totalMethod = 4;
+    string methodNames[totalMethod][2] = {
+            {Init_, Init_Void_Sig},
+            {DoubleValue,DoubleValue_Sig},
+            {DoubleValue,DoubleValue_Sig},
+            {IntValue,IntValue_Sig} // any methods available. Ref:
+    };
+    for (auto &methodName: methodNames) {
+        longMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getLongClass(),
+                                                                             methodName[0].c_str(),
+                                                                             methodName[1].c_str()));
+    }
+    cout << "Initialization of Long methods Complete" << std::endl;
 }
 
 /**
@@ -375,6 +394,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return doubleMethods[methodName];
     }   else if (clazz == INTEGER) {
         return integerMethods[methodName];
+    }   else if (clazz == LONG) {
+        return longMethods[methodName];
     } else if (clazz == AJAN_PARTICLE_UPPER_BOUND) {
         return particleUpperBoundMethods[methodName];
     } else if (clazz == AJAN_POLICY) {
