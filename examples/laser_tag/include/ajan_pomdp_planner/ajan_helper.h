@@ -32,8 +32,8 @@ class AjanHelper {
 //endregion
 
 static JNIEnv* ajanJavaEnv;
-static JNIEnv *getEnv();
-static void setEnv(JNIEnv *&env);
+
+    static void setEnv(JNIEnv *&env);
 
 //region AJAN Reference Objects [Non-Static]
     jobject *ajanJavaPlannerObject;
@@ -41,7 +41,7 @@ static void setEnv(JNIEnv *&env);
     void setAjanJavaPlannerObject(jobject *plannerObject);
 
     jobject *ajanJavaAgentObject;
-    [[maybe_unused]] jobject getAjanJavaAgentObject();
+
     void setAjanJavaAgentObject(jobject *plannerObject);
 
     jobject *ajanJavaWorldObject;
@@ -140,12 +140,27 @@ static void setEnv(JNIEnv *&env);
     void static GetAllValuedActionMethodID();
     void static GetAllAjanBeliefMethodID();
 
-    jmethodID static getMethodID(const string& clazz, const string& methodName);
-
-//endregion
+    //endregion
 
 //region JNI Converters
 public:
+// TODO: To and from AJAN_Agent
+    static jobject toJavaAgentModel(const DSPOMDP *model);
+    static DSPOMDP *fromJavaAgentModel(jobject modelObject);
+// TODO: Check Ajan Agent State
+    static jobject toJavaAjanAgentState(const AjanAgentState& agentState);
+    [[maybe_unused]] static AjanAgentState fromJavaAjanAgentState(jobject javaAgentState);
+// TODO: Java Belief to DESPOT Belief
+// TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
+//    [[maybe_unused]] static Belief getBelief(jobject javaBelief);
+// TODO: DESPOT Belief to Java Belief
+    [[maybe_unused]] static jobject toJavaBelief(const Belief* belief);
+// TODO: to and from Ajan Belief Policy
+// TODO: to and from Ajan Particle Upper Bound
+    [[maybe_unused]] static jobject toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound);
+
+    [[maybe_unused]] static AjanParticleUpperBound* fromJavaAjanParticleUpperBound(jobject particleUpperBoundObject);
+// TODO: to and from AjanPolicy
 // TODO: Check String methods
     [[maybe_unused]] static jstring toJavaString(const string& string1);
     [[maybe_unused]] static string fromJavaString(jobject javaString);
@@ -153,10 +168,6 @@ public:
 // TODO: Check State methods
     [[maybe_unused]] static jobject toJavaState(const State& state);
     static State* fromJavaState(jobject javaState);
-
-// TODO: Check Ajan Agent State
-    static jobject toJavaAjanAgentState(const AjanAgentState& agentState);
-    [[maybe_unused]] static AjanAgentState fromJavaAjanAgentState(jobject javaAgentState);
 
 // TODO: To and From Coord
     [[maybe_unused]] static jobject toJavaCoord(Coord coord);
@@ -178,32 +189,21 @@ public:
 // TODO: Check Valued Action Methods
     [[maybe_unused]] static jobject toJavaValuedAction(ValuedAction valuedAction);
     [[maybe_unused]] static ValuedAction fromJavaValuedAction(jobject javaValuedAction);
-
-// TODO: Java Belief to DESPOT Belief
-//    [[maybe_unused]] static Belief getBelief(jobject javaBelief);
-// Optionals
 // [Not Needed] to and from Ajan Upper Bound
-// TODO: to and from Ajan Particle Upper Bound
-    [[maybe_unused]] static jobject toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound);
-static AjanParticleUpperBound* fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject);
-// TODO: to and from Ajan Belief Policy
-// TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
-// TODO: To and from AJAN_Agent
-    static jobject toJavaAgentModel(const DSPOMDP *model);
-    static DSPOMDP *fromJavaAgentModel(jobject modelObject);
-//    static jobject toJavaAgentModel(const AjanAgent model);
-//    static jobject toJavaAgentModel(const long modelPtr);
-// TODO: To and From Floor
-
-// TODO: DESPOT Belief to Java Belief
-    [[maybe_unused]] static jobject toJavaBelief(const Belief* belief);
-//    Belief getBelief(jobject javaBelief);
-
     static jobject toJavaDouble(double value);
     static jobject toJavaInteger(int value);
     [[maybe_unused]] static jobject toJavaLong(long value);
 
 //endregion
+
+//region Helper Methods
+int getAjanAgentNum(const char *methodName, const char *returnType) const;
+//endregion
+    static JNIEnv *getEnv();
+
+    [[maybe_unused]] jobject getAjanJavaAgentObject() const;
+
+    jmethodID static getMethodID(const string& clazz, const string& methodName);
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H

@@ -12,7 +12,7 @@ void AjanHelper::setEnv(JNIEnv *&env) {ajanJavaEnv = env;}
 [[maybe_unused]] jobject AjanHelper::getAjanJavaPlannerObject() { return *ajanJavaPlannerObject; }
 void AjanHelper::setAjanJavaPlannerObject(jobject *plannerObject) { ajanJavaPlannerObject = plannerObject; }
 
-[[maybe_unused]] jobject AjanHelper::getAjanJavaAgentObject() { return *ajanJavaAgentObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanJavaAgentObject() const { return *ajanJavaAgentObject; }
 void AjanHelper::setAjanJavaAgentObject(jobject *plannerObject) { ajanJavaAgentObject = plannerObject; }
 
 [[maybe_unused]] jobject AjanHelper::getAjanJavaWorldObject() { return *ajanJavaWorldObject; }

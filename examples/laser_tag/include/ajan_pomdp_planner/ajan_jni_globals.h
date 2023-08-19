@@ -35,6 +35,7 @@ static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBou
 static const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
 static const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
 [[maybe_unused]] static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
+[[maybe_unused]] static const string AJAN_PLANNER = IMPL_PKG + "AjanPlanner";
 
 //endregion
 

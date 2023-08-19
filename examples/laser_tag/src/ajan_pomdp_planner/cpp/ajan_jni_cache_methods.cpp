@@ -73,10 +73,10 @@ void AjanHelper::GetAllPlannerMethodID() {
     cout << "Initializing of Planner methods" << std::endl;
     const int totalMethod = 5;
     string methodNames[totalMethod][2] = {
-            {InitializeModel,InitializeModel_Sig},
-            {InitializeWorld,InitializeWorld_Sig},
-            {ChooseSolver,ChooseSolver_Sig},
-            {GetWorldType,GetWorldType_Sig}
+            {InitializeModel_, InitializeModel_Sig},
+            {InitializeWorld_, InitializeWorld_Sig},
+            {ChooseSolver_,    ChooseSolver_Sig},
+            {GetWorldType_, GetWorldType_Sig}
     };
     for (auto &methodName: methodNames) {
         plannerMethods[methodName[0]] = (methodName[0], ajanJavaEnv->GetMethodID(getPlannerClass(),
@@ -94,55 +94,55 @@ void AjanHelper::GetAllAgentMethodID() {
     cout << "Initializing of Agent methods" << std::endl;
     const int totalMethod = 30;
     string methodNames[totalMethod][2] = {
-            {Init_Agent, Init_Agent_Sig},
+            {Init_Agent,              Init_Agent_Sig},
 
             // MDP Functions
-            {NumStates, NumStates_Sig},
-            {NumActions, NumActions_Sig},
-            {TransitionProbability, TransitionProbability_Sig},
-            {Reward, Reward_Sig},
+            {NumStates_,              NumStates_Sig},
+            {NumActions_,             NumActions_Sig},
+            {TransitionProbability_,  TransitionProbability_Sig},
+            {Reward_,                 Reward_Sig},
 
             // Belief MDP
-            {CreateBeliefLowerBound, CreateBeliefLowerBound_Sig},
-            {CreateBeliefUpperBound, CreateBeliefUpperBound_Sig},
-            {Tau, Tau_Sig}, // WARN:This may not work
+            {CreateBeliefLowerBound_, CreateBeliefLowerBound_Sig},
+            {CreateBeliefUpperBound_, CreateBeliefUpperBound_Sig},
+            {Tau_,                    Tau_Sig}, // WARN:This may not work
             //            {"getTauParticles",           "(" + getSig(VECTOR) + "II)" + getSig(VECTOR)}, // Not available till now but can be created
-            {Observe, Observe_Sig}, // see what is it for map
-            {StepReward, StepReward_Sig},
+            {Observe_,    Observe_Sig}, // see what is it for map
+            {StepReward_, StepReward_Sig},
 //            {"StepRewardFromParticles",             "("+ getSig(VECTOR)+"I)D"},
 //            {"StepRewardFromParticles",   "(" + getSig(VECTOR) + "I)D"},
             //endregion
             //region StateIndexer
-            {GetIndex, GetIndex_Sig}, // WARN: State is an abstract class, see whether AjanAgentState can be used instead
-            {GetState, GetState_Sig},
+            {GetIndex_,                GetIndex_Sig}, // WARN: State is an abstract class, see whether AjanAgentState can be used instead
+            {GetState_,                GetState_Sig},
             //endregion
             //region StatePolicy
-            {GetAction, GetAction_Sig},
+            {GetAction_,               GetAction_Sig},
             //endregion
             //region MMAPInferencer
-            {GetMMAP, GetMMAP_Sig},
+            {GetMMAP_,                 GetMMAP_Sig},
             //endregion
             //region POMDP
-            {Step, Step_Sig},
-//            {"Step",                      "(" + getSig(AJAN_AGENT_STATE) + "DID)Z"}, // not possible to call by same name according to this method
-//            {"Step",                      "(" + getSig(AJAN_AGENT_STATE) + "IDJ)Z"}, // not possible to call by same name according to this method
-//                {"Reward","("+ getSig(STATE)+"I)D"}, // cached in region MDP with other params. not possible to call by same name according to this method. Call directly
-            {ObsProb, ObsProb_Sig},
-            {CreateStartState, CreateStartState_Sig}, // WARN: Return type is State
-            {InitialBelief, InitialBelief_Sig},// WARN: Belief and State are abstract classes - Might not be possible to create objects
+            {Step_,                     Step_Sig},
+//            {"Step_",                      "(" + getSig(AJAN_AGENT_STATE) + "DID)Z"}, // not possible to call by same name according to this method
+//            {"Step_",                      "(" + getSig(AJAN_AGENT_STATE) + "IDJ)Z"}, // not possible to call by same name according to this method
+//                {"Reward_","("+ getSig(STATE)+"I)D"}, // cached in region MDP with other params. not possible to call by same name according to this method. Call directly
+            {ObsProb_,                  ObsProb_Sig},
+            {CreateStartState_,         CreateStartState_Sig}, // WARN: Return type is State
+            {InitialBelief_,            InitialBelief_Sig},// WARN: Belief and State are abstract classes - Might not be possible to create objects
 //            {"getInitialBeliefParticles", "(" + getSig(STATE) + getSig(STRING) + ")" + getSig(VECTOR)},
-            {GetMaxReward, GetMaxReward_Sig},
-            {GetBestAction, GetBestAction_Sig},
-            {CreateParticleUpperBound, CreateParticleUpperBound_Sig},// WARN: Return type is Particle Upperbound which is abstract
-            {CreateScenarioUpperBound, CreateScenarioUpperBound_Sig}, // WARN: This does not exist as of now
-            {CreateParticleLowerBound, CreateParticleLowerBound_Sig}, // WARN: This does not exist as of now
-            {CreateScenarioLowerBound, CreateScenarioLowerBound_Sig}, // WARN: Return type is ScenarioLowerBound
-            {PrintState, PrintState_Sig},
-            {PrintObs, PrintObs_Sig},
-            {PrintAction, PrintAction_Sig},
-            {PrintBelief, PrintBelief_Sig},
-//            {"Observe","("+ getSig()+"II)"+ getSig()},
-            {NumActiveParticles, NumActiveParticles_Sig}
+            {GetMaxReward_,             GetMaxReward_Sig},
+            {GetBestAction_,            GetBestAction_Sig},
+            {CreateParticleUpperBound_, CreateParticleUpperBound_Sig},// WARN: Return type is Particle Upperbound which is abstract
+            {CreateScenarioUpperBound_, CreateScenarioUpperBound_Sig}, // WARN: This does not exist as of now
+            {CreateParticleLowerBound_, CreateParticleLowerBound_Sig}, // WARN: This does not exist as of now
+            {CreateScenarioLowerBound_, CreateScenarioLowerBound_Sig}, // WARN: Return type is ScenarioLowerBound
+            {PrintState_,               PrintState_Sig},
+            {PrintObs_,                 PrintObs_Sig},
+            {PrintAction_,              PrintAction_Sig},
+            {PrintBelief_,              PrintBelief_Sig},
+//            {"Observe_","("+ getSig()+"II)"+ getSig()},
+            {NumActiveParticles_, NumActiveParticles_Sig}
 //            {"PrintMethod",               "()V"},
             //endregion
     };
@@ -182,12 +182,12 @@ void AjanHelper::GetAllWorldMethodID() {
     cout << "Initializing the World methods" << std::endl;
     const int totalMethod = 6;
     string methodNames[totalMethod][2] = {
-            {Connect,Connect_Sig},
-            {Initialize,Initialize_Sig},
-            {GetCurrentState,GetCurrentState_Sig},
-            {ExecuteAction,ExecuteAction_Sig},
-            {GetCurrentObservation,GetCurrentObservation_Sig},
-            {SetCurrentObservation,SetCurrentObservation_Sig}
+            {Connect_,                Connect_Sig},
+            {Initialize_,            Initialize_Sig},
+            {GetCurrentState_,       GetCurrentState_Sig},
+            {ExecuteAction_,         ExecuteAction_Sig},
+            {GetCurrentObservation_, GetCurrentObservation_Sig},
+            {SetCurrentObservation_, SetCurrentObservation_Sig}
     };
 
     for (auto &methodName: methodNames) {
@@ -277,7 +277,7 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
-            {Action, Action_Sig}
+            {Action_, Action_Sig}
 //            {"TestMethod", "()I"}
     };
 
@@ -363,31 +363,31 @@ void AjanHelper::GetAllAjanBeliefMethodID() {
 
 jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName) {
 //    cout<<"Calling "<<methodName<<" for "<<clazz<<endl;
-    if (clazz == "Agent") {
+    if (clazz == AJAN_AGENT) {
         return agentMethods[methodName];
-    } else if (clazz == "Planner") {
+    } else if (clazz == AJAN_PLANNER) {
         return plannerMethods[methodName];
-    } else if (clazz == "World") {
+    } else if (clazz == AJAN_WORLD) {
         return worldMethods[methodName];
-    } else if (clazz == "Vector") {
+    } else if (clazz == VECTOR) {
         return vectorMethods[methodName];
-    }  else if (clazz == "Double") {
+    }  else if (clazz == DOUBLE) {
         return doubleMethods[methodName];
-    }   else if (clazz == "Integer") {
+    }   else if (clazz == INTEGER) {
         return integerMethods[methodName];
-    } else if (clazz == "ParticleUpperBound") {
+    } else if (clazz == AJAN_PARTICLE_UPPER_BOUND) {
         return particleUpperBoundMethods[methodName];
-    } else if (clazz == "Policy") {
+    } else if (clazz == AJAN_POLICY) {
         return ajanPolicyMethods[methodName];
-    } else if (clazz == "State") {
+    } else if (clazz == AJAN_AGENT_STATE) {
         return stateMethods[methodName];
-    } else if (clazz == "Coord") {
+    } else if (clazz == COORD) {
         return coordMethods[methodName];
-    } else if (clazz == "History") {
+    } else if (clazz == HISTORY) {
         return historyMethods[methodName];
-    } else if (clazz == "ValuedAction") {
+    } else if (clazz == VALUED_ACTION) {
         return valuedActionMethods[methodName];
-    }else if (clazz == "AjanBelief") {
+    }else if (clazz == AJAN_BELIEF) {
         return ajanBeliefMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;

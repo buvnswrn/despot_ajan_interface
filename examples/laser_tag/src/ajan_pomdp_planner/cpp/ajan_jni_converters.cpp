@@ -224,7 +224,7 @@ DSPOMDP *AjanHelper::fromJavaAgentModel(jobject modelObject) {
     return particleUpperBoundObject;
 }
 
-AjanParticleUpperBound* AjanHelper::fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject) {
+[[maybe_unused]] AjanParticleUpperBound* AjanHelper::fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject) {
     // WARN: May be some issues here for not having Java Double vector initialized for value_
     jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
     jobject modelObject = getEnv()->GetObjectField(particleUpperBoundObject, modelID);
