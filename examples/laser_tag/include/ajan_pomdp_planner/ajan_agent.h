@@ -16,6 +16,7 @@
 #include <despot/core/builtin_upper_bounds.h>
 #include <despot/core/particle_belief.h>
 #include "ajan_state.h"
+#include "ajan_helper.h"
 
 namespace despot {
 /* ==============================================================================
@@ -35,6 +36,7 @@ namespace despot {
     protected:
         mutable MemoryPool<AjanAgentState> memory_pool_;
         std::vector<AjanAgentState*> states_; // optional
+        AjanHelper helper;
         // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
 

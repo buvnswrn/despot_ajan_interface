@@ -5,6 +5,9 @@
 //
 
 #include "ajan_agent.h"
+#include "ajan_jni_method_globals.h"
+#include "despot_pomdp_globals.h"
+
 using namespace std;
 namespace despot {
 /* ==============================================================================
@@ -22,25 +25,33 @@ namespace despot {
     int AjanAgent::NumStates() const {
         // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of cells
-        return 0;
+        return AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+                                              AjanHelper::getMethodID(AJAN_AGENT,NumStates_));
     }
 
     int AjanAgent::NumActions() const {
         // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of actions
-        return 0;
+        return AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+                                                   AjanHelper::getMethodID(AJAN_AGENT,NumActions_));
     }
 
     const std::vector<State> &AjanAgent::TransitionProbability(int s, ACT_TYPE a) const {
+        static vector<State > vectorOfStates;
+        vectorOfStates.clear();
         // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // return transition_probabilities_[s][a];
-        return vector<State>();
+        jobject transProb = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                                                   AjanHelper::getMethodID(AJAN_AGENT,TransitionProbability_),s,a);
+        vectorOfStates= AjanHelper::fromJavaAgentStateVector(transProb);
+        return vectorOfStates;
     }
 
     double AjanAgent::Reward(int s, ACT_TYPE a) const {
         // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // If action is tag, and tagged -> tag reward else - tag reward else reward  = -1 (longer it takes, lower is the reward)
-        return 0;
+        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+                                                      AjanHelper::getMethodID(AJAN_AGENT,Reward_),s, a);
     }
     //endregion
 
@@ -147,12 +158,9 @@ namespace despot {
 
     double AjanAgent::ObsProb(OBS_TYPE obs, const State &state, ACT_TYPE action) const {
         //TODO: Implement AjanAgent::ObsProb function to call JNI
-        double prod = 1.0;
-        /**
-         * 1. Update the observation if rob and opp has same state_id
-         * 2. Get the reading in each direction and return 0 if the reading is greater than the LaserRange of the state in that particular direction, else, multiply the probability mass based on the stored reading_distribution for that state, dir and reading.
-         */
-        return prod;
+        jobject s = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
+        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+                                               AjanHelper::getMethodID(AJAN_AGENT,ObsProb_),obs,s,action);
     }
 
     State *AjanAgent::CreateStartState(std::string type) const {

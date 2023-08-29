@@ -169,7 +169,7 @@ public:
 
 // TODO: Check State methods
     [[maybe_unused]] static jobject toJavaState(const State& state);
-    static State* fromJavaState(jobject javaState);
+    static State fromJavaState(jobject javaState);
 
 // TODO: To and From Coord
     [[maybe_unused]] static jobject toJavaCoord(Coord coord);
@@ -177,7 +177,7 @@ public:
 
 // TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
     [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
-    [[maybe_unused]] static vector < State*> fromJavaAgentStateVector(jobject javaAgentStateVector);
+    [[maybe_unused]] static vector<State> fromJavaAgentStateVector(jobject javaAgentStateVector);
 
     [[maybe_unused]] static jobject toJavaDoubleVector(const vector<double> &particles);
     [[maybe_unused]] static vector <double> fromJavaDoubleVector(jobject javaDoubleVector);
@@ -206,6 +206,8 @@ int getAjanAgentNum(const char *methodName, const char *returnType) const;
     [[maybe_unused]] jobject getAjanJavaAgentObject() const;
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
+
+    static jobject toJavaAgentModel(const AjanAgent *model);
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H
