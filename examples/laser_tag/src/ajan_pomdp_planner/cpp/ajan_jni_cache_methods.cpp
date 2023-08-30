@@ -95,7 +95,7 @@ void AjanHelper::GetAllPlannerMethodID() {
  */
 void AjanHelper::GetAllAgentMethodID() {
     cout << "Initializing of Agent methods" << std::endl;
-    const int totalMethod = 31;
+    const int totalMethod = 35;
     string methodNames[totalMethod][2] = {
             {Init_Agent,              Init_Agent_Sig},
 
@@ -139,15 +139,20 @@ void AjanHelper::GetAllAgentMethodID() {
             {CreateParticleUpperBound_, CreateParticleUpperBound_Sig},// WARN: Return type is Particle Upperbound which is abstract
             {CreateScenarioUpperBound_, CreateScenarioUpperBound_Sig}, // WARN: This does not exist as of now
             {CreateParticleLowerBound_, CreateParticleLowerBound_Sig}, // WARN: This does not exist as of now
-            {CreateScenarioLowerBound_, CreateScenarioLowerBound_Sig}, // WARN: Return type is ScenarioLowerBound
-            {PrintState_,               PrintState_Sig},
-            {PrintObs_,                 PrintObs_Sig},
-            {PrintAction_,              PrintAction_Sig},
-            {PrintBelief_,              PrintBelief_Sig},
+            {CreateScenarioLowerBound_,   CreateScenarioLowerBound_Sig}, // WARN: Return type is ScenarioLowerBound
+            {PrintState_,                 PrintState_Sig},
+            {PrintObs_,                   PrintObs_Sig},
+            {PrintAction_,                PrintAction_Sig},
+            {PrintBelief_,                PrintBelief_Sig},
 //            {"Observe_","("+ getSig()+"II)"+ getSig()},
-            {NumActiveParticles_, NumActiveParticles_Sig},
-            {ComputeDefaultActions_, ComputeDefaultActions_Sig},
-            {WhichDefaultPolicyToUse_,WhichDefaultPolicyToUse_Sig}
+            {NumActiveParticles_,         NumActiveParticles_Sig},
+            {ComputeDefaultActions_,      ComputeDefaultActions_Sig},
+            {WhichDefaultPolicyToUse_,    WhichDefaultPolicyToUse_Sig},
+            {GetCurrentState_Agent,       GetCurrentState_Sig_Agent},
+            {GetCurrentReward_Agent,      GetCurrentReward_Sig_Agent},
+            {GetCurrentAction_Agent,      GetCurrentAction_Sig_Agent},
+            {GetCurrentObservation_Agent, GetCurrentObservation_Sig_Agent}
+
 //            {"PrintMethod",               "()V"},
             //endregion
     };
@@ -187,12 +192,12 @@ void AjanHelper::GetAllWorldMethodID() {
     cout << "Initializing the World methods" << std::endl;
     const int totalMethod = 6;
     string methodNames[totalMethod][2] = {
-            {Connect_,                Connect_Sig},
-            {Initialize_,            Initialize_Sig},
-            {GetCurrentState_,       GetCurrentState_Sig},
-            {ExecuteAction_,         ExecuteAction_Sig},
-            {GetCurrentObservation_, GetCurrentObservation_Sig},
-            {SetCurrentObservation_, SetCurrentObservation_Sig}
+            {Connect_,                    Connect_Sig},
+            {Initialize_,                 Initialize_Sig},
+            {GetCurrentState_World,       GetCurrentState_Sig_World},
+            {ExecuteAction_,              ExecuteAction_Sig},
+            {GetCurrentObservation_World, GetCurrentObservation_Sig_World},
+            {SetCurrentObservation_World, SetCurrentObservation_Sig_World}
     };
 
     for (auto &methodName: methodNames) {

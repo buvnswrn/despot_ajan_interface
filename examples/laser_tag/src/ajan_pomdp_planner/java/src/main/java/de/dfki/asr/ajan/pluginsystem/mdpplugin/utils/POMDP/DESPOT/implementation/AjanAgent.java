@@ -15,6 +15,10 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
 
     public long agentModelPointer;
     Vector<Integer> default_action_;
+    public AjanAgentState currentState;
+    public double currentReward;
+    public long currentObservation;
+    public int currentAction;
     public AjanAgent() {
         // TODO: Implement AjanAgent constructor to call JNI
         // read the Benchmark map
@@ -304,6 +308,22 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
         // do the computation here and use the corresponding policy
         return AJAN;
     }
+
+    public AjanAgentState getCurrentState(){
+        return currentState;
+    }
+
+    public double getCurrentReward() {
+        return currentReward;
+    }
+
+    public int getCurrentAction(){
+        return currentAction;
+    }
+    public long getCurrentObservation(){
+        return currentObservation;
+    }
+
     native Vector<ValuedAction> ComputeOptimalPoliciesUsingVIAndReturnPolicy(long agentPtr);
     //endregion
 }

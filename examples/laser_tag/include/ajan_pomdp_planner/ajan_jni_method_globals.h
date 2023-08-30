@@ -66,6 +66,10 @@ static const string PrintBelief_ = "PrintBelief";
 static const string NumActiveParticles_ = "NumActiveParticles";
 static const string ComputeDefaultActions_ = "ComputeDefaultActions";
 static const string WhichDefaultPolicyToUse_ = "WhichDefaultPolicyToUse";
+static const string GetCurrentState_Agent = "getCurrentState";
+static const string GetCurrentReward_Agent = "getCurrentReward";
+static const string GetCurrentAction_Agent = "getCurrentAction";
+static const string GetCurrentObservation_Agent = "getCurrentObservation";
 
 // Method signatures (replace placeholders with actual type signatures)
 static const string Init_Agent_Sig = "(J)V";
@@ -99,6 +103,10 @@ static const string PrintBelief_Sig = "(" + getSig(BELIEF) + ")V";
 static const string NumActiveParticles_Sig = "()I";
 static const string ComputeDefaultActions_Sig = "("+ getSig(STRING)+")V";
 static const string WhichDefaultPolicyToUse_Sig = "()"+ getSig(STRING);
+static const string GetCurrentState_Sig_Agent = "()"+ getSig(AJAN_AGENT_STATE);
+static const string GetCurrentReward_Sig_Agent = "()D";
+static const string GetCurrentAction_Sig_Agent = "()I";
+static const string GetCurrentObservation_Sig_Agent = "()J";
 //endregion
 
 //region State Methods
@@ -113,18 +121,19 @@ static const string Text_State_Sig = "(ID)" + getSig(STRING);
 //region World Methods
 static const string Connect_ = "Connect";
 static const string Initialize_ = "Initialize";
-static const string GetCurrentState_ = "GetCurrentState";
+static const string GetCurrentState_World = "GetCurrentState";
 static const string ExecuteAction_ = "ExecuteAction";
-static const string GetCurrentObservation_ = "getCurrentObservation";
-static const string SetCurrentObservation_ = "setCurrentObservation";
+static const string GetCurrentObservation_World = "getCurrentObservation";
+static const string SetCurrentObservation_World = "setCurrentObservation";
 
 // Method signatures (replace the placeholders with actual types)
 static const string Connect_Sig = "()Z";
 static const string Initialize_Sig = "()" + getSig(STATE);
-static const string GetCurrentState_Sig = "()" + getSig(STATE);
+static const string GetCurrentState_Sig_World = "()" + getSig(STATE);
 static const string ExecuteAction_Sig = "(II)Z";
-static const string GetCurrentObservation_Sig = "()J";
-static const string SetCurrentObservation_Sig = "(J)Z";
+static const string GetCurrentObservation_Sig_World = "()J";
+static const string SetCurrentObservation_Sig_World = "(J)Z";
+
 //endregion
 
 //region Vector Methods
