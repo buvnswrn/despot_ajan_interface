@@ -1,5 +1,6 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public interface BeliefMDP extends DSPOMDP{
@@ -15,7 +16,7 @@ public interface BeliefMDP extends DSPOMDP{
     /**
      * Observation function for the belief MDP.
      */
-    void Observe(Belief belief, int action, Map<Long, Double> obs);
+    void Observe(Belief belief, int action, HashMap<Long, Double> obs);
 
     /**
      * Reward function for the belief MDP.

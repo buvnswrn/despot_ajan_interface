@@ -9,6 +9,7 @@ using namespace std;
 
 static const string STRING = "java/lang/String";
 extern const string VECTOR = "java/util/Vector";
+extern const string HASHMAP = "java/util/HashMap";
 extern const string DOUBLE = "java/lang/Double";
 extern const string INTEGER = "java/lang/Integer";
 extern const string LONG = "java/lang/Long";

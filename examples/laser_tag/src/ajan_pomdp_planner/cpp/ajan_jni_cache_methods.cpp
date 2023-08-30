@@ -34,6 +34,7 @@ void AjanHelper::Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject
 
 void  AjanHelper::getJavaClassReferences() {
     setVectorClass(getEnv()->FindClass(getSig(VECTOR).c_str()));
+    setHashMapClass(getEnv()->FindClass(getSig(HASHMAP).c_str()));
     setDoubleClass(getEnv()->FindClass(getSig(DOUBLE).c_str()));
     setIntegerClass(getEnv()->FindClass(getSig(INTEGER).c_str()));
     setLongClass(getEnv()->FindClass(getSig(LONG).c_str()));
@@ -55,6 +56,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllStateMethodID();
     GetAllWorldMethodID();
     GetAllVectorMethodID();
+    GetAllHashMapMethodID();
     GetAllDoubleMethodID();
     GetAllIntegerMethodID();
     GetAllLongMethodID();
@@ -215,6 +217,24 @@ void AjanHelper::GetAllVectorMethodID() {
                                                                                 methodName[1].c_str()));
     }
     cout << "Initialization of Vector methods Complete" << std::endl;
+}
+
+void AjanHelper::GetAllHashMapMethodID() {
+    cout << "Initializing the HashMap methods" << std::endl;
+
+    const int totalMethod = 4;
+    string methodNames[totalMethod][2] = {
+            {Size,  Size_Sig},
+            {Init_, Init_Void_Sig,},
+            {Get,   Get_Sig_HashMap},
+            {Put,   Put_Sig}
+    };
+    for (auto &methodName: methodNames) {
+        hashMapMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getHashMapClass(),
+                                                                                methodName[0].c_str(),
+                                                                                methodName[1].c_str()));
+    }
+    cout << "Initialization of HashMap methods Complete" << std::endl;
 }
 
 void AjanHelper::GetAllDoubleMethodID() {
@@ -390,6 +410,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return worldMethods[methodName];
     } else if (clazz == VECTOR) {
         return vectorMethods[methodName];
+    } else if (clazz == HASHMAP) {
+        return hashMapMethods[methodName];
     }  else if (clazz == DOUBLE) {
         return doubleMethods[methodName];
     }   else if (clazz == INTEGER) {

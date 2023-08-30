@@ -139,6 +139,15 @@ static const string Get_Sig = "(I)" + getSig(OBJECT);
 static const string Add_Sig = "(" + getSig(OBJECT) + ")Z";
 //endregion
 
+//region HashMap Methods
+static const string Put = "put";
+
+//Method Signatures (replace the placeholders with actual types)
+static const string Put_Sig = "("+getSig(OBJECT)+ getSig(OBJECT)+")"+ getSig(OBJECT);
+static const string Get_Sig_HashMap = "("+getSig(OBJECT)+")"+ getSig(OBJECT);
+
+//endregion
+
 //region Double Methods
 static const string DoubleValue = "doubleValue";
 static const string LongValue = "longValue";

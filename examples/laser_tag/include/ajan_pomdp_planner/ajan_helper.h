@@ -23,6 +23,7 @@ class AjanHelper {
     static map<string, jmethodID> ajanPolicyMethods;
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
+    static map<string, jmethodID> hashMapMethods;
     static map<string, jmethodID> doubleMethods;
     static map<string, jmethodID> integerMethods;
     static map<string, jmethodID> longMethods;
@@ -87,6 +88,10 @@ static JNIEnv* ajanJavaEnv;
     static jclass getVectorClass();
     static void setVectorClass(jclass vectorClass1);
 
+    static jclass hashMapClass;
+    static jclass getHashMapClass();
+    static void setHashMapClass(jclass hashMapClass1);
+
     static jclass stateClass;
     static jclass getStateClass();
     static void setStateClass(jclass stateClass1);
@@ -132,6 +137,7 @@ static JNIEnv* ajanJavaEnv;
     void static GetAllStateMethodID();
     void static GetAllWorldMethodID();
     void static GetAllVectorMethodID();
+    void static GetAllHashMapMethodID();
     void static GetAllDoubleMethodID();
     void static GetAllIntegerMethodID();
     void static GetAllLongMethodID();
@@ -208,6 +214,10 @@ int getAjanAgentNum(const char *methodName, const char *returnType) const;
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 
     static jobject toJavaAgentModel(const AjanAgent *model);
+
+    static jclass getAgentClass();
+
+    static jobject toJavaLongDoubleMap(map<OBS_TYPE, double> &map);
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H

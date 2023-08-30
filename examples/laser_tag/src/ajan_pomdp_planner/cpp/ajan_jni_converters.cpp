@@ -143,7 +143,21 @@ jobject AjanHelper::toJavaInteger(const int value){
     return vectorOfStates;
 }
 
+jobject AjanHelper::toJavaLongDoubleMap(map<OBS_TYPE, double> &map) {
+jobject hashMapObject = getEnv()->NewObject(getHashMapClass(), getMethodID(HASHMAP,Init_));
+jmethodID hashMapPut = getMethodID(HASHMAP,Put);
 
+for(const auto& entry:map){
+    OBS_TYPE key = entry.first;
+    double value = entry.second;
+    jobject javaLongKey = getEnv()->NewObject(getLongClass(), getMethodID(LONG,Init_),static_cast<jlong>(key));
+    jobject javaDoubleValue = getEnv()->NewObject(getDoubleClass(), getMethodID(DOUBLE,Init_),value);
+    getEnv()->CallObjectMethod(hashMapObject,hashMapPut,javaLongKey,javaDoubleValue);
+    getEnv()->DeleteLocalRef(javaLongKey);
+    getEnv()->DeleteLocalRef(javaDoubleValue);
+}
+return hashMapObject;
+}
 
 jobject AjanHelper::toJavaHistory(const History& history) {
     // cannot access the internals of history to copy it

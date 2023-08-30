@@ -45,6 +45,9 @@ void AjanHelper::setWorldClass(jclass worldClass1) { worldClass=worldClass1; }
 jclass AjanHelper::getVectorClass() { return vectorClass; }
 void AjanHelper::setVectorClass(jclass vectorClass1) { vectorClass = vectorClass1; }
 
+jclass AjanHelper::getHashMapClass() { return hashMapClass; }
+void AjanHelper::setHashMapClass(jclass hashMapClass1) { hashMapClass = hashMapClass1; }
+
 jclass AjanHelper::getStateClass() { return stateClass; }
 void AjanHelper::setStateClass(jclass stateClass1) { stateClass = stateClass1; }
 
