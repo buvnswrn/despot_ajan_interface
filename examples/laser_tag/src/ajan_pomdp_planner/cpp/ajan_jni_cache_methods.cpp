@@ -95,7 +95,7 @@ void AjanHelper::GetAllPlannerMethodID() {
  */
 void AjanHelper::GetAllAgentMethodID() {
     cout << "Initializing of Agent methods" << std::endl;
-    const int totalMethod = 30;
+    const int totalMethod = 31;
     string methodNames[totalMethod][2] = {
             {Init_Agent,              Init_Agent_Sig},
 
@@ -145,7 +145,9 @@ void AjanHelper::GetAllAgentMethodID() {
             {PrintAction_,              PrintAction_Sig},
             {PrintBelief_,              PrintBelief_Sig},
 //            {"Observe_","("+ getSig()+"II)"+ getSig()},
-            {NumActiveParticles_, NumActiveParticles_Sig}
+            {NumActiveParticles_, NumActiveParticles_Sig},
+            {ComputeDefaultActions_, ComputeDefaultActions_Sig},
+            {WhichDefaultPolicyToUse_,WhichDefaultPolicyToUse_Sig}
 //            {"PrintMethod",               "()V"},
             //endregion
     };

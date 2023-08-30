@@ -187,6 +187,9 @@ namespace despot {
 
         // endregion
 
+        void ComputeDefaultActions(string type) const;
+
+        string WhichDefaultPolicyToUse() const;
     };
 
 }

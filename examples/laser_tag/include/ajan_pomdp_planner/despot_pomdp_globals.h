@@ -14,6 +14,15 @@ static const string TRIVIAL = "TRIVIAL";
 static const string DEFAULT = "DEFAULT" ;
 static const string MDP_ = "MDP" ;
 static const string MANHATTAN = "MANHATTAN" ;
+static const string SP = "SP" ;
+static const string RANDOM = "RANDOM" ;
+static const string SHR = "SHR" ;
+static const string MMAP_MDP = "MMAP-MDP" ;
+static const string MMAP_SP = "MMAP-SP" ;
+static const string MODE_MDP = "MODE-MDP" ;
+static const string MODE_SP = "MODE-SP" ;
+static const string MAJORITY_MDP = "MAJORITY-MDP" ;
+static const string MAJORITY_SP = "MAJORITY-SP" ;
 static const string AJAN = "AJAN" ;
 
 //endregion

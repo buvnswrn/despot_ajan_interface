@@ -255,4 +255,17 @@ namespace despot {
         return 0;
     }
     //endregion
+
+    //region problem helpers
+    void AjanAgent::ComputeDefaultActions(string type) const {
+        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+                                             AjanHelper::getMethodID(AJAN_AGENT,ComputeDefaultActions_),type.c_str());
+    }
+
+    string AjanAgent::WhichDefaultPolicyToUse() const {
+        jobject javaString = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                               AjanHelper::getMethodID(AJAN_AGENT,WhichDefaultPolicyToUse_));
+        return AjanHelper::fromJavaString(javaString);
+    }
+    //endregion
 }

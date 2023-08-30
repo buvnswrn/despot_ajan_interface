@@ -64,6 +64,8 @@ static const string PrintObs_ = "PrintObs";
 static const string PrintAction_ = "PrintAction";
 static const string PrintBelief_ = "PrintBelief";
 static const string NumActiveParticles_ = "NumActiveParticles";
+static const string ComputeDefaultActions_ = "ComputeDefaultActions";
+static const string WhichDefaultPolicyToUse_ = "WhichDefaultPolicyToUse";
 
 // Method signatures (replace placeholders with actual type signatures)
 static const string Init_Agent_Sig = "(J)V";
@@ -95,6 +97,8 @@ static const string PrintObs_Sig = "(" + getSig(STATE) + "J)V";
 static const string PrintAction_Sig = "(I)V";
 static const string PrintBelief_Sig = "(" + getSig(BELIEF) + ")V";
 static const string NumActiveParticles_Sig = "()I";
+static const string ComputeDefaultActions_Sig = "("+ getSig(STRING)+")V";
+static const string WhichDefaultPolicyToUse_Sig = "()"+ getSig(STRING);
 //endregion
 
 //region State Methods

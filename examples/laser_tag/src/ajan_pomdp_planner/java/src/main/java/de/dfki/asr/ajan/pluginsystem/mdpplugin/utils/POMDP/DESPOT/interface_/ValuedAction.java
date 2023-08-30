@@ -1,7 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
 public class ValuedAction {
-    int action;
+    public int action;
     double value;
 
     public ValuedAction(int action, double _value) {

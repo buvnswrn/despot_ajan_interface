@@ -4,12 +4,17 @@ import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core.*;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.*;
 
 import java.lang.ref.Cleaner;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Vector;
+
+import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.AJAN;
+import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.MDP_;
 
 public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMAPInferencer, Cleaner.Cleanable  {
 
     public long agentModelPointer;
+    Vector<Integer> default_action_;
     public AjanAgent() {
         // TODO: Implement AjanAgent constructor to call JNI
         // read the Benchmark map
@@ -84,7 +89,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public void Observe(Belief belief, int action, Map<Long, Double> obs) {
+    public void Observe(Belief belief, int action, HashMap<Long, Double> obs) {
         // TODO: Implement AjanAgent::Observe to call JNI
         // Not real implementation here just "too many observations" print message
     }
@@ -281,5 +286,24 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
         }
     }
     native static void deleteAgent(long agentPointer);
+    //endregion
+
+    //region problem helpers
+    public void ComputeDefaultActions(String type) {
+        if(Objects.equals(type, MDP_)){
+            Vector<ValuedAction> policy = ComputeOptimalPoliciesUsingVIAndReturnPolicy(agentModelPointer);
+            int num_states = NumStates();
+            default_action_.setSize(num_states);
+            for (int s = 0; s < num_states; s++) {
+                default_action_.add(s,policy.get(s).action);
+            }
+        }
+    }
+
+    public String WhichDefaultPolicyToUse(){
+        // do the computation here and use the corresponding policy
+        return AJAN;
+    }
+    native Vector<ValuedAction> ComputeOptimalPoliciesUsingVIAndReturnPolicy(long agentPtr);
     //endregion
 }
