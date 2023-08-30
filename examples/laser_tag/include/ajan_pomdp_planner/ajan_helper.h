@@ -77,7 +77,7 @@ static JNIEnv* ajanJavaEnv;
     static  void setPlannerClass(jclass plannerClass1);
 
     static jclass agentClass;
-    static jclass getAgentClass();
+
     static void setAgentClass(jclass agentClass1);
 
     static jclass worldClass;
@@ -127,7 +127,6 @@ static JNIEnv* ajanJavaEnv;
 
 //region JNI Cache Methods
 
-    static string getSig(const string &method);
     void Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject);
 
     void static getJavaClassReferences();
@@ -209,7 +208,7 @@ int getAjanAgentNum(const char *methodName, const char *returnType) const;
 //endregion
     static JNIEnv *getEnv();
 
-    [[maybe_unused]] jobject getAjanJavaAgentObject() const;
+    [[maybe_unused]] [[nodiscard]] jobject getAjanJavaAgentObject() const;
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 

@@ -36,6 +36,8 @@ namespace despot {
         using BeliefUpperBound::Value;
 
         double Value(const despot::Belief *belief) const ;
+
+        jobject javaAjanUpperBoundObject;
     };
 
 }
