@@ -11,9 +11,9 @@ using namespace std;
 string getSig(const string &method) { return ("L"+ method +";"); }
 
 //region Planner Methods
-static const string InitializeModel_ = "InitializeModel_";
-static const string InitializeWorld_ = "InitializeWorld_";
-static const string ChooseSolver_ = "ChooseSolver_";
+static const string InitializeModel_ = "InitializeModel";
+static const string InitializeWorld_ = "InitializeWorld";
+static const string ChooseSolver_ = "ChooseSolver";
 static const string GetWorldType_ = "getWorldType";
 
 // Method signatures (replace the placeholders with actual types)
@@ -26,44 +26,44 @@ static const string GetWorldType_Sig = "()" + getSig(STRING);
 static const string Init_Agent = "<init>";
 
 // MDP Functions
-static const string NumStates_ = "NumStates_";
-static const string NumActions_ = "NumActions_";
-static const string TransitionProbability_ = "TransitionProbability_";
-static const string Reward_ = "Reward_";
+static const string NumStates_ = "NumStates";
+static const string NumActions_ = "NumActions";
+static const string TransitionProbability_ = "TransitionProbability";
+static const string Reward_ = "Reward";
 
 // Belief MDP
-static const string CreateBeliefLowerBound_ = "CreateBeliefLowerBound_";
-static const string CreateBeliefUpperBound_ = "CreateBeliefUpperBound_";
-static const string Tau_ = "Tau_";
-static const string Observe_ = "Observe_";
-static const string StepReward_ = "StepReward_";
+static const string CreateBeliefLowerBound_ = "CreateBeliefLowerBound";
+static const string CreateBeliefUpperBound_ = "CreateBeliefUpperBound";
+static const string Tau_ = "Tau";
+static const string Observe_ = "Observe";
+static const string StepReward_ = "StepReward";
 
 // StateIndexer
-static const string GetIndex_ = "GetIndex_";
-static const string GetState_ = "GetState_";
+static const string GetIndex_ = "GetIndex";
+static const string GetState_ = "GetState";
 
 // StatePolicy
-static const string GetAction_ = "GetAction_";
+static const string GetAction_ = "GetAction";
 
 // MMAPInferencer
-static const string GetMMAP_ = "GetMMAP_";
+static const string GetMMAP_ = "GetMMAP";
 
 // POMDP
-static const string Step_ = "Step_";
-static const string ObsProb_ = "ObsProb_";
-static const string CreateStartState_ = "CreateStartState_";
-static const string InitialBelief_ = "InitialBelief_";
-static const string GetMaxReward_ = "GetMaxReward_";
-static const string GetBestAction_ = "GetBestAction_";
-static const string CreateParticleUpperBound_ = "CreateParticleUpperBound_";
-static const string CreateScenarioUpperBound_ = "CreateScenarioUpperBound_";
-static const string CreateParticleLowerBound_ = "CreateParticleLowerBound_";
-static const string CreateScenarioLowerBound_ = "CreateScenarioLowerBound_";
-static const string PrintState_ = "PrintState_";
-static const string PrintObs_ = "PrintObs_";
-static const string PrintAction_ = "PrintAction_";
-static const string PrintBelief_ = "PrintBelief_";
-static const string NumActiveParticles_ = "NumActiveParticles_";
+static const string Step_ = "Step";
+static const string ObsProb_ = "ObsProb";
+static const string CreateStartState_ = "CreateStartState";
+static const string InitialBelief_ = "InitialBelief";
+static const string GetMaxReward_ = "GetMaxReward";
+static const string GetBestAction_ = "GetBestAction";
+static const string CreateParticleUpperBound_ = "CreateParticleUpperBound";
+static const string CreateScenarioUpperBound_ = "CreateScenarioUpperBound";
+static const string CreateParticleLowerBound_ = "CreateParticleLowerBound";
+static const string CreateScenarioLowerBound_ = "CreateScenarioLowerBound";
+static const string PrintState_ = "PrintState";
+static const string PrintObs_ = "PrintObs";
+static const string PrintAction_ = "PrintAction";
+static const string PrintBelief_ = "PrintBelief";
+static const string NumActiveParticles_ = "NumActiveParticles";
 
 // Method signatures (replace placeholders with actual type signatures)
 static const string Init_Agent_Sig = "(J)V";
@@ -108,9 +108,9 @@ static const string Text_State_Sig = "(ID)" + getSig(STRING);
 
 //region World Methods
 static const string Connect_ = "Connect";
-static const string Initialize_ = "Initialize_";
-static const string GetCurrentState_ = "GetCurrentState_";
-static const string ExecuteAction_ = "ExecuteAction_";
+static const string Initialize_ = "Initialize";
+static const string GetCurrentState_ = "GetCurrentState";
+static const string ExecuteAction_ = "ExecuteAction";
 static const string GetCurrentObservation_ = "getCurrentObservation";
 static const string SetCurrentObservation_ = "setCurrentObservation";
 
