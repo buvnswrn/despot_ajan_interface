@@ -8,8 +8,8 @@
 namespace despot {
 using namespace despot;
 
-    AjanParticleUpperBound::AjanParticleUpperBound(const despot::AjanAgent *model):
-    tag_model_(model) {
+    AjanParticleUpperBound::AjanParticleUpperBound(const DSPOMDP *model):
+    tag_model_(model) { // Changed from AjanAgent to DSPOMDP and it works well
         // TODO: Implement AjanParticleUpperBound constructor to call JNI
         // store the distance between rob and opponent in value_[state.state_id]
         /**

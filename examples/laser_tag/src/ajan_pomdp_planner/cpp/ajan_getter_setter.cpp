@@ -21,7 +21,7 @@ void AjanHelper::setAjanJavaWorldObject(jobject *plannerObject) { ajanJavaWorldO
 [[maybe_unused]] jobject AjanHelper::getAjanParticleUpperBound() { return *ajanJavaWorldObject; }
 [[maybe_unused]] void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
 
-[[maybe_unused]] jobject AjanHelper::getAjanPolicyObject() { return ajanPolicyObject; }
+[[maybe_unused]] jobject AjanHelper::getAjanPolicyObject() const { return ajanPolicyObject; }
 [[maybe_unused]] void AjanHelper::setAjanPolicyObject(jobject *plannerObject) { ajanPolicyObject = *plannerObject; }
 
 jclass AjanHelper::getDoubleClass() { return doubleClass; }

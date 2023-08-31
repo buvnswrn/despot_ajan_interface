@@ -7,6 +7,8 @@
 #include "ajan_agent.h"
 #include "ajan_jni_method_globals.h"
 #include "despot_pomdp_globals.h"
+#include "ajan_particleupperbound.h"
+#include "ajan_beliefpolicy.h"
 
 using namespace std;
 namespace despot {
@@ -20,6 +22,7 @@ namespace despot {
         // run init function
     }
 
+    //region MDP Functions
     //region MDP Functions
 
     int AjanAgent::NumStates() const {
@@ -62,16 +65,50 @@ namespace despot {
         /**
          * Use some built-in bound - TrivialBeliefLowerBound
         **/
-        return BeliefMDP::CreateBeliefLowerBound(name);
+        if (name == TRIVIAL) {
+            return new TrivialBeliefLowerBound(this);
+        } else if (name == DEFAULT || name == BLIND) {
+            auto * beliefPolicy = new AjanBeliefPolicy(this);
+            jobject beliefLowerBoundObject = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                                                                    AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefLowerBound_),name.c_str(), reinterpret_cast<jlong>(beliefPolicy));
+            beliefPolicy->javaReferenceObject = beliefLowerBoundObject;
+            // send back the cpp reference as well
+            return beliefPolicy;
+        } else {
+            cerr << "Unsupported belief lower bound: " << name << endl;
+            exit(1);
+            return nullptr;
+        }
     }
 
     BeliefUpperBound *AjanAgent::CreateBeliefUpperBound(std::string name) const {
         // TODO: Implement AjanAgent::CreateBeliefUpperBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
-        /**
-         * Use some built-in bound - MDPUpperBound, TrivialBeliefUpperBound, LookaheadUpperBound (Scenario Upperbound)
-        **/
-        return BeliefMDP::CreateBeliefUpperBound(name);
+        if (name == TRIVIAL) {
+            return new TrivialBeliefUpperBound(this);
+        } else if (name == DEFAULT || name == MDP_) {
+            return new MDPUpperBound(this, *this);
+        }
+//      else if (name == LOOKAHEAD) {
+//            return new LookaheadUpperBound(this,*this); // Cannot use this here as of this writing, needs particle upperbound. Will look into this when it's extremely needed.
+//        }
+        else if (name == MANHATTAN || name == AJAN) {
+            auto * ajanUpperBound = new AjanUpperBound(this);
+            jobject beliefUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                                                              AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefUpperBound_), name.c_str(),reinterpret_cast<jlong>(ajanUpperBound));
+            if(beliefUpperBound == nullptr) {
+                cerr << "Cannot get belief upper bound: " << name << endl;
+                return nullptr;
+            }
+            ajanUpperBound->javaReferenceObject = beliefUpperBound; // Update reference to java object
+            return new AjanUpperBound(this);
+        } else {
+            if (name != "print")
+                cerr << "Unsupported belief upper bound: " << name << endl;
+            cerr << "Supported types: TRIVIAL, MDP, MANHATTAN (default to MDP)" << endl;
+            exit(1);
+            return nullptr;
+        }
     }
 
     Belief *AjanAgent::Tau(const Belief *belief, ACT_TYPE action, OBS_TYPE obs) const {
@@ -230,6 +267,29 @@ namespace despot {
         /**
          * Based on the name given, initialize TrivialParticleUpperBound,MDPUpperBound or custom upperbound
          */
+        if (name == TRIVIAL) {
+            return  new TrivialParticleUpperBound(this);
+        } else if (name == MDP_) {
+            return new MDPUpperBound(this, *this);
+        } else if (name == SP || name == DEFAULT || name == MANHATTAN || name == AJAN) {
+            auto * particleUpperBound = new AjanParticleUpperBound(this);
+            jobject javaParticleUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                AjanHelper::getMethodID(AJAN_AGENT,CreateParticleUpperBound_),
+                                                                    name.c_str(),
+                                                                    reinterpret_cast<jlong>(particleUpperBound));
+            if(javaParticleUpperBound == nullptr) {
+                cerr << "Cannot get belief upper bound: " << name << endl;
+                return nullptr;
+            }
+            particleUpperBound->javaReferenceObject = javaParticleUpperBound;
+            return particleUpperBound; // WARN:Changed the type from ajan agent to DSPOMDP
+        } else {
+            if (name != "print")
+                cerr << "Unsupported particle lower bound: " << name << endl;
+            cerr << "Supported types: TRIVIAL, MDP, SP, MANHATTAN (default to SP)" << endl;
+            exit(1);
+            return nullptr;
+        }
         return DSPOMDP::CreateParticleUpperBound(name);
     }
 
@@ -238,7 +298,19 @@ namespace despot {
         /**
          * Based on the name given, initialize LookaheadUpperBound or custom upperbound.
          */
-        return DSPOMDP::CreateScenarioUpperBound(name, particle_bound_name);
+        if(name == TRIVIAL || name == DEFAULT || name == MDP_ ||
+           name == SP || name == MANHATTAN) {
+            return CreateParticleUpperBound(name);
+        } else if (name == LOOKAHEAD) {
+            return new LookaheadUpperBound(this, *this, CreateParticleUpperBound(particle_bound_name));
+        } else {
+            if (name != "print")
+                cerr << "Unsupported upper bound: " << name << endl;
+            cerr << "Supported types: TRIVIAL, MDP, SP, MANHATTAN, LOOKAHEAD (default to SP)" << endl;
+            cerr << "With base upper bound: LOOKAHEAD" << endl;
+            exit(1);
+            return nullptr;
+        }
     }
 
     ScenarioLowerBound *AjanAgent::CreateScenarioLowerBound(std::string name, std::string particle_bound_name) const {
@@ -247,7 +319,76 @@ namespace despot {
          * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
          * else, compute the default actions based on MDP or SP and use MMAPStatePolicy or ModeStatePolicy or MajorityActionPolicy.
          */
-        return DSPOMDP::CreateScenarioLowerBound(name, particle_bound_name);
+         const DSPOMDP* model = this;
+         const StateIndexer* indexer = this;
+         const StatePolicy* policy = this;
+         const MMAPInferencer* mmap_inferencer = this;
+         if(name == TRIVIAL) {
+             return new TrivialParticleLowerBound(model);
+         } else if (name == RANDOM) {
+             return new RandomPolicy(model, CreateParticleLowerBound(particle_bound_name));
+         } else if ( name == SHR || name == AJAN) {
+             // have to check for smae_loc_obs_ to be equal or not and then use it. May be use computedefault actions and use this one
+             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
+             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
+                                                                    name.c_str(),
+                                                                    particle_bound_name.c_str(),
+                                                                    reinterpret_cast<jlong>(ajanPolicy));
+             if(javaAjanPolicy == nullptr) {
+                 cerr << "Cannot get belief upper bound: " << name << endl;
+                 return nullptr;
+             }
+             ajanPolicy->javaReferenceObject = javaAjanPolicy;
+             return ajanPolicy;
+         } else if(name == MMAP_MDP){
+             ComputeDefaultActions(MDP_);
+             return new MMAPStatePolicy(model, *mmap_inferencer, *policy, CreateParticleLowerBound(particle_bound_name));
+         } else if (name == MMAP_SP){
+             ComputeDefaultActions(SP);
+             return new MMAPStatePolicy(model, *mmap_inferencer, *policy, CreateParticleLowerBound(particle_bound_name));
+         } else if (name == MODE_MDP){
+             ComputeDefaultActions(MDP_);
+             return new ModeStatePolicy(model, *indexer, *policy, CreateParticleLowerBound(particle_bound_name));
+         } else if (name == MODE_SP) {
+             ComputeDefaultActions(SP);
+             return new ModeStatePolicy(model, *indexer, *policy,
+                                        CreateParticleLowerBound(particle_bound_name));
+         } else if (name == MAJORITY_MDP) {
+             ComputeDefaultActions(MDP_);
+             return new MajorityActionPolicy(model, *policy,
+                                             CreateParticleLowerBound(particle_bound_name));
+         } else if (name == MAJORITY_SP) {
+             ComputeDefaultActions(SP);
+             return new MajorityActionPolicy(model, *policy,
+                                             CreateParticleLowerBound(particle_bound_name));
+         } else if (name == DEFAULT) {
+             string policyToUse = WhichDefaultPolicyToUse(); // Ask AJAN on which policy to use and use it. Calculate whether same_loc_obs is equal or not there.
+             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
+             if(policyToUse == AJAN){
+                 jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                                                                 AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
+                                                                                 name.c_str(),
+                                                                                 particle_bound_name.c_str(),
+                                                                                 reinterpret_cast<jlong>(ajanPolicy));
+                 if(javaAjanPolicy == nullptr) {
+                     cerr << "Cannot get belief upper bound: " << name << endl;
+                     return nullptr;
+                 }
+                 ajanPolicy->javaReferenceObject = javaAjanPolicy;
+                 return ajanPolicy; // changed AjanAgent model to DSPOMDP model
+             } else if (policyToUse == MODE_MDP) {
+                 ComputeDefaultActions(MDP_);
+                 return new ModeStatePolicy(model, *indexer, *policy, CreateParticleLowerBound(particle_bound_name));
+             }
+         } else {
+             if (name != "print")
+                 cerr << "Unsupported lower bound: " << name << endl;
+             cerr << "Supported types: TRIVIAL, RANDOM, SHR, MODE-MDP, MODE-SP, MAJORITY-MDP, MAJORITY-SP (default to MODE-MDP)" << endl;
+             cerr << "With base lower bound: except TRIVIAL" << endl;
+             exit(1);
+             return nullptr;
+         }
     }
 
     void AjanAgent::PrintState(const State &state, ostream &out) const {

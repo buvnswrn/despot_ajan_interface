@@ -24,10 +24,11 @@ namespace despot {
 
     class AjanUpperBound : public despot::ParticleUpperBound, public despot::BeliefUpperBound {
     protected:
-        const despot::AjanAgent *tag_model_;
+        const DSPOMDP *tag_model_;
         std::vector<double> value_;
     public:
-        AjanUpperBound(const despot::AjanAgent *model);
+        AjanUpperBound(const DSPOMDP *model);
+//        AjanUpperBound();
 
         using ParticleUpperBound::Value;
 
@@ -37,7 +38,7 @@ namespace despot {
 
         double Value(const despot::Belief *belief) const ;
 
-        jobject javaAjanUpperBoundObject;
+        jobject javaReferenceObject;
     };
 
 }

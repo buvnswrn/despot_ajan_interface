@@ -8,9 +8,11 @@ import java.util.Vector;
 public class AjanParticleUpperBound extends ParticleUpperBound {
     public AjanAgent agent_model;
     public Vector<Double> value_;
+    long pointerToCpp;
 
-    AjanParticleUpperBound(AjanAgent model) {
+    AjanParticleUpperBound(AjanAgent model, long cppReference) {
         agent_model = model;
+        pointerToCpp = cppReference;
         // TODO: Implement AjanParticleUpperBound constructor to call JNI
         // store the distance between rob and opponent in value_[state.state_id]
         /*

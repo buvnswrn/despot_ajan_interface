@@ -61,23 +61,23 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     //region Belief MDP
 
     @Override
-    public AjanBeliefPolicy CreateBeliefLowerBound(String name) {
+    public AjanBeliefPolicy CreateBeliefLowerBound(String name, long policyCppReference) {
         // TODO: Implement AjanAgent::CreateBeliefLowerBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
         /*
          * Use some built-in bound - TrivialBeliefLowerBound
          **/
-        return null;
+        return new AjanBeliefPolicy(this,policyCppReference);
     }
 
     @Override
-    public BeliefUpperBound CreateBeliefUpperBound(String name) {
+    public BeliefUpperBound CreateBeliefUpperBound(String name,long upperBoundCppReference) {
         // TODO: Implement AjanAgent::CreateBeliefUpperBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
         /*
          * Use some built-in bound - MDPUpperBound, TrivialBeliefUpperBound, LookaheadUpperBound (Scenario Upperbound)
          **/
-        return null;
+        return new AjanUpperBound(upperBoundCppReference);
     }
 
     @Override
@@ -225,12 +225,12 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public AjanParticleUpperBound CreateParticleUpperBound(String name) {
+    public AjanParticleUpperBound CreateParticleUpperBound(String name, long cppReference ) {
         //TODO: Implement AjanAgent::CreateParticleUpperBound function to call JNI
         /*
          * Based on the name given, initialize TrivialParticleUpperBound,MDPUpperBound or custom upperbound
          */
-        return null;
+        return new AjanParticleUpperBound(this, cppReference);
     }
 
     @Override
@@ -248,13 +248,13 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public AjanPolicy CreateScenarioLowerBound(String bound_name, String particle_bound_name) {
+    public AjanPolicy CreateScenarioLowerBound(String bound_name, String particle_bound_name, long cppReference) {
         //TODO: Implement AjanAgent::CreateScenarioUpperBound function to call JNI
         /*
          * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
          * else, compute the default actions based on MDP or SP and use MMAPStatePolicy or ModeStatePolicy or MajorityActionPolicy.
          */
-        return null;
+        return new AjanPolicy(cppReference);
     }
 
     @Override

@@ -10,9 +10,15 @@ import java.util.Vector;
 public class AjanBeliefPolicy extends BeliefLowerBound {
     Vector<Vector<Double>> alpha_vectors_; // optional
     AjanAgent tag_model_; // optional
+    long pointerToCpp;
 
     AjanBeliefPolicy(AjanAgent model) {
         tag_model_ = model;
+        // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
+    }
+    AjanBeliefPolicy(AjanAgent model, long ptr) {
+        tag_model_ = model;
+        pointerToCpp = ptr;
         // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
     }
     @Override
@@ -24,5 +30,8 @@ public class AjanBeliefPolicy extends BeliefLowerBound {
          * Needs to call ComputeActionValue Function of MDP. Check on how to do that.
          **/
         return new ValuedAction(bestAction, bestValue);
+    }
+    public void SetReferenceToCpp_(long ptr) {
+        this.pointerToCpp = ptr;
     }
 }

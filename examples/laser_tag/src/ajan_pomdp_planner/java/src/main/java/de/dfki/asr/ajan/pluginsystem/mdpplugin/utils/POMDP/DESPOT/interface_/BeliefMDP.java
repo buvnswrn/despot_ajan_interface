@@ -5,8 +5,8 @@ import java.util.Map;
 
 public interface BeliefMDP extends DSPOMDP{
 
-    BeliefLowerBound CreateBeliefLowerBound(String name);
-    BeliefUpperBound CreateBeliefUpperBound(String name);
+    BeliefLowerBound CreateBeliefLowerBound(String name, long cppReferenceToPolicy);
+    BeliefUpperBound CreateBeliefUpperBound(String name, long upperBoundCppReference);
 
     /**
      * Transition function for the belief MDP.

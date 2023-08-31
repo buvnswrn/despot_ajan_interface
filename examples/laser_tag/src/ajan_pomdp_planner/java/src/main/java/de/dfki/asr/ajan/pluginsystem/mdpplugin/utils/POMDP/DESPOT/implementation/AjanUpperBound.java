@@ -11,8 +11,10 @@ import java.util.Vector;
 
 public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBound {
 
-
-
+    public long pointerToCpp;
+    public AjanUpperBound(long cppReference){
+        pointerToCpp = cppReference;
+    }
     @Override
     protected double Value(State s) {
         // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
@@ -34,5 +36,9 @@ public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBou
     @Override
     public double Value(Vector<State> particles, History history) throws ExecutionControl.NotImplementedException {
         return 0;
+    }
+
+    public void SetReferenceToCpp_(long ptr) {
+        this.pointerToCpp = ptr;
     }
 }

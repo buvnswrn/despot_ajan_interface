@@ -10,7 +10,7 @@ namespace despot {
 /* ==============================================================================
 * AjanUpperBound class
 * ==============================================================================*/
-    AjanUpperBound::AjanUpperBound(const despot::AjanAgent *model):
+    AjanUpperBound::AjanUpperBound(const DSPOMDP *model):
     tag_model_(model) {
         // TODO: Implement AjanUpperBound constructor to call JNI
         /**

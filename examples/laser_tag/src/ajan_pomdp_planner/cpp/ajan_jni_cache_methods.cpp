@@ -61,6 +61,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllIntegerMethodID();
     GetAllLongMethodID();
     GetAllParticleUpperBoundMethodID();
+    GetAllUpperBoundMethodID();
     GetAllAjanPolicyMethodID();
     GetAllCoordMethodID();
     GetAllHistoryMethodID();
@@ -316,6 +317,28 @@ void AjanHelper::GetAllParticleUpperBoundMethodID() {
 }
 
 /**
+ * Corresponding Java Class: AjanUpperBound.java
+ */
+void AjanHelper::GetAllUpperBoundMethodID() {
+    cout << "Initializing the UpperBound methods" << std::endl;
+    const int totalMethod = 5;
+    string methodNames[totalMethod][2] = {
+//            {"Value", "(I)D"},
+            {Init_,Init_Long_Void_Sig},
+            {Value, Value_State_Double_Sig},
+            {Value_Belief,Value_Belief_Sig},
+            {Value_Particles_History,Value_Particles_History_Sig},
+            {SetReferenceToCpp_,SetReferenceToCpp_Sig}
+    };
+    for (auto &methodName: methodNames) {
+        particleUpperBoundMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getParticleUpperBoundClass(),
+                                                                                         methodName[0].c_str(),
+                                                                                         methodName[1].c_str()));
+    }
+    cout << "Initialization of ParticleUpperBound methods Complete" << std::endl;
+}
+
+/**
  * Corresponding Java Class: AjanPolicy.java -> DefaultPolicy -> ScenarioLowerBound
  */
 void AjanHelper::GetAllAjanPolicyMethodID() {
@@ -323,7 +346,8 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
-            {Action_, Action_Sig}
+            {Action_, Action_Sig},
+            {SetReferenceToCpp_, SetReferenceToCpp_Sig}
 //            {"TestMethod", "()I"}
     };
 
@@ -427,7 +451,9 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return longMethods[methodName];
     } else if (clazz == AJAN_PARTICLE_UPPER_BOUND) {
         return particleUpperBoundMethods[methodName];
-    } else if (clazz == AJAN_POLICY) {
+    } else if (clazz == AJAN_UPPER_BOUND){
+        return ajanUpperBoundMethods[methodName];
+    }  else if (clazz == AJAN_POLICY) {
         return ajanPolicyMethods[methodName];
     } else if (clazz == AJAN_AGENT_STATE) {
         return stateMethods[methodName];

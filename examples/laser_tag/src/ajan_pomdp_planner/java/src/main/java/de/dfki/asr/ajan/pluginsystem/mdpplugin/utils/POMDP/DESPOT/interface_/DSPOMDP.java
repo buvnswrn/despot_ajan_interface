@@ -99,7 +99,7 @@ public interface DSPOMDP {
      * Override to create custom ParticleUpperBounds for solvers
      * @param name Name of the particle upper bound to be used
      */
-     ParticleUpperBound CreateParticleUpperBound(String name ) ;
+     ParticleUpperBound CreateParticleUpperBound(String name , long cppReference) ;
 
     /**
      * [Optional]
@@ -124,7 +124,8 @@ public interface DSPOMDP {
      * @param particle_bound_name Name of the ParticleLowerBound to be used as the base of ScenarioLowerBound
      */
      ScenarioLowerBound CreateScenarioLowerBound(String bound_name ,
-                                                         String particle_bound_name ) ;
+                                                         String particle_bound_name,
+                                                 long cppReference) ;
 
 //    /**
 //     * [Optional]

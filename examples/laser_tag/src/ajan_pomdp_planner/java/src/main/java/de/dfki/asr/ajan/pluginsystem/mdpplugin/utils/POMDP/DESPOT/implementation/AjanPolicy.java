@@ -7,6 +7,11 @@ import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.Sta
 import java.util.Vector;
 
 public class AjanPolicy extends DefaultPolicy {
+    long pointerToCpp;
+
+    public AjanPolicy(long cppReference) {
+        pointerToCpp = cppReference;
+    }
     protected int Action(Vector<State> particles, History history) {
         // TODO: Implement AjanPolicy::Action Function to call JNI
         /*
@@ -27,5 +32,9 @@ public class AjanPolicy extends DefaultPolicy {
          * 9. Else, choose a random action from the computed variables. \n
          */
         return 0;
+    }
+
+    public void SetReferenceToCpp_(long ptr) {
+        this.pointerToCpp = ptr;
     }
 }

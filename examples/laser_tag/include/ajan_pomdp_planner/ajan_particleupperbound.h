@@ -24,10 +24,11 @@ namespace despot {
 * ==============================================================================*/
     class AjanParticleUpperBound: public despot::ParticleUpperBound { // Shortest path
     public:
-        const despot::AjanAgent *tag_model_;
+        const DSPOMDP *tag_model_;
         std::vector<double> value_;
+        jobject javaReferenceObject;
     public:
-        AjanParticleUpperBound(const despot::AjanAgent *model);
+        AjanParticleUpperBound(const DSPOMDP *model);
 
         double Value(const despot::State &s) const;
     };

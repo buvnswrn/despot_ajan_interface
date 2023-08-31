@@ -20,6 +20,7 @@ class AjanHelper {
     static map<string, jmethodID> agentMethods;
     static map<string, jmethodID> stateMethods;
     static map<string, jmethodID> particleUpperBoundMethods;
+    static map<string, jmethodID> ajanUpperBoundMethods;
     static map<string, jmethodID> ajanPolicyMethods;
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
@@ -55,7 +56,7 @@ static JNIEnv* ajanJavaEnv;
     [[maybe_unused]] void setAjanParticleUpperBound(jobject *plannerObject);
 
     jobject ajanPolicyObject;
-    [[maybe_unused]] jobject getAjanPolicyObject();
+
     [[maybe_unused]] void setAjanPolicyObject(jobject *plannerObject);
 //endregion
 // region Java Reference Classes
@@ -141,6 +142,7 @@ static JNIEnv* ajanJavaEnv;
     void static GetAllIntegerMethodID();
     void static GetAllLongMethodID();
     void static GetAllParticleUpperBoundMethodID();
+    void static GetAllUpperBoundMethodID();
     void static GetAllAjanPolicyMethodID();
     void static GetAllCoordMethodID();
     void static GetAllHistoryMethodID();
@@ -212,11 +214,13 @@ int getAjanAgentNum(const char *methodName, const char *returnType) const;
 
     jmethodID static getMethodID(const string& clazz, const string& methodName);
 
-    static jobject toJavaAgentModel(const AjanAgent *model);
+//    static jobject toJavaAgentModel(const DSPOMDP *model);
 
     static jclass getAgentClass();
 
     static jobject toJavaLongDoubleMap(map<OBS_TYPE, double> &map);
+
+    [[maybe_unused]] jobject getAjanPolicyObject() const;
 };
 
 #endif //LASER_TAG_AJAN_HELPER_H

@@ -12,6 +12,7 @@ using namespace std;
 static const string TRIVIAL = "TRIVIAL";
 [[maybe_unused]] static const string LOOKAHEAD = "LOOKAHEAD";
 static const string DEFAULT = "DEFAULT" ;
+static const string BLIND = "BLIND" ;
 static const string MDP_ = "MDP" ;
 static const string MANHATTAN = "MANHATTAN" ;
 static const string SP = "SP" ;

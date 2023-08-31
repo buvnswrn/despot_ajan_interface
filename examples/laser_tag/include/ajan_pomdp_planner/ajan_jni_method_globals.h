@@ -77,8 +77,8 @@ static const string NumStates_Sig = "()I";
 static const string NumActions_Sig = "()I";
 static const string TransitionProbability_Sig = "(II)" + getSig(VECTOR);
 static const string Reward_Sig = "(II)D";
-static const string CreateBeliefLowerBound_Sig = "(" + getSig(STRING) + ")" + getSig(AJAN_BELIEF_POLICY);
-static const string CreateBeliefUpperBound_Sig = "(" + getSig(STRING) + ")" + getSig(AJAN_UPPER_BOUND);
+static const string CreateBeliefLowerBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_BELIEF_POLICY);
+static const string CreateBeliefUpperBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_UPPER_BOUND);
 static const string Tau_Sig = "(" + getSig(AJAN_BELIEF) + "IJ)" + getSig(BELIEF);
 static const string Observe_Sig = "()" + getSig(AJAN_AGENT);
 static const string StepReward_Sig = "(" + getSig(BELIEF) + "I)D";
@@ -92,10 +92,10 @@ static const string CreateStartState_Sig = "(" + getSig(STRING) + ")" + getSig(A
 static const string InitialBelief_Sig = "(" + getSig(STATE) + getSig(STRING) + ")" + getSig(BELIEF);
 static const string GetMaxReward_Sig = "()D";
 static const string GetBestAction_Sig = "()" + getSig(VALUED_ACTION);
-static const string CreateParticleUpperBound_Sig = "(" + getSig(STRING) + ")" + getSig(AJAN_PARTICLE_UPPER_BOUND);
+static const string CreateParticleUpperBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_PARTICLE_UPPER_BOUND);
 static const string CreateScenarioUpperBound_Sig = "(" + getSig(STRING) + getSig(STRING) + ")" + getSig(STRING);
 static const string CreateParticleLowerBound_Sig = "(" + getSig(STRING) + ")" + getSig(STRING);
-static const string CreateScenarioLowerBound_Sig = "(" + getSig(STRING) + getSig(STRING) + ")" + getSig(AJAN_POLICY);
+static const string CreateScenarioLowerBound_Sig = "(" + getSig(STRING) + getSig(STRING) + "J)" + getSig(AJAN_POLICY);
 static const string PrintState_Sig = "(" + getSig(STATE) + ")V";
 static const string PrintObs_Sig = "(" + getSig(STATE) + "J)V";
 static const string PrintAction_Sig = "(I)V";
@@ -163,7 +163,7 @@ static const string Get_Sig_HashMap = "("+getSig(OBJECT)+")"+ getSig(OBJECT);
 
 //region Double Methods
 static const string DoubleValue = "doubleValue";
-static const string LongValue = "longValue";
+[[maybe_unused]] static const string LongValue = "longValue";
 static const string IntValue = "intValue";
 static const string Value = "Value";
 
@@ -179,5 +179,14 @@ static const string Action_ = "Action";
 // Method signature (replace the placeholders with actual types)
 static const string Action_Sig = "(" + getSig(VECTOR) + getSig(HISTORY) + ")I";
 //endregion
+// region AjanUpperBound Methods
+static const string Value_Belief = "Value";
+static const string Value_Particles_History = "Value";
 
+// Method signature (replace the placeholders with actual types)
+static const string Value_Belief_Sig = "("+ getSig(BELIEF)+")D";
+static const string Value_Particles_History_Sig = "("+ getSig(VECTOR)+ getSig(HISTORY)+")D";
+//endregion
+static const string SetReferenceToCpp_ = "SetReferenceToCpp_";
+static const string SetReferenceToCpp_Sig = "(J)V";
 #endif //LASER_TAG_AJAN_JNI_METHOD_GLOBALS_H

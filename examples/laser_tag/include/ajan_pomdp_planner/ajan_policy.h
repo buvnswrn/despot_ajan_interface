@@ -15,7 +15,7 @@ namespace despot {
     using namespace despot;
 
     class AjanPolicy : public despot::DefaultPolicy {
-        const AjanAgent *tag_model_;
+        const DSPOMDP *tag_model_;
         despot::Floor floor_;
 
     public:
@@ -28,6 +28,7 @@ namespace despot {
 
         despot::ACT_TYPE Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
                                 despot::History &history) const;
+        jobject javaReferenceObject;
     };
 
 }

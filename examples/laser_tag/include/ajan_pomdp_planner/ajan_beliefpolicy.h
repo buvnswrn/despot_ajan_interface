@@ -32,6 +32,8 @@ namespace despot {
     public:
         AjanBeliefPolicy(const despot::AjanAgent *model) ;
         despot::ValuedAction Value(const despot::Belief *belief) const;
+
+        jobject javaReferenceObject;
     };
 }
 
