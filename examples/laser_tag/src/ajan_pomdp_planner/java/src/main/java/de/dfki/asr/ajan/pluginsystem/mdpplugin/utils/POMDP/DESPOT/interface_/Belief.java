@@ -11,13 +11,18 @@ import java.util.Vector;
 public abstract class Belief {
     public DSPOMDP model_; // not used as of now in Java end
     public History history_; // not used as of now in Java end
-    public long beliefPtr;
+    public long pointerToCpp;
 
     public Belief(DSPOMDP model) {
         this.model_ = model;
     }
     public Belief(long beliefPtr) {
-        this.beliefPtr = beliefPtr;
+        this.pointerToCpp = beliefPtr;
+    }
+    public Belief(long beliefPtr, DSPOMDP model, History history) {
+        this.pointerToCpp = beliefPtr;
+        this.model_ = model;
+        this.history_ = history;
     }
 
     /**
@@ -29,7 +34,7 @@ public abstract class Belief {
      */
     protected native Vector<State> Sample_(long ptr, int num);
     protected Vector<State> Sample(int num){
-        return Sample_(beliefPtr,num);
+        return Sample_(pointerToCpp,num);
     }
 
     /**
@@ -40,7 +45,7 @@ public abstract class Belief {
      */
     protected native void Update_(long ptr, int action, long obs);
     protected void Update(int action, long obs) {
-        Update_(beliefPtr, action, obs);
+        Update_(pointerToCpp, action, obs);
     }
 //    protected abstract String text();
 
@@ -50,6 +55,6 @@ public abstract class Belief {
      */
     protected native Belief MakeCopy_(long ptr);
     protected Belief MakeCopy() {
-        return MakeCopy_(beliefPtr);
+        return MakeCopy_(pointerToCpp);
     }
 }

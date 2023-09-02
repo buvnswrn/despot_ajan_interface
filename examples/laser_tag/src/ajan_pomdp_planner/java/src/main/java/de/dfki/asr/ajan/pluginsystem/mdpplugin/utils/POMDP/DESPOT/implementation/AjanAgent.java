@@ -81,7 +81,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public AjanBelief Tau(Belief belief, int action, long obs) {
+    public AjanBelief Tau(AjanBelief belief, int action, long obs) {
         // TODO: Implement AjanAgent::Tau to call JNI - Try this or use getTauParticles Method
         // WARN: See how to manipulate belief and history particles efficiently
         /*
@@ -93,13 +93,13 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public void Observe(Belief belief, int action, HashMap<Long, Double> obs) {
+    public void Observe(AjanBelief belief, int action, HashMap<Long, Double> obs) {
         // TODO: Implement AjanAgent::Observe to call JNI
         // Not real implementation here just "too many observations" print message
     }
 
     @Override
-    public double StepReward(Belief belief, int action) {
+    public double StepReward(AjanBelief belief, int action) {
         // TODO: Implement AjanAgent::StepReward to call JNI
         // WARN: Careful about the history manipulation
         // Calculate the cumulative reward until here according to the actions given.
@@ -202,7 +202,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public Belief InitialBelief(State start, String type) {
+    public AjanBelief InitialBelief(State start, String type) {
         //TODO: Implement AjanAgent::InitialBelief function to call JNI
         /*
          * Update the particles with rob and opp particle weight and create a particle belief with it.
@@ -273,7 +273,7 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
     }
 
     @Override
-    public void PrintBelief(Belief belief) {
+    public void PrintBelief(AjanBelief belief) {
         //TODO: Implement AjanAgent::PrintBelief function to call JNI
     }
 

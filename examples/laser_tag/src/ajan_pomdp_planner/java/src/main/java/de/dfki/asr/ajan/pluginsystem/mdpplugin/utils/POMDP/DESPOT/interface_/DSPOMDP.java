@@ -1,5 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanBelief;
+
 public interface DSPOMDP {
     /**
      * [Essential]
@@ -168,7 +170,7 @@ public interface DSPOMDP {
      * @param belief The belief to be printed
 //     * @param out    The destination stream
      */
-     void PrintBelief( Belief belief)  ;
+     void PrintBelief( AjanBelief belief)  ;
 
     /**
      * [Essential]

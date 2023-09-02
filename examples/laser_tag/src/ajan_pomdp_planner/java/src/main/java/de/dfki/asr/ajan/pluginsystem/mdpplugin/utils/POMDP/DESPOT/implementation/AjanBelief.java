@@ -18,6 +18,11 @@ public class AjanBelief extends ParticleBelief {
         super();
     }
 
+    public AjanBelief(long beliefPtr, AjanAgent model, History history, Vector<State> particles)
+    {
+        super(beliefPtr,model, history,particles);
+    }
+
     @Override
     protected void Update(int action, long obs) {
         // TODO: Implement AjanBelief::Update using JNI

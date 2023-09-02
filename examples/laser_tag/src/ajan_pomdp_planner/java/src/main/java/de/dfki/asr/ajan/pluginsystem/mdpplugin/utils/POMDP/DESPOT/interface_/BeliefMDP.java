@@ -1,7 +1,8 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanBelief;
+
 import java.util.HashMap;
-import java.util.Map;
 
 public interface BeliefMDP extends DSPOMDP{
 
@@ -11,15 +12,15 @@ public interface BeliefMDP extends DSPOMDP{
     /**
      * Transition function for the belief MDP.
      */
-     Belief Tau( Belief belief, int action, long obs);
+     AjanBelief Tau(AjanBelief belief, int action, long obs);
 
     /**
      * Observation function for the belief MDP.
      */
-    void Observe(Belief belief, int action, HashMap<Long, Double> obs);
+    void Observe(AjanBelief belief, int action, HashMap<Long, Double> obs);
 
     /**
      * Reward function for the belief MDP.
      */
-    double StepReward(Belief belief, int action);
+    double StepReward(AjanBelief belief, int action);
 }
