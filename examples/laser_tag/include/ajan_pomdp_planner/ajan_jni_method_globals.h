@@ -165,7 +165,7 @@ static const string Get_Sig_HashMap = "("+getSig(OBJECT)+")"+ getSig(OBJECT);
 static const string DoubleValue = "doubleValue";
 [[maybe_unused]] static const string LongValue = "longValue";
 static const string IntValue = "intValue";
-static const string Value = "Value";
+static const string Value_ = "Value";
 
 // Method signatures (replace the placeholders with actual types)
 static const string DoubleValue_Sig = "()D";
@@ -186,6 +186,21 @@ static const string Value_Particles_History = "Value";
 // Method signature (replace the placeholders with actual types)
 static const string Value_Belief_Sig = "("+ getSig(BELIEF)+")D";
 static const string Value_Particles_History_Sig = "("+ getSig(VECTOR)+ getSig(HISTORY)+")D";
+//endregion
+
+//region AjanBelief methods
+static const string Particles_ = "particles";
+static const string Update_ = "Update";
+static const string Belief_Init_II = "<init>";
+// Method signature (replace the placeholders with actual types)
+static const string Particles_Sig = "()"+ getSig(VECTOR);
+static const string Update_Sig = "(IJ)V";
+static const string Belief_Init_II_Sig = "(J"+ getSig(AJAN_AGENT)+ getSig(HISTORY)+ getSig(VECTOR)+")V";
+//endregion
+
+//region AjanBeleifPolicy methods
+// Method signature (replace the placeholders with actual types)
+static const string BeliefPolicy_Init_Sig = "(" + getSig(AJAN_AGENT)+"J)V";
 //endregion
 static const string SetReferenceToCpp_ = "SetReferenceToCpp_";
 static const string SetReferenceToCpp_Sig = "(J)V";

@@ -43,6 +43,7 @@ void  AjanHelper::getJavaClassReferences() {
     setFloorClass( getEnv()->FindClass(getSig(FLOOR).c_str()));
     setPolicyClass( getEnv()->FindClass(getSig(AJAN_POLICY).c_str()));
     setParticleUpperBoundClass( getEnv()->FindClass(getSig(AJAN_PARTICLE_UPPER_BOUND).c_str()));
+    setUpperBoundClass( getEnv()->FindClass(getSig(AJAN_UPPER_BOUND).c_str()));
     setHistoryClass(getEnv()->FindClass(getSig(HISTORY).c_str()));
     setValuedActionClass(getEnv()->FindClass(getSig(VALUED_ACTION).c_str()));
     setAjanBeliefClass(getEnv()->FindClass(getSig(AJAN_BELIEF).c_str()));
@@ -63,6 +64,7 @@ void AjanHelper::GetAllMethodID() {
     GetAllParticleUpperBoundMethodID();
     GetAllUpperBoundMethodID();
     GetAllAjanPolicyMethodID();
+    GetAllAjanBeliefPolicyMethodID();
     GetAllCoordMethodID();
     GetAllHistoryMethodID();
     GetAllValuedActionMethodID();
@@ -306,7 +308,7 @@ void AjanHelper::GetAllParticleUpperBoundMethodID() {
     string methodNames[totalMethod][2] = {
 //            {"Value", "(I)D"},
             {Init_,Init_Long_Void_Sig},
-            {Value, Value_State_Double_Sig}
+            {Value_, Value_State_Double_Sig}
     };
     for (auto &methodName: methodNames) {
         particleUpperBoundMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getParticleUpperBoundClass(),
@@ -325,13 +327,13 @@ void AjanHelper::GetAllUpperBoundMethodID() {
     string methodNames[totalMethod][2] = {
 //            {"Value", "(I)D"},
             {Init_,Init_Long_Void_Sig},
-            {Value, Value_State_Double_Sig},
+//            {Value_, Value_State_Double_Sig},
             {Value_Belief,Value_Belief_Sig},
-            {Value_Particles_History,Value_Particles_History_Sig},
+//            {Value_Particles_History,Value_Particles_History_Sig},
             {SetReferenceToCpp_,SetReferenceToCpp_Sig}
     };
     for (auto &methodName: methodNames) {
-        particleUpperBoundMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getParticleUpperBoundClass(),
+        upperBoundMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getUpperBoundClass(),
                                                                                          methodName[0].c_str(),
                                                                                          methodName[1].c_str()));
     }
@@ -355,6 +357,24 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
         ajanPolicyMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getPolicyClass(),
                                                                                     methodName[0].c_str(),
                                                                                     methodName[1].c_str()));
+    }
+    cout << "Initialization of AJAN Policy methods Complete" << std::endl;
+}
+
+void AjanHelper::GetAllAjanBeliefPolicyMethodID() {
+    cout << "Initializing the AJAN Policy methods" << std::endl;
+    const int totalMethod = 2;
+    string methodNames1[totalMethod][2] = {
+//            {"Action", "(" + getSig(VECTOR) + "J)I",},
+            {Init_, BeliefPolicy_Init_Sig},
+            {SetReferenceToCpp_, SetReferenceToCpp_Sig}
+//            {"TestMethod", "()I"}
+    };
+
+    for (auto &methodName: methodNames1) {
+        ajanPolicyMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getBeliefPolicyClass(),
+                                                                                 methodName[0].c_str(),
+                                                                                 methodName[1].c_str()));
     }
     cout << "Initialization of AJAN Policy methods Complete" << std::endl;
 }
@@ -418,9 +438,12 @@ void AjanHelper::GetAllValuedActionMethodID() {
  */
 void AjanHelper::GetAllAjanBeliefMethodID() {
     cout << "Initializing the AjanBelief methods" << std::endl;
-    const int totalMethod = 2;
+    const int totalMethod = 4;
     string methodNames1[totalMethod][2] = {
-            {Init_, Init_Long_Void_Sig}
+            {Init_, Init_Long_Void_Sig},
+//            {Belief_Init_II,Belief_Init_II_Sig},
+            {Particles_, Particles_Sig},
+            {Update_,Update_Sig}
     };
 
     for (auto &methodName: methodNames1) {
@@ -452,7 +475,7 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
     } else if (clazz == AJAN_PARTICLE_UPPER_BOUND) {
         return particleUpperBoundMethods[methodName];
     } else if (clazz == AJAN_UPPER_BOUND){
-        return ajanUpperBoundMethods[methodName];
+        return upperBoundMethods[methodName];
     }  else if (clazz == AJAN_POLICY) {
         return ajanPolicyMethods[methodName];
     } else if (clazz == AJAN_AGENT_STATE) {

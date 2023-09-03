@@ -54,8 +54,14 @@ void AjanHelper::setStateClass(jclass stateClass1) { stateClass = stateClass1; }
 jclass AjanHelper::getParticleUpperBoundClass() { return particleUpperBoundClass; }
 void AjanHelper::setParticleUpperBoundClass(jclass particleUpperBoundClass1) { particleUpperBoundClass = particleUpperBoundClass1; }
 
+jclass AjanHelper::getUpperBoundClass() { return upperBoundClass; }
+void AjanHelper::setUpperBoundClass(jclass upperBoundClass1) { upperBoundClass = upperBoundClass1; }
+
 jclass AjanHelper::getPolicyClass() { return ajanPolicyClass; }
 void AjanHelper::setPolicyClass(jclass ajanPolicyClass1) { ajanPolicyClass = ajanPolicyClass1; }
+
+jclass AjanHelper::getBeliefPolicyClass() { return ajanBeliefPolicyClass; }
+void AjanHelper::setBeliefPolicyClass(jclass ajanBeliefPolicyClass1) { ajanBeliefPolicyClass = ajanBeliefPolicyClass1; }
 
 jclass AjanHelper::getCoordClass() { return coordClass; }
 void AjanHelper::setCoordClass(jclass coordClass1) { coordClass = coordClass1; }

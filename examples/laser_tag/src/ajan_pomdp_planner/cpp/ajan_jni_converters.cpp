@@ -143,6 +143,19 @@ jobject AjanHelper::toJavaInteger(const int value){
     return vectorOfStates;
 }
 
+[[maybe_unused]] vector<State *> AjanHelper::fromJavaAgentStatePointerVector(jobject javaAgentStateVector) {
+    vector<State *> vectorOfStates;
+    jint size = getEnv()->CallIntMethod(javaAgentStateVector, getMethodID(VECTOR,Size));
+    jmethodID getMethod = getMethodID(VECTOR,Get);
+    for (int i = 0; i < size; i++) {
+        jobject state = getEnv()->CallObjectMethod(javaAgentStateVector, getMethod, i);
+        State * cstate = new State((const State &) fromJavaState(state));
+        vectorOfStates.push_back(cstate);
+        getEnv()->DeleteLocalRef(state);
+    }
+    return vectorOfStates;
+}
+
 jobject AjanHelper::toJavaLongDoubleMap(map<OBS_TYPE, double> &map) {
 jobject hashMapObject = getEnv()->NewObject(getHashMapClass(), getMethodID(HASHMAP,Init_));
 jmethodID hashMapPut = getMethodID(HASHMAP,Put);
@@ -186,19 +199,29 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return {action,value};
 }
 
-[[maybe_unused]] jobject AjanHelper::toJavaBelief(const Belief* belief) {
+[[maybe_unused]] jobject AjanHelper::toJavaAjanBelief(const Belief* belief) {
     // converts belief to Ajan Belief in Java. Basically, adds up the particle vector, but more or less the same.
-    jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getMethodID(AJAN_BELIEF,Init_),reinterpret_cast<jlong>(belief));
     jobject historyObject = toJavaHistory(belief->history_);
     jobject modelObject = toJavaAgentModel(belief->model_);
-    jfieldID  historyField = getEnv()->GetFieldID(getAjanBeliefClass(),"history_", getSig(AJAN_BELIEF).c_str());
-    getEnv()->SetObjectField(beliefObject,historyField,historyObject);
-    jfieldID  modelField = getEnv()->GetFieldID(getAjanBeliefClass(),"model_", getSig(AJAN_AGENT).c_str());
-    getEnv()->SetObjectField(beliefObject,historyField,modelObject);
-    getEnv()->SetObjectField(beliefObject, modelField, historyObject);
+    const vector<State*>& particles = dynamic_cast<const ParticleBelief*>(belief)->particles();
+    jobject particlesObject = toJavaAgentStateVector(particles);
+    jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getMethodID(AJAN_BELIEF,
+                                                                                Init_),
+                                                                                reinterpret_cast<jlong>(belief),
+                                                                                modelObject,
+                                                                                historyObject,
+                                                                                particlesObject);
     getEnv()->DeleteLocalRef(historyObject);
     getEnv()->DeleteLocalRef(modelObject);
+    getEnv()->DeleteLocalRef(particlesObject);
     return beliefObject;
+}
+
+AjanBelief* AjanHelper::newBeliefFromAjanBelief(jobject ajanBelief, const despot::DSPOMDP *model, Belief *prior =
+nullptr) {
+    jobject particlesObject = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
+    vector<State *> particles = fromJavaAgentStatePointerVector(particlesObject);
+    return new AjanBelief(particles, model, prior);
 }
 
 //[[maybe_unused]] Belief AjanHelper::getBelief(jobject javaBelief) {
@@ -215,52 +238,58 @@ jobject AjanHelper::toJavaHistory(const History& history) {
 
 jobject AjanHelper::toJavaAgentModel(const DSPOMDP *model) {
     auto modelPtr = reinterpret_cast<jlong>(model);
-    jobject modelObject = getEnv()->NewObject(getHistoryClass(), getMethodID(AJAN_AGENT,Init_),reinterpret_cast<jlong>(modelPtr));
+    jobject modelObject = getEnv()->NewObject(getAgentClass(), getMethodID(AJAN_AGENT,Init_),reinterpret_cast<jlong>(modelPtr));
     return modelObject;
 }
 
-jobject AjanHelper::toJavaAgentModel(const AjanAgent *model) {
+[[maybe_unused]] jobject AjanHelper::toJavaAjanAgentModel(const AjanAgent *model) {
     auto modelPtr = reinterpret_cast<jlong>(model);
     jobject modelObject = getEnv()->NewObject(getHistoryClass(), getMethodID(AJAN_AGENT,Init_),reinterpret_cast<jlong>(modelPtr));
     return modelObject;
 }
 
-DSPOMDP *AjanHelper::fromJavaAgentModel(jobject modelObject) {
+[[maybe_unused]] DSPOMDP *AjanHelper::fromJavaAgentModel(jobject modelObject) {
     jfieldID historyPtrField = getEnv()->GetFieldID(getAgentClass(),"agentModelPointer","J");
     long modelPtr = getEnv()->GetLongField(modelObject, historyPtrField);
     return reinterpret_cast<DSPOMDP*>(modelPtr);
 }
 
-[[maybe_unused]] jobject AjanHelper::toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound) {
-    auto particleUpperBoundPtr = reinterpret_cast<jlong>(particleUpperBound);
-    jobject particleUpperBoundObject = getEnv()->NewObject(getParticleUpperBoundClass(),
-                                                     getMethodID(AJAN_PARTICLE_UPPER_BOUND,Init_), particleUpperBoundPtr);
-    jobject modelObject = toJavaAgentModel(particleUpperBound->tag_model_);
-    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
-    getEnv()->SetObjectField(particleUpperBoundObject,modelID,modelObject);
-    getEnv()->DeleteLocalRef(modelObject);
-    // Have to write for value_
-    jobject valueVectorObject = toJavaDoubleVector(particleUpperBound->value_);
-    jfieldID valueID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"value_", getSig(VECTOR).c_str());
-    getEnv()->SetObjectField(particleUpperBoundObject,valueID,valueVectorObject);
-    getEnv()->DeleteLocalRef(valueVectorObject);
-    return particleUpperBoundObject;
+[[maybe_unused]] AjanAgent* AjanHelper::fromJavaAjanAgentModel(jobject modelObject) {
+    jfieldID historyPtrField = getEnv()->GetFieldID(getAgentClass(),"agentModelPointer","J");
+    long modelPtr = getEnv()->GetLongField(modelObject, historyPtrField);
+    return reinterpret_cast<AjanAgent*>(modelPtr);
 }
 
-[[maybe_unused]] AjanParticleUpperBound* AjanHelper::fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject) {
-    // WARN: May be some issues here for not having Java Double vector initialized for value_
-    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
-    jobject modelObject = getEnv()->GetObjectField(particleUpperBoundObject, modelID);
-    DSPOMDP* agentModel = fromJavaAgentModel(modelObject);
+//[[maybe_unused]] jobject AjanHelper::toJavaAjanParticleUpperBound(const AjanParticleUpperBound *particleUpperBound) {
+//    auto particleUpperBoundPtr = reinterpret_cast<jlong>(particleUpperBound);
+//    jobject particleUpperBoundObject = getEnv()->NewObject(getParticleUpperBoundClass(),
+//                                                     getMethodID(AJAN_PARTICLE_UPPER_BOUND,Init_), particleUpperBoundPtr);
+//    jobject modelObject = toJavaAjanAgentModel(particleUpperBound->tag_model_);
+//    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
+//    getEnv()->SetObjectField(particleUpperBoundObject,modelID,modelObject);
+//    getEnv()->DeleteLocalRef(modelObject);
+//    // Have to write for value_
+//    jobject valueVectorObject = toJavaDoubleVector(particleUpperBound->value_);
+//    jfieldID valueID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"value_", getSig(VECTOR).c_str());
+//    getEnv()->SetObjectField(particleUpperBoundObject,valueID,valueVectorObject);
+//    getEnv()->DeleteLocalRef(valueVectorObject);
+//    return particleUpperBoundObject;
+//}
+//
+//[[maybe_unused]] AjanParticleUpperBound* AjanHelper::fromJavaAjanParticleUpperBound(const jobject particleUpperBoundObject) {
+//    // WARN: May be some issues here for not having Java Double vector initialized for value_
+//    jfieldID modelID = getEnv()->GetFieldID(getParticleUpperBoundClass(),"agent_model", getSig(AJAN_PARTICLE_UPPER_BOUND).c_str());
+//    jobject modelObject = getEnv()->GetObjectField(particleUpperBoundObject, modelID);
+//    AjanAgent* agentModel = fromJavaAjanAgentModel(modelObject);
+//
+//    jfieldID doubleVectorID = getEnv()->GetFieldID(getVectorClass(),"value_", getSig(VECTOR).c_str());
+//    jobject doubleVectorObject = getEnv()->GetObjectField(particleUpperBoundObject, doubleVectorID);
+//    vector<double> valueVectorObject = fromJavaDoubleVector(doubleVectorObject);
+//    auto * particleUpperBound = new AjanParticleUpperBound(agentModel);
+//    return particleUpperBound;
+//}
 
-    jfieldID doubleVectorID = getEnv()->GetFieldID(getVectorClass(),"value_", getSig(VECTOR).c_str());
-    jobject doubleVectorObject = getEnv()->GetObjectField(particleUpperBoundObject, doubleVectorID);
-    vector<double> valueVectorObject = fromJavaDoubleVector(doubleVectorObject);
-    auto * particleUpperBound = new AjanParticleUpperBound((AjanAgent *)agentModel);
-    return particleUpperBound;
-}
-
-vector<double> AjanHelper::fromJavaDoubleVector(jobject javaDoubleVector) {
+[[maybe_unused]] vector<double> AjanHelper::fromJavaDoubleVector(jobject javaDoubleVector) {
     vector<double> result;
     jint size = getEnv()->CallIntMethod(javaDoubleVector, getMethodID(VECTOR,Size));
     for (int i = 0; i < size; i++) {
