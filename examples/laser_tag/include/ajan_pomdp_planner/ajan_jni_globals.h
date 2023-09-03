@@ -33,6 +33,7 @@ static const string AJAN_AGENT = IMPL_PKG + "AjanAgent";
 static const string AJAN_BELIEF = IMPL_PKG + "AjanBelief";
 static const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
 static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
+static const string AJAN_PARTICLE_LOWER_BOUND = IMPL_PKG + "AjanParticleLowerBound";
 static const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
 static const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
 [[maybe_unused]] static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";

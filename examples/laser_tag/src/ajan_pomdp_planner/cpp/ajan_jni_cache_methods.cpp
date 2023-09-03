@@ -372,7 +372,7 @@ void AjanHelper::GetAllAjanBeliefPolicyMethodID() {
     };
 
     for (auto &methodName: methodNames1) {
-        ajanPolicyMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getBeliefPolicyClass(),
+        ajanBeliefPolicyMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getBeliefPolicyClass(),
                                                                                  methodName[0].c_str(),
                                                                                  methodName[1].c_str()));
     }
@@ -488,6 +488,8 @@ jmethodID AjanHelper::getMethodID(const string& clazz, const string& methodName)
         return valuedActionMethods[methodName];
     }else if (clazz == AJAN_BELIEF) {
         return ajanBeliefMethods[methodName];
+    } else if (clazz == AJAN_BELIEF_POLICY){
+        return ajanBeliefPolicyMethods[methodName];
     } else {
         cout << "Cannot find the method" << endl;
         return nullptr;

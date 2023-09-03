@@ -50,6 +50,14 @@ public class AjanWorld extends World {
         return null;
     }
 
+    public long getCurrentObservation(){
+        return currentObservation;
+    }
+
+    public void setCurrentObservation(long obs){
+        currentObservation = obs;
+    }
+
     @Override
     protected boolean ExecuteAction(int action, long obs) {
         // TODO: Implement AjanWorld::ExecuteAction Function to call JNI

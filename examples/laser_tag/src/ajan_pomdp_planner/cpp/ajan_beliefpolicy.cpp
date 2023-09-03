@@ -23,8 +23,6 @@ namespace despot {
     }
 
     despot::ValuedAction AjanBeliefPolicy::Value(const despot::Belief *belief) const {
-        double bestValue = despot::Globals::NEG_INFTY;
-        int bestAction = -1;
         jobject javaBelief = AjanHelper::toJavaAjanBelief(belief);
         jobject javaValuedAction = AjanHelper::getEnv()->CallObjectMethod(javaReferenceObject,AjanHelper::getMethodID(AJAN_BELIEF_POLICY,Value_Belief), javaBelief);
         // TODO: Implement AjanBeliefPolicy::Value to call JNI

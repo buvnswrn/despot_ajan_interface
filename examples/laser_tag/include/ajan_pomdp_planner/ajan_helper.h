@@ -25,6 +25,7 @@ class AjanHelper {
     static map<string, jmethodID> particleUpperBoundMethods;
     static map<string, jmethodID> upperBoundMethods;
     static map<string, jmethodID> ajanPolicyMethods;
+    static map<string, jmethodID> ajanBeliefPolicyMethods;
     static map<string, jmethodID> worldMethods;
     static map<string, jmethodID> vectorMethods;
     static map<string, jmethodID> hashMapMethods;

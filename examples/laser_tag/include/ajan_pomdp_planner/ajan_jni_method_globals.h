@@ -80,7 +80,7 @@ static const string Reward_Sig = "(II)D";
 static const string CreateBeliefLowerBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_BELIEF_POLICY);
 static const string CreateBeliefUpperBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_UPPER_BOUND);
 static const string Tau_Sig = "(" + getSig(AJAN_BELIEF) + "IJ)" + getSig(BELIEF);
-static const string Observe_Sig = "()" + getSig(AJAN_AGENT);
+static const string Observe_Sig = "("+ getSig(AJAN_BELIEF)+"I"+ getSig(HASHMAP)+")V";
 static const string StepReward_Sig = "(" + getSig(BELIEF) + "I)D";
 static const string GetIndex_Sig = "(" + getSig(STATE) + ")I";
 static const string GetState_Sig = "(I)" + getSig(STATE);
@@ -93,13 +93,13 @@ static const string InitialBelief_Sig = "(" + getSig(STATE) + getSig(STRING) + "
 static const string GetMaxReward_Sig = "()D";
 static const string GetBestAction_Sig = "()" + getSig(VALUED_ACTION);
 static const string CreateParticleUpperBound_Sig = "(" + getSig(STRING) + "J)" + getSig(AJAN_PARTICLE_UPPER_BOUND);
-static const string CreateScenarioUpperBound_Sig = "(" + getSig(STRING) + getSig(STRING) + ")" + getSig(STRING);
-static const string CreateParticleLowerBound_Sig = "(" + getSig(STRING) + ")" + getSig(STRING);
+static const string CreateScenarioUpperBound_Sig = "(" + getSig(STRING) + getSig(STRING) + ")" + getSig(AJAN_UPPER_BOUND);
+static const string CreateParticleLowerBound_Sig = "(" + getSig(STRING) + ")" + getSig(AJAN_PARTICLE_LOWER_BOUND);
 static const string CreateScenarioLowerBound_Sig = "(" + getSig(STRING) + getSig(STRING) + "J)" + getSig(AJAN_POLICY);
 static const string PrintState_Sig = "(" + getSig(STATE) + ")V";
 static const string PrintObs_Sig = "(" + getSig(STATE) + "J)V";
 static const string PrintAction_Sig = "(I)V";
-static const string PrintBelief_Sig = "(" + getSig(BELIEF) + ")V";
+static const string PrintBelief_Sig = "(" + getSig(AJAN_BELIEF) + ")V";
 static const string NumActiveParticles_Sig = "()I";
 static const string ComputeDefaultActions_Sig = "("+ getSig(STRING)+")V";
 static const string WhichDefaultPolicyToUse_Sig = "()"+ getSig(STRING);
@@ -130,7 +130,7 @@ static const string SetCurrentObservation_World = "setCurrentObservation";
 static const string Connect_Sig = "()Z";
 static const string Initialize_Sig = "()" + getSig(STATE);
 static const string GetCurrentState_Sig_World = "()" + getSig(STATE);
-static const string ExecuteAction_Sig = "(II)Z";
+static const string ExecuteAction_Sig = "(IJ)Z";
 static const string GetCurrentObservation_Sig_World = "()J";
 static const string SetCurrentObservation_Sig_World = "(J)Z";
 
@@ -189,7 +189,7 @@ static const string Value_Particles_History_Sig = "("+ getSig(VECTOR)+ getSig(HI
 //endregion
 
 //region AjanBelief methods
-static const string Particles_ = "particles";
+static const string Particles_ = "particles"; // a method of ParticleBelief
 static const string Update_ = "Update";
 static const string Belief_Init_II = "<init>";
 // Method signature (replace the placeholders with actual types)
