@@ -5,10 +5,25 @@
 //
 
 #include "ajan_policy.h"
+#include "ajan_jni_globals.h"
+#include "ajan_jni_method_globals.h"
 
 using namespace despot;
 namespace despot {
-    despot::ACT_TYPE AjanPolicy::Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
+
+    AjanPolicy::AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound) :
+                DefaultPolicy(model, bound),
+                tag_model_(dynamic_cast<const despot::AjanAgent *>(model)) {
+            javaReferenceObject = AjanHelper::getEnv()->NewObject(AjanHelper::getPolicyClass(),
+                                                                 AjanHelper::getMethodID(
+                                                                         AJAN_POLICY,
+                                                                         Init_),
+                                                                         reinterpret_cast<jlong>(this));
+//            floor_ = tag_model_->floor(); // have to be changed
+//        cout<<"ISIDE TAGSHRPolciy"<<endl;
+        }
+
+        despot::ACT_TYPE AjanPolicy::Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
                                         despot::History &history) const {
         // TODO: Implement AjanPolicy::Action Function to call JNI
         /**
@@ -28,6 +43,10 @@ namespace despot {
          * 8. Robot may be trapped by the obstacles : If still the actions are zero, then return 0 -> Indicating North. \n
          * 9. Else, choose a random action from the computed variables. \n
          */
-         return 0;
+        jobject javaParticlesObject = AjanHelper::toJavaAgentStateVector(particles);
+        jobject javaHistoryObject = AjanHelper::toJavaHistory(history);
+        return AjanHelper::getEnv()->CallIntMethod(javaReferenceObject,
+                                               AjanHelper::getMethodID(AJAN_POLICY,Action_),
+                                                           javaParticlesObject, javaHistoryObject);
     }
 }

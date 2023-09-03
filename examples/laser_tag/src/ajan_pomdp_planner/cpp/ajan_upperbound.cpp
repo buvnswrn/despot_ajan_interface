@@ -5,6 +5,7 @@
 //
 
 #include "ajan_upperbound.h"
+#include "ajan_jni_method_globals.h"
 
 namespace despot {
 /* ==============================================================================
@@ -16,12 +17,19 @@ namespace despot {
         /**
          * For all States, PreCompute the distance between the rob and opp in value_[state_id]
         **/
+
     }
 
     double AjanUpperBound::Value(const despot::State &s) const {
         // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
         // Return precomputed value_[state.state_id];
-        return 0.0;
+        jobject javaState = AjanHelper::toJavaState(s);
+        return AjanHelper::getEnv()->CallDoubleMethod(javaReferenceObject,
+                                                      AjanHelper::getEnv()->GetMethodID(
+                                                              AjanHelper::getUpperBoundClass(),
+                                                              Value_.c_str(),
+                                                              Value_State_Double_Sig.c_str()),
+                                                              javaState);
     }
 
     double AjanUpperBound::Value(const despot::Belief *belief) const {
@@ -31,6 +39,7 @@ namespace despot {
          * Loop through the particles and for each particle (aka. state) sum up the value
             by multiplying current value with pre_computed value_[state.state_id]. Refer paper Guess:Eq.15.
         **/
-        return value;
+        jobject javaBelief = AjanHelper::toJavaAjanBelief(belief);
+        return AjanHelper::getEnv()->CallDoubleMethod(javaReferenceObject,AjanHelper::getMethodID(AJAN_UPPER_BOUND,Value_),javaBelief);
     }
 }

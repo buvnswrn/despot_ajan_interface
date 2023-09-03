@@ -14,9 +14,10 @@ namespace despot {
 * ==============================================================================*/
 
     class AjanBelief : public despot::ParticleBelief {
-    const despot::AjanAgent *tag_model_;
+        const despot::DSPOMDP *tag_model_;
+    jobject javaReferenceObject;
 public:
-        [[maybe_unused]] [[maybe_unused]] AjanBelief(std::vector<despot::State *> particles, const despot::AjanAgent *model, Belief *prior =
+        AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, Belief *prior =
     nullptr);
 
     void Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) override;

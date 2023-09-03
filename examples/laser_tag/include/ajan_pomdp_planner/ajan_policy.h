@@ -5,6 +5,7 @@
 //
 
 #include "ajan_agent.h"
+#include "ajan_helper.h"
 #ifndef SRC_AJAN_POLICY_H
 #define SRC_AJAN_POLICY_H
 
@@ -17,14 +18,10 @@ namespace despot {
     class AjanPolicy : public despot::DefaultPolicy {
         const DSPOMDP *tag_model_;
         despot::Floor floor_;
+        jobject javaReferenceObject;
 
     public:
-        AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound) :
-                DefaultPolicy(model, bound),
-                tag_model_(static_cast<const despot::AjanAgent *>(model)) {
-//            floor_ = tag_model_->floor(); // have to be changed
-//        cout<<"ISIDE TAGSHRPolciy"<<endl;
-        }
+        AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound);
 
         despot::ACT_TYPE Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
                                 despot::History &history) const;

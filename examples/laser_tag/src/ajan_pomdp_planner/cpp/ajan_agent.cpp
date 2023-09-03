@@ -69,9 +69,9 @@ namespace despot {
             return new TrivialBeliefLowerBound(this);
         } else if (name == DEFAULT || name == BLIND) {
             auto * beliefPolicy = new AjanBeliefPolicy(this);
-            jobject beliefLowerBoundObject = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
-                                                                                    AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefLowerBound_),name.c_str(), reinterpret_cast<jlong>(beliefPolicy));
-            beliefPolicy->javaReferenceObject = beliefLowerBoundObject;
+//            jobject beliefLowerBoundObject = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+//                                                                                    AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefLowerBound_),name.c_str(), reinterpret_cast<jlong>(beliefPolicy));
+//            beliefPolicy->javaReferenceObject = beliefLowerBoundObject; //uncheck this if the above creation doesn't work
             // send back the cpp reference as well
             return beliefPolicy;
         } else {
@@ -118,11 +118,19 @@ namespace despot {
          * Calculates the sum of current weight * next weight * observation probability given state and action.
          * Updates the particles and creates new belief
          */
-        return nullptr;
+        jobject javaBelief = AjanHelper::toJavaAjanBelief(belief); // when it is sent back, java reference is not available
+        jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                               AjanHelper::getMethodID(AJAN_AGENT, Tau_),javaBelief,action,obs);
+        // TODO: Have to work more in here - not sure until now how to manipulate or convert to and from particle belief and so on
+        return AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr); // Whenevr you send, send a AjanBelief, so it has the java object
     }
 
     void AjanAgent::Observe(const Belief *belief, ACT_TYPE action, map<OBS_TYPE, double> &obss) const {
-        // TODO: Implement AjanAgent::Observe to call JNI
+        // TODO: Change the implmentation or test it when actual logic is written for the Observe function
+        jobject javaAjanBelief = AjanHelper::toJavaAjanBelief(belief); // Conversion might not be needed.
+        jobject javaObsMap = AjanHelper::toJavaLongDoubleMap(obss);
+        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+                                             AjanHelper::getMethodID(AJAN_AGENT,Observe_),javaAjanBelief,action,javaObsMap); // since return is void we can simply return obss variable back that is updated and use here. Not sure whether & acts a pointer
         // Not real implementation here just "too many observations" print message
     }
 
@@ -131,7 +139,7 @@ namespace despot {
         // WARN: Careful about the history manipulation
         // Calculate the cumulative reward until here according to the actions given.
         // Consider passing belief as a memory address
-        jobject javaBelief = AjanHelper::toJavaBelief(belief);
+        jobject javaBelief = AjanHelper::toJavaAjanBelief(belief);
         return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,StepReward_),javaBelief,action);
     }
@@ -244,7 +252,12 @@ namespace despot {
         /**
          * Update the particles with rob and opp particle weight and create a particle belief with it.
          */
-        return nullptr;
+         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) start);
+         jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                                                AjanHelper::getMethodID(AJAN_AGENT, InitialBelief_),javaState, type.c_str());
+         AjanBelief * ajanBelief = AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr);
+         ajanBelief->state_indexer(this);
+        return ajanBelief;
     }
 
     double AjanAgent::GetMaxReward() const {
@@ -330,16 +343,16 @@ namespace despot {
          } else if ( name == SHR || name == AJAN) {
              // have to check for smae_loc_obs_ to be equal or not and then use it. May be use computedefault actions and use this one
              auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
-             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
-                                AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
-                                                                    name.c_str(),
-                                                                    particle_bound_name.c_str(),
-                                                                    reinterpret_cast<jlong>(ajanPolicy));
-             if(javaAjanPolicy == nullptr) {
-                 cerr << "Cannot get belief upper bound: " << name << endl;
-                 return nullptr;
-             }
-             ajanPolicy->javaReferenceObject = javaAjanPolicy;
+//             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+//                                AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
+//                                                                    name.c_str(),
+//                                                                    particle_bound_name.c_str(),
+//                                                                    reinterpret_cast<jlong>(ajanPolicy)); // uncomment this if the above constructor call doesn't work
+//             if(javaAjanPolicy == nullptr) {
+//                 cerr << "Cannot get belief upper bound: " << name << endl;
+//                 return nullptr;
+//             }
+//             ajanPolicy->javaReferenceObject = javaAjanPolicy;
              return ajanPolicy;
          } else if(name == MMAP_MDP){
              ComputeDefaultActions(MDP_);
@@ -364,8 +377,8 @@ namespace despot {
                                              CreateParticleLowerBound(particle_bound_name));
          } else if (name == DEFAULT) {
              string policyToUse = WhichDefaultPolicyToUse(); // Ask AJAN on which policy to use and use it. Calculate whether same_loc_obs is equal or not there.
-             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
              if(policyToUse == AJAN){
+             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
                  jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
                                                                                  AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
                                                                                  name.c_str(),
@@ -387,8 +400,8 @@ namespace despot {
              cerr << "Supported types: TRIVIAL, RANDOM, SHR, MODE-MDP, MODE-SP, MAJORITY-MDP, MAJORITY-SP (default to MODE-MDP)" << endl;
              cerr << "With base lower bound: except TRIVIAL" << endl;
              exit(1);
-             return nullptr;
          }
+        return nullptr;
     }
 
     void AjanAgent::PrintState(const State &state, ostream &out) const {
@@ -413,7 +426,7 @@ namespace despot {
 
     void AjanAgent::PrintBelief(const Belief &belief, ostream &out) const {
         //TODO: Implement AjanAgent::PrintBelief function to call JNI
-        jobject javaBelief = AjanHelper::toJavaBelief(&belief);
+        jobject javaBelief = AjanHelper::toJavaAjanBelief(&belief);
         AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintBelief_),javaBelief);
     }
@@ -429,7 +442,7 @@ namespace despot {
     State *AjanAgent::Copy(const State *particle) const {
         //TODO: Implement AjanAgent::Copy function to call JNI
         AjanAgentState* state = memory_pool_.Allocate();
-        *state = *static_cast<const AjanAgentState*>(particle);
+        *state = *dynamic_cast<const AjanAgentState*>(particle);
         state->SetAllocated();
         return state;
     }

@@ -6,12 +6,14 @@
 #include "ajan_belief.h"
 #include "de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface__Belief.h"
 #include "ajan_helper.h"
+#include "ajan_jni_globals.h"
+#include "ajan_jni_method_globals.h"
 
 using namespace despot;
 /* ==============================================================================
  * AjanBelief class
  * ==============================================================================*/
-[[maybe_unused]] AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::AjanAgent *model, despot::Belief *prior):
+[[maybe_unused]] AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, despot::Belief *prior):
 despot::ParticleBelief(particles, model, prior, false),
 tag_model_(model){
 // TODO: Implement AjanBelief::AjanBelief to call using JNI
@@ -31,6 +33,7 @@ void AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
             to update a single particle instead of copying and sending all of them.
         6. In Java, assign obj=null; System.gc(); to garbage collect the variables.
     **/
+AjanHelper::getEnv()->CallVoidMethod(javaReferenceObject, AjanHelper::getMethodID(AJAN_BELIEF,Update_), action, obs);
 }
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_Sample_1
@@ -48,5 +51,5 @@ void AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
         ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisBeliefObject, jlong beliefPtr) {
     cout<<"JNI:MakeCopy:This method should not be called";
     auto* belief = reinterpret_cast<Belief *>(beliefPtr);
-    return AjanHelper::toJavaBelief(belief->MakeCopy());
+    return AjanHelper::toJavaAjanBelief(belief->MakeCopy());
 }

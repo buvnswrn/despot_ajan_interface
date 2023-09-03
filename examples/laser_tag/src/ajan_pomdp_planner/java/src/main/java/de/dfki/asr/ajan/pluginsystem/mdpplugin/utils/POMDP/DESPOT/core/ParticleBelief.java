@@ -10,7 +10,7 @@ import java.util.Vector;
 
 public abstract class ParticleBelief extends Belief {
 
-    protected Vector<State> particles_; // May be have a pointer here to access when required
+    public Vector<State> particles_; // May be have a pointer here to access when required
     public long particlesPointerToCpp;
     int num_particles_; // not used as of now in Java end
     Belief prior_; // not used as of now in Java end

@@ -11,7 +11,7 @@ import java.util.Vector;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.AJAN;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.MDP_;
 
-public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMAPInferencer, Cleaner.Cleanable  {
+public class AjanAgent extends MDP implements BeliefMDP, StateIndexer, StatePolicy, MMAPInferencer, Cleaner.Cleanable  {
 
     public long agentModelPointer;
     Vector<Integer> default_action_;
@@ -324,6 +324,5 @@ public class AjanAgent implements MDP, BeliefMDP, StateIndexer, StatePolicy, MMA
         return currentObservation;
     }
 
-    native Vector<ValuedAction> ComputeOptimalPoliciesUsingVIAndReturnPolicy(long agentPtr);
     //endregion
 }
