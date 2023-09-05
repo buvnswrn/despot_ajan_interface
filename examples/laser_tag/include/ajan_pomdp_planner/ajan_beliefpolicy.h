@@ -18,12 +18,13 @@
 #include <cmath>
 #include "ajan_agent.h"
 #include <queue>
+#include "ajan_helper.h"
 
 namespace despot {
 /* ==============================================================================
 * AjanBeliefPolicy class
 * ==============================================================================*/
-
+    class AjanAgent;
     class AjanBeliefPolicy : public despot::BeliefLowerBound {
     private:
         std::vector<std::vector<double> > alpha_vectors_; // optional

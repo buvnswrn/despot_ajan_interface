@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanAgent_deleteAgent
   (JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanAgent
+ * Method:    testMethod
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanAgent_testMethod
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

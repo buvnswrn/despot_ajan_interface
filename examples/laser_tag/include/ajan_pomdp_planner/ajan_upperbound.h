@@ -16,7 +16,7 @@
 #include <cmath>
 #include "ajan_agent.h"
 #include <queue>
-
+#include "ajan_jni_method_globals.h"
 namespace despot {
 /* ==============================================================================
 * AjanUpperBound class

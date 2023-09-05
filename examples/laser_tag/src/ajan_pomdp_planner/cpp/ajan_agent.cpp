@@ -5,10 +5,7 @@
 //
 
 #include "ajan_agent.h"
-#include "ajan_jni_method_globals.h"
-#include "despot_pomdp_globals.h"
-#include "ajan_particleupperbound.h"
-#include "ajan_beliefpolicy.h"
+
 
 using namespace std;
 namespace despot {
@@ -28,14 +25,14 @@ namespace despot {
     int AjanAgent::NumStates() const {
         // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of cells
-        return AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                               AjanHelper::getMethodID(AJAN_AGENT,NumStates_));
     }
 
     int AjanAgent::NumActions() const {
         // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of actions
-        return AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                                    AjanHelper::getMethodID(AJAN_AGENT,NumActions_));
     }
 
@@ -44,7 +41,7 @@ namespace despot {
         vectorOfStates.clear();
         // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // return transition_probabilities_[s][a];
-        jobject transProb = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject transProb = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                    AjanHelper::getMethodID(AJAN_AGENT,TransitionProbability_),s,a);
         vectorOfStates= AjanHelper::fromJavaAgentStateVector(transProb);
         return vectorOfStates;
@@ -53,7 +50,7 @@ namespace despot {
     double AjanAgent::Reward(int s, ACT_TYPE a) const {
         // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // If action is tag, and tagged -> tag reward else - tag reward else reward  = -1 (longer it takes, lower is the reward)
-        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                       AjanHelper::getMethodID(AJAN_AGENT,Reward_),s, a);
     }
     //endregion
@@ -69,7 +66,7 @@ namespace despot {
             return new TrivialBeliefLowerBound(this);
         } else if (name == DEFAULT || name == BLIND) {
             auto * beliefPolicy = new AjanBeliefPolicy(this);
-//            jobject beliefLowerBoundObject = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+//            jobject beliefLowerBoundObject = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
 //                                                                                    AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefLowerBound_),name.c_str(), reinterpret_cast<jlong>(beliefPolicy));
 //            beliefPolicy->javaReferenceObject = beliefLowerBoundObject; //uncheck this if the above creation doesn't work
             // send back the cpp reference as well
@@ -94,7 +91,7 @@ namespace despot {
 //        }
         else if (name == MANHATTAN || name == AJAN) {
             auto * ajanUpperBound = new AjanUpperBound(this);
-            jobject beliefUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+            jobject beliefUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                               AjanHelper::getMethodID(AJAN_AGENT,CreateBeliefUpperBound_), name.c_str(),reinterpret_cast<jlong>(ajanUpperBound));
             if(beliefUpperBound == nullptr) {
                 cerr << "Cannot get belief upper bound: " << name << endl;
@@ -119,7 +116,7 @@ namespace despot {
          * Updates the particles and creates new belief
          */
         jobject javaBelief = AjanHelper::toJavaAjanBelief(belief); // when it is sent back, java reference is not available
-        jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT, Tau_),javaBelief,action,obs);
         // TODO: Have to work more in here - not sure until now how to manipulate or convert to and from particle belief and so on
         return AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr); // Whenevr you send, send a AjanBelief, so it has the java object
@@ -129,7 +126,7 @@ namespace despot {
         // TODO: Change the implmentation or test it when actual logic is written for the Observe function
         jobject javaAjanBelief = AjanHelper::toJavaAjanBelief(belief); // Conversion might not be needed.
         jobject javaObsMap = AjanHelper::toJavaLongDoubleMap(obss);
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT,Observe_),javaAjanBelief,action,javaObsMap); // since return is void we can simply return obss variable back that is updated and use here. Not sure whether & acts a pointer
         // Not real implementation here just "too many observations" print message
     }
@@ -140,7 +137,7 @@ namespace despot {
         // Calculate the cumulative reward until here according to the actions given.
         // Consider passing belief as a memory address
         jobject javaBelief = AjanHelper::toJavaAjanBelief(belief);
-        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,StepReward_),javaBelief,action);
     }
 
@@ -156,7 +153,7 @@ namespace despot {
     const State* AjanAgent::GetState(int index) const {
         // TODO: Implement AjanAgent::GetState to call JNI
         //return states_[index];
-        jobject ajanState = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject ajanState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                    AjanHelper::getMethodID(AJAN_AGENT,GetState_),index);
         const State * statePtr = new State(AjanHelper::fromJavaState(ajanState));
         return statePtr;
@@ -169,7 +166,7 @@ namespace despot {
         // TODO: Implement AjanAgent::GetAction to call JNI
         // return default_action_[GetIndex(state)]
         jobject agentState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) tagstate);
-        return AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                                    AjanHelper::getMethodID(AJAN_AGENT,GetAction_), agentState);
     }
     //endregion
@@ -183,7 +180,7 @@ namespace despot {
          * 3. return the state variable stored for the particular index
          */
          jobject javaParticles = AjanHelper::toJavaAgentStateVector(particles);
-         jobject javaState =  AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+         jobject javaState =  AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                        AjanHelper::getMethodID(AJAN_AGENT,GetMMAP_),javaParticles);
         auto * returnState = new State(AjanHelper::fromJavaState(javaState));
         return returnState;
@@ -200,13 +197,13 @@ namespace despot {
          * 4. return terminal=true if the tag is done.
          */
          jobject javaState = AjanHelper::toJavaAjanAgentState(dynamic_cast<const AjanAgentState &>(state));
-         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper.getAjanJavaAgentObject(),
+         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),
                                                         AjanHelper::getEnv()->GetMethodID(AjanHelper::getAgentClass(),Step_.c_str(),
                                                                                           ("("+getSig(STATE)+"DID)Z").c_str()),javaState,random_num,action,reward);
-        jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                         AjanHelper::getMethodID(AJAN_AGENT,GetCurrentState_Agent));
         state = AjanHelper::fromJavaState(javaAgentState);
-        reward = AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+        reward = AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                         AjanHelper::getMethodID(AJAN_AGENT,GetCurrentReward_Agent));
         return returnValue;
     }
@@ -220,14 +217,14 @@ namespace despot {
          * for each the direction deduct the mass based on the reading_distribution until it is less than Globals::TINY and then set the reading to observation variable.
          */
          jobject javaState = AjanHelper::toJavaAjanAgentState(dynamic_cast<const AjanAgentState &>(state));
-         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper.getAjanJavaAgentObject(),AjanHelper::getMethodID(AJAN_AGENT,Step_),javaState,random_num, action, reward, obs); // TODO: Set values of obs and reward here
-         obs = AjanHelper::getEnv()->CallLongMethod(helper.getAjanJavaAgentObject(),
+         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),AjanHelper::getMethodID(AJAN_AGENT,Step_),javaState,random_num, action, reward, obs); // TODO: Set values of obs and reward here
+         obs = AjanHelper::getEnv()->CallLongMethod(helper->getAjanJavaAgentObject(),
                                                     AjanHelper::getMethodID(AJAN_AGENT,GetCurrentObservation_Agent));
-         reward = AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+         reward = AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                          AjanHelper::getMethodID(AJAN_AGENT,GetCurrentReward_Agent));
-         action = AjanHelper::getEnv()->CallIntMethod(helper.getAjanJavaAgentObject(),
+         action = AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                                       AjanHelper::getMethodID(AJAN_AGENT,GetCurrentAction_Agent));
-         jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+         jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                          AjanHelper::getMethodID(AJAN_AGENT,GetCurrentState_Agent));
          state = AjanHelper::fromJavaState(javaAgentState);
          return returnValue;
@@ -236,7 +233,7 @@ namespace despot {
     double AjanAgent::ObsProb(OBS_TYPE obs, const State &state, ACT_TYPE action) const {
         //TODO: Implement AjanAgent::ObsProb function to call JNI
         jobject s = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
-        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,ObsProb_),obs,s,action);
     }
 
@@ -253,7 +250,7 @@ namespace despot {
          * Update the particles with rob and opp particle weight and create a particle belief with it.
          */
          jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) start);
-         jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+         jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                 AjanHelper::getMethodID(AJAN_AGENT, InitialBelief_),javaState, type.c_str());
          AjanBelief * ajanBelief = AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr);
          ajanBelief->state_indexer(this);
@@ -263,14 +260,14 @@ namespace despot {
     double AjanAgent::GetMaxReward() const {
         // TODO: Implement AjanAgent::GetMaxReward function to call JNI
         // return TAG_REWARD;
-        return AjanHelper::getEnv()->CallDoubleMethod(helper.getAjanJavaAgentObject(),
+        return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                       AjanHelper::getMethodID(AJAN_AGENT,GetMaxReward_));
     }
 
     ValuedAction AjanAgent::GetBestAction() const {
         // TODO: Implement AjanAgent::GetMaxReward function to call JNI
         //return ValuedAction(0, -1);
-        jobject returnValuedAction = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject returnValuedAction = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                             AjanHelper::getMethodID(AJAN_AGENT,GetBestAction_));
         return AjanHelper::fromJavaValuedAction(returnValuedAction);
     }
@@ -286,7 +283,7 @@ namespace despot {
             return new MDPUpperBound(this, *this);
         } else if (name == SP || name == DEFAULT || name == MANHATTAN || name == AJAN) {
             auto * particleUpperBound = new AjanParticleUpperBound(this);
-            jobject javaParticleUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+            jobject javaParticleUpperBound = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                 AjanHelper::getMethodID(AJAN_AGENT,CreateParticleUpperBound_),
                                                                     name.c_str(),
                                                                     reinterpret_cast<jlong>(particleUpperBound));
@@ -343,7 +340,7 @@ namespace despot {
          } else if ( name == SHR || name == AJAN) {
              // have to check for smae_loc_obs_ to be equal or not and then use it. May be use computedefault actions and use this one
              auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
-//             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+//             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
 //                                AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
 //                                                                    name.c_str(),
 //                                                                    particle_bound_name.c_str(),
@@ -379,7 +376,7 @@ namespace despot {
              string policyToUse = WhichDefaultPolicyToUse(); // Ask AJAN on which policy to use and use it. Calculate whether same_loc_obs is equal or not there.
              if(policyToUse == AJAN){
              auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
-                 jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+                 jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                                  AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
                                                                                  name.c_str(),
                                                                                  particle_bound_name.c_str(),
@@ -407,27 +404,27 @@ namespace despot {
     void AjanAgent::PrintState(const State &state, ostream &out) const {
         //TODO: Implement AjanAgent::PrintState function to call JNI
         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintState_),javaState);
     }
 
     void AjanAgent::PrintObs(const State &state, OBS_TYPE obs, ostream &out) const {
         //TODO: Implement AjanAgent::PrintObs function to call JNI
         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintObs_),javaState,obs);
     }
 
     void AjanAgent::PrintAction(ACT_TYPE action, ostream &out) const {
         //TODO: Implement AjanAgent::PrintAction function to call JNI
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintAction_),action);
     }
 
     void AjanAgent::PrintBelief(const Belief &belief, ostream &out) const {
         //TODO: Implement AjanAgent::PrintBelief function to call JNI
         jobject javaBelief = AjanHelper::toJavaAjanBelief(&belief);
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintBelief_),javaBelief);
     }
 
@@ -460,12 +457,12 @@ namespace despot {
 
     //region problem helpers
     void AjanAgent::ComputeDefaultActions(string type) const {
-        AjanHelper::getEnv()->CallVoidMethod(helper.getAjanJavaAgentObject(),
+        AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT,ComputeDefaultActions_),type.c_str());
     }
 
     string AjanAgent::WhichDefaultPolicyToUse() const {
-        jobject javaString = AjanHelper::getEnv()->CallObjectMethod(helper.getAjanJavaAgentObject(),
+        jobject javaString = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,WhichDefaultPolicyToUse_));
         return AjanHelper::fromJavaString(javaString);
     }

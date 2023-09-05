@@ -5,15 +5,15 @@ project(laser_tag)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
-  geometry_msgs
-  nav_msgs
-  sensor_msgs
-  tf
-  message_generation
-)
+        roscpp
+        rospy
+        std_msgs
+        geometry_msgs
+        nav_msgs
+        sensor_msgs
+        tf
+        message_generation
+        )
 
 find_package(Despot CONFIG REQUIRED)
 
@@ -53,15 +53,15 @@ find_package(Boost REQUIRED COMPONENTS thread)
 
 ## Generate services in the 'srv' folder
 add_service_files(
-  FILES
-  YoubotActionObs.srv
-  TagActionObs.srv
+        FILES
+        YoubotActionObs.srv
+        TagActionObs.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-  DEPENDENCIES
-  std_msgs
+        DEPENDENCIES
+        std_msgs
 )
 
 
@@ -69,7 +69,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+        CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 )
 
 ###########
@@ -77,13 +77,13 @@ catkin_package(
 ###########
 
 include_directories(
-      ${catkin_INCLUDE_DIRS}
-      ${Boost_INCLUDE_DIRS}
-      ${JNI_INCLUDE_DIRS}
-      include/robot_controller
-      include/unified_pomdp_planner
-      include/ajan_pomdp_planner
-      include/ajan_jni_headers
+        ${catkin_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
+        ${JNI_INCLUDE_DIRS}
+        include/robot_controller
+        include/unified_pomdp_planner
+        include/ajan_pomdp_planner
+        include/ajan_jni_headers
 )
 
 ## Declare a C++ executable
@@ -98,19 +98,34 @@ target_link_libraries(laser_tag_controller ${catkin_LIBRARIES})
 
 
 ## Declare a C++ executable
-add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag.cpp src/unified_pomdp_planner/unified_laser_tag_world.cpp src/unified_pomdp_planner/main.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_manhattan_upperbound.cpp src/unified_pomdp_planner/tag_sp_particleupperbound.cpp src/unified_pomdp_planner/tag_blind_beliefpolicy.cpp)
-add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
+#add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag.cpp src/unified_pomdp_planner/unified_laser_tag_world.cpp src/unified_pomdp_planner/main.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_manhattan_upperbound.cpp src/unified_pomdp_planner/tag_sp_particleupperbound.cpp src/unified_pomdp_planner/tag_blind_beliefpolicy.cpp)
+#add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
-file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
-add_executable(ajan_pomdp_planner ${CPP_SOURCE_FILES})
+#add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/cpp/ajan_belief.cpp src/ajan_pomdp_planner/cpp/ajan_state.cpp src/ajan_pomdp_planner/cpp/ajan_agent.cpp src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp src/ajan_pomdp_planner/cpp/ajan_world.cpp src/ajan_pomdp_planner/cpp/ajan_policy.cpp src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp src/ajan_pomdp_planner/cpp/ajan_helper.cpp src/ajan_pomdp_planner/cpp/ajan_helper.h)
+add_executable(ajan_pomdp_planner src/ajan_pomdp_planner
+        include/ajan_pomdp_planner/ajan_helper.h
+        src/ajan_pomdp_planner/cpp/ajan_getter_setter.cpp
+        src/ajan_pomdp_planner/cpp/ajan_jni_cache_methods.cpp
+        src/ajan_pomdp_planner/cpp/ajan_jni_converters.cpp
+        src/ajan_pomdp_planner/cpp/ajan_belief.cpp
+        src/ajan_pomdp_planner/cpp/ajan_state.cpp
+        src/ajan_pomdp_planner/cpp/ajan_agent.cpp
+        src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp
+        src/ajan_pomdp_planner/cpp/ajan_world.cpp
+        src/ajan_pomdp_planner/cpp/ajan_policy.cpp
+        src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp
+        src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp
+        src/ajan_pomdp_planner/cpp/ajan_planner.cpp)
+#file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
+#add_executable(ajan_pomdp_planner ${CPP_SOURCE_FILES})
 add_dependencies(ajan_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(ajan_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ Library
 file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
-add_library(ajan_planner SHARED ${CPP_SOURCE_FILES} )
+add_library(ajan_planner SHARED ${CPP_SOURCE_FILES})
 target_link_libraries(ajan_planner despot ${catkin_LIBRARIES})
 # Link the JNI library
 target_include_directories(ajan_planner PRIVATE ${JNI_INCLUDE_DIRS})
@@ -122,5 +137,7 @@ set_target_properties(ajan_planner PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_
 add_executable(test_laser_tag_controller test/test_laser_tag_controller.cpp)
 add_dependencies(test_laser_tag_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(test_laser_tag_controller ${catkin_LIBRARIES})
+
+
 
 

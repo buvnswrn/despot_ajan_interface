@@ -4,11 +4,12 @@
 // See: examples/laser_tag/include/unified_pomdp_planner/unified_laser_tag.h
 //
 
-#include "ajan_agent.h"
-#include "ajan_helper.h"
 #ifndef SRC_AJAN_POLICY_H
 #define SRC_AJAN_POLICY_H
-
+#include "ajan_agent.h"
+#include "ajan_helper.h"
+#include "ajan_jni_globals.h"
+#include "ajan_jni_method_globals.h"
 /* ==============================================================================
 * TagSHRPolicy class
 * ==============================================================================*/
@@ -18,7 +19,6 @@ namespace despot {
     class AjanPolicy : public despot::DefaultPolicy {
         const DSPOMDP *tag_model_;
         despot::Floor floor_;
-        jobject javaReferenceObject;
 
     public:
         AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound);

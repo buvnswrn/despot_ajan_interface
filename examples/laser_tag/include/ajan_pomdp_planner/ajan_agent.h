@@ -17,13 +17,18 @@
 #include <despot/core/particle_belief.h>
 #include "ajan_state.h"
 #include "ajan_helper.h"
+#include "ajan_jni_method_globals.h"
+#include "despot_pomdp_globals.h"
+#include "ajan_particleupperbound.h"
+#include "ajan_beliefpolicy.h"
 
 namespace despot {
 /* ==============================================================================
  * AjanAgent class : Similar to UnifiedLaserTag class
  * ==============================================================================*/
-
-    class AjanAgent: public MDP,
+class AjanHelper;
+class AjanBeliefPolicy;
+class AjanAgent: public MDP,
                      public BeliefMDP,
                      public StateIndexer,
                      public StatePolicy,
@@ -36,7 +41,7 @@ namespace despot {
     protected:
         mutable MemoryPool<AjanAgentState> memory_pool_;
         std::vector<AjanAgentState*> states_; // optional
-        AjanHelper helper;
+        AjanHelper *helper;
         // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
 
@@ -187,9 +192,9 @@ namespace despot {
 
         // endregion
 
-        void ComputeDefaultActions(string type) const;
+        void ComputeDefaultActions(std::string type) const;
 
-        string WhichDefaultPolicyToUse() const;
+        std::string WhichDefaultPolicyToUse() const;
     };
 
 }

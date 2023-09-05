@@ -49,6 +49,10 @@ public:
     }
 };
 
+int main(int argc, char* argv[]) {
+    return AjanPlanner().RunPlanning(argc, argv);
+}
+
 [[maybe_unused]] JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanPlanner_RunPlanner
         ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisObject, [[maybe_unused]]  jobject agentObject, [[maybe_unused]]  jobject worldObject) {
     char* argv[] = {strdup("AJAN_Planner") };

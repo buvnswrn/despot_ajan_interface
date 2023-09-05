@@ -5,8 +5,6 @@
 //
 
 #include "ajan_policy.h"
-#include "ajan_jni_globals.h"
-#include "ajan_jni_method_globals.h"
 
 using namespace despot;
 namespace despot {

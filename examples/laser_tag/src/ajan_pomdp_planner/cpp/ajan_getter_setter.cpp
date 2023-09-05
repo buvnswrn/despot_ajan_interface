@@ -5,9 +5,28 @@
 using namespace std;
 
 // region Getter and Setter
+JNIEnv * AjanHelper::ajanJavaEnv;
+jclass AjanHelper::doubleClass;
+jclass AjanHelper::integerClass;
+jclass AjanHelper::longClass;
+jclass AjanHelper::plannerClass;
+jclass AjanHelper::agentClass;
+jclass AjanHelper::worldClass;
+jclass AjanHelper::vectorClass;
+jclass AjanHelper::hashMapClass;
+jclass AjanHelper::stateClass;
+jclass AjanHelper::particleUpperBoundClass;
+jclass AjanHelper::upperBoundClass;
+jclass AjanHelper::ajanPolicyClass;
+jclass AjanHelper::ajanBeliefPolicyClass;
+jclass AjanHelper::coordClass;
+jclass AjanHelper::floorClass;
+jclass AjanHelper::historyClass;
+jclass AjanHelper::valuedActionClass;
+jclass AjanHelper::ajanBeliefClass;
 
-JNIEnv *AjanHelper::getEnv() {return ajanJavaEnv;}
-void AjanHelper::setEnv(JNIEnv *&env) {ajanJavaEnv = env;}
+JNIEnv *AjanHelper::getEnv() {return AjanHelper::ajanJavaEnv;}
+void AjanHelper::setEnv(JNIEnv *&env) {AjanHelper::ajanJavaEnv = env;}
 
 [[maybe_unused]] jobject AjanHelper::getAjanJavaPlannerObject() { return *ajanJavaPlannerObject; }
 void AjanHelper::setAjanJavaPlannerObject(jobject *plannerObject) { ajanJavaPlannerObject = plannerObject; }
@@ -19,7 +38,7 @@ void AjanHelper::setAjanJavaAgentObject(jobject *plannerObject) { ajanJavaAgentO
 void AjanHelper::setAjanJavaWorldObject(jobject *plannerObject) { ajanJavaWorldObject = plannerObject; }
 
 [[maybe_unused]] jobject AjanHelper::getAjanParticleUpperBound() { return *ajanJavaWorldObject; }
-[[maybe_unused]] void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
+//[[maybe_unused]] void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
 
 [[maybe_unused]] jobject AjanHelper::getAjanPolicyObject() const { return ajanPolicyObject; }
 [[maybe_unused]] void AjanHelper::setAjanPolicyObject(jobject *plannerObject) { ajanPolicyObject = *plannerObject; }

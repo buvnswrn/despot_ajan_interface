@@ -8,7 +8,7 @@
 #include "ajan_jni_globals.h"
 using namespace std;
 
-string getSig(const string &method) { return ("L"+ method +";"); }
+static string getSig(const string &method) { return ("L"+ method +";"); }
 
 //region Planner Methods
 static const string InitializeModel_ = "InitializeModel";

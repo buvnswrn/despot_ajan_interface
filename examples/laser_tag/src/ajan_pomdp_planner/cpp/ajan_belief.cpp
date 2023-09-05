@@ -4,22 +4,18 @@
 // See: examples/laser_tag/include/unified_pomdp_planner/tag_belief.cpp
 //
 #include "ajan_belief.h"
-#include "de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface__Belief.h"
-#include "ajan_helper.h"
-#include "ajan_jni_globals.h"
-#include "ajan_jni_method_globals.h"
 
 using namespace despot;
 /* ==============================================================================
  * AjanBelief class
  * ==============================================================================*/
-[[maybe_unused]] AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, despot::Belief *prior):
+[[maybe_unused]] despot::AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, despot::Belief *prior):
 despot::ParticleBelief(particles, model, prior, false),
 tag_model_(model){
 // TODO: Implement AjanBelief::AjanBelief to call using JNI
 }
 
-void AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
+void despot::AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
     // TODO: Implement AjanBelief::Update using JNI
     // WARN: Be careful here (as this affects performance)
 

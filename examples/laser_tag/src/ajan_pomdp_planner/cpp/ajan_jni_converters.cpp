@@ -3,8 +3,6 @@
 //
 
 #include "ajan_helper.h"
-#include "ajan_jni_globals.h"
-#include "ajan_jni_method_globals.h"
 
 [[maybe_unused]] jstring AjanHelper::toJavaString(const string& string1) {
     return getEnv()->NewStringUTF(string1.c_str());
@@ -217,7 +215,7 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return beliefObject;
 }
 
-AjanBelief* AjanHelper::newBeliefFromAjanBelief(jobject ajanBelief, const despot::DSPOMDP *model, Belief *prior =
+despot::AjanBelief* AjanHelper::newBeliefFromAjanBelief(jobject ajanBelief, const despot::DSPOMDP *model, Belief *prior =
 nullptr) {
     jobject particlesObject = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
     vector<State *> particles = fromJavaAgentStatePointerVector(particlesObject);

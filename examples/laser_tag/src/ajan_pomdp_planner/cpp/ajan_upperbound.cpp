@@ -5,7 +5,7 @@
 //
 
 #include "ajan_upperbound.h"
-#include "ajan_jni_method_globals.h"
+
 
 namespace despot {
 /* ==============================================================================

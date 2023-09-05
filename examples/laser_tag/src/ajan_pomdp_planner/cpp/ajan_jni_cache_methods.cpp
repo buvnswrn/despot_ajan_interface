@@ -4,8 +4,6 @@
 
 #include <iostream>
 #include "ajan_helper.h"
-#include "ajan_jni_globals.h"
-#include "ajan_jni_method_globals.h"
 
 // Need function to pass State variable to Java
 // Need function to pass the particles and make some computations using JNI.
@@ -14,7 +12,23 @@
 
 using namespace std;
 
-
+map <string, jmethodID> AjanHelper::plannerMethods;
+map <string, jmethodID> AjanHelper::agentMethods;
+map <string, jmethodID> AjanHelper::stateMethods;
+map <string, jmethodID> AjanHelper::particleUpperBoundMethods;
+map <string, jmethodID> AjanHelper::upperBoundMethods;
+map <string, jmethodID> AjanHelper::ajanPolicyMethods;
+map <string, jmethodID> AjanHelper::ajanBeliefPolicyMethods;
+map <string, jmethodID> AjanHelper::worldMethods;
+map <string, jmethodID> AjanHelper::vectorMethods;
+map <string, jmethodID> AjanHelper::hashMapMethods;
+map <string, jmethodID> AjanHelper::doubleMethods;
+map <string, jmethodID> AjanHelper::integerMethods;
+map <string, jmethodID> AjanHelper::longMethods;
+map <string, jmethodID> AjanHelper::coordMethods;
+map <string, jmethodID> AjanHelper::historyMethods;
+map <string, jmethodID> AjanHelper::valuedActionMethods;
+map <string, jmethodID> AjanHelper::ajanBeliefMethods;
 
 void AjanHelper::Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
 
@@ -85,7 +99,7 @@ void AjanHelper::GetAllPlannerMethodID() {
             {GetWorldType_, GetWorldType_Sig}
     };
     for (auto &methodName: methodNames) {
-        plannerMethods[methodName[0]] = (methodName[0], ajanJavaEnv->GetMethodID(getPlannerClass(),
+        AjanHelper::plannerMethods[methodName[0]] = (methodName[0], getEnv()->GetMethodID(getPlannerClass(),
                                                                                  methodName[0].c_str(),
                                                                                  methodName[1].c_str()));
     }

@@ -8,11 +8,11 @@
 using namespace std;
 
 static const string STRING = "java/lang/String";
-extern const string VECTOR = "java/util/Vector";
-extern const string HASHMAP = "java/util/HashMap";
-extern const string DOUBLE = "java/lang/Double";
-extern const string INTEGER = "java/lang/Integer";
-extern const string LONG = "java/lang/Long";
+static const string VECTOR = "java/util/Vector";
+static const string HASHMAP = "java/util/HashMap";
+static const string DOUBLE = "java/lang/Double";
+static const string INTEGER = "java/lang/Integer";
+static const string LONG = "java/lang/Long";
 static const string OBJECT = "java/lang/Object";
 
 static const string PACKAGE_NAME = "de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/";

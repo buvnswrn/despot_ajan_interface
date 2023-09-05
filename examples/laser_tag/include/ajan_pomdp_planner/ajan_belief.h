@@ -7,12 +7,14 @@
 #ifndef SRC_AJAN_BELIEF_H
 #define SRC_AJAN_BELIEF_H
 #include "ajan_agent.h"
+#include "de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface__Belief.h"
+#include "ajan_helper.h"
 
 namespace despot {
 /* ==============================================================================
 * AjanBelief class
 * ==============================================================================*/
-
+    class AjanHelper;
     class AjanBelief : public despot::ParticleBelief {
         const despot::DSPOMDP *tag_model_;
     jobject javaReferenceObject;
