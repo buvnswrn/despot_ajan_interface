@@ -42,10 +42,10 @@ JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POM
 /*
  * Class:     de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor
  * Method:    GetIndex
- * Signature: (Lde/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/util/Coord;J)I
+ * Signature: (IIJ)I
  */
 JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor_GetIndex
-  (JNIEnv *, jobject, jobject, jlong);
+  (JNIEnv *, jobject, jint, jint, jlong);
 
 /*
  * Class:     de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor

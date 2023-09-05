@@ -41,6 +41,7 @@ AjanHelper::getEnv()->CallVoidMethod(javaReferenceObject, AjanHelper::getMethodI
 [[maybe_unused]] JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_Update_1
         ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisBeliefObject, [[maybe_unused]] jlong beliefPtr, [[maybe_unused]] jint action, [[maybe_unused]] jlong obs) {
 // WARN: Potential Deadlock here
+    cout<<"JNI:MakeCopy:This method should not be called";
 }
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_MakeCopy_1
@@ -48,4 +49,10 @@ AjanHelper::getEnv()->CallVoidMethod(javaReferenceObject, AjanHelper::getMethodI
     cout<<"JNI:MakeCopy:This method should not be called";
     auto* belief = reinterpret_cast<Belief *>(beliefPtr);
     return AjanHelper::toJavaAjanBelief(belief->MakeCopy());
+}
+
+JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_ParticleBelief_getParticles
+        (JNIEnv * env, jobject thisParticleBeliefObject, jlong particleBeliefPtr) {
+    auto * belief = reinterpret_cast<ParticleBelief*>(particleBeliefPtr);
+    return AjanHelper::toJavaIntegerVector((const vector<int> &) belief->particles());
 }

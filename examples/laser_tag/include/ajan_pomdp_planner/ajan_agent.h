@@ -21,6 +21,8 @@
 #include "despot_pomdp_globals.h"
 #include "ajan_particleupperbound.h"
 #include "ajan_beliefpolicy.h"
+#include "de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_MDP.h"
+#include "de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanAgent.h"
 
 namespace despot {
 /* ==============================================================================

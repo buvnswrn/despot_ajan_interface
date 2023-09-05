@@ -14,7 +14,7 @@
 #include "ajan_belief.h"
 #include "ajan_jni_globals.h"
 #include "ajan_jni_method_globals.h"
-
+#include <any>
 using namespace std;
 using namespace despot;
 
@@ -266,6 +266,8 @@ namespace despot {
 // TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
         [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
 
+        [[maybe_unused]] static jobject toJavaValuedActionVector(const vector<ValuedAction>& policy);
+
         [[maybe_unused]] static vector <State> fromJavaAgentStateVector(jobject javaAgentStateVector);
 
         [[maybe_unused]] static jobject toJavaDoubleVector(const vector<double> &particles);
@@ -326,6 +328,9 @@ namespace despot {
         static jclass getPolicyClass();
 
         static jclass getUpperBoundClass();
+
+        static any getJavaValue(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType);
+        static jobject getJavaObject(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType, any value);
     };
 }
 #endif //LASER_TAG_AJAN_HELPER_H

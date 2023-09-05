@@ -290,7 +290,7 @@ public class AjanAgent extends MDP implements BeliefMDP, StateIndexer, StatePoli
         }
     }
     native static void deleteAgent(long agentPointer);
-    native static void testMethod();
+//    native static void testMethod();
     //endregion
 
     //region problem helpers

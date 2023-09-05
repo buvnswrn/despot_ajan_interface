@@ -8,6 +8,7 @@
 
 
 using namespace std;
+using namespace despot;
 namespace despot {
 /* ==============================================================================
  * AjanAgent class : Similar to UnifiedLaserTag class
@@ -467,4 +468,38 @@ namespace despot {
         return AjanHelper::fromJavaString(javaString);
     }
     //endregion
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_MDP_ComputeOptimalPoliciesUsingVIAndReturnPolicy
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisMdpObject, jlong agentPointer) {
+    auto * agent = reinterpret_cast<AjanAgent*>(agentPointer);
+    agent->ComputeOptimalPolicyUsingVI();
+    std::vector<ValuedAction> valueAction = agent->policy();
+    return AjanHelper::toJavaValuedActionVector(valueAction);
+}
+
+[[maybe_unused]] JNIEXPORT jdouble JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_MDP_ComputeActionValue
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisMdpObject, jlong agentPointer, jlong beliefPointer, jint action) {
+    auto * agent = reinterpret_cast<AjanAgent*>(agentPointer);
+    auto * belief = reinterpret_cast<AjanBelief*>(beliefPointer);
+    return agent->ComputeActionValue(belief,*agent,action);
+}
+
+[[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_MDP_policy
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisMdpObject, jlong agentPointer) {
+    auto * agent = reinterpret_cast<AjanAgent*>(agentPointer);
+    std::vector<ValuedAction> valueAction = agent->policy();
+    return AjanHelper::toJavaValuedActionVector(valueAction);
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_MDP_ComputeOptimalPolicyUsingVI
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisMdpObject, jlong agentPointer) {
+    auto * agent = reinterpret_cast<AjanAgent*>(agentPointer);
+    agent->ComputeOptimalPolicyUsingVI();
+}
+
+[[maybe_unused]] JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_implementation_AjanAgent_deleteAgent
+        (JNIEnv * env, jclass javaAgentClass, jlong agentPointer) {
+    cout<<"Native:AjanAgent::deleteAgent"<<endl;
+    delete reinterpret_cast<AjanAgent*>(agentPointer);
 }

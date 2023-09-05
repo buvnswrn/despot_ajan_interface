@@ -27,11 +27,11 @@ public Floor() {
     }
 
     public int GetIndex(Coord coord) {
-        return GetIndex(coord, nativeptr);
+        return GetIndex(coord.x,coord.y, nativeptr);
     }
 
     public boolean Inside(Coord coord ) {
-        return Inside(coord, nativeptr);
+        return Inside(coord.x,coord.y, nativeptr);
     }
     public boolean Inside(int x, int y ) {
         return Inside( x, y, nativeptr);
@@ -71,7 +71,7 @@ public Floor() {
 
     native Coord GetCell(int i, long reference);
 
-    native int GetIndex(Coord coord, long reference);
+    native int GetIndex(int x, int y, long reference);
 
     native boolean Inside(Coord coord, long reference);
     native boolean Inside(int x, int y, long reference);

@@ -117,7 +117,9 @@ add_executable(ajan_pomdp_planner src/ajan_pomdp_planner
         src/ajan_pomdp_planner/cpp/ajan_policy.cpp
         src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp
         src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp
-        src/ajan_pomdp_planner/cpp/ajan_planner.cpp)
+        src/ajan_pomdp_planner/cpp/ajan_planner.cpp
+        src/ajan_pomdp_planner/cpp/ajan_jni_history_helper.cpp
+        src/ajan_pomdp_planner/cpp/ajan_jni_floor_helper.cpp)
 #file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
 #add_executable(ajan_pomdp_planner ${CPP_SOURCE_FILES})
 add_dependencies(ajan_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

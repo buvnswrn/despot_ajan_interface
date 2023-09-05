@@ -64,7 +64,7 @@ using namespace despot;
 }
 
 [[maybe_unused]] JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_History_deleteHistory
-        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisHistoryObject, jlong historyPtr) {
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jclass thisHistoryObject, jlong historyPtr) {
     auto* history = reinterpret_cast<History*>(historyPtr);
     delete history;
 }

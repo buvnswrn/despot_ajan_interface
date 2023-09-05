@@ -108,6 +108,16 @@ jobject AjanHelper::toJavaInteger(const int value){
     return vectorObject;
 }
 
+[[maybe_unused]] jobject AjanHelper::toJavaValuedActionVector(const vector<ValuedAction>& policies) {
+    jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID(VECTOR,Init_));
+    for (auto policy: policies) {
+        jobject valuedActionObject = toJavaValuedAction(policy);
+        getEnv()->CallBooleanMethod(vectorObject, getMethodID(VECTOR, Add), valuedActionObject);
+        getEnv()->DeleteLocalRef(valuedActionObject);
+    }
+    return vectorObject;
+}
+
 [[maybe_unused]] jobject AjanHelper::toJavaDoubleVector(const vector<double> &particles){
     jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID(VECTOR,Init_));
     for (auto particle : particles) {
@@ -309,6 +319,42 @@ jobject AjanHelper::toJavaAgentModel(const DSPOMDP *model) {
         getEnv()->DeleteLocalRef(javaInt);
     }
     return result;
+}
+
+jobject AjanHelper::getJavaObject(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType, any value) {
+    jfieldID javaFieldID = env->GetFieldID(clazz, fieldID.c_str(), returnType.c_str());
+    if (returnType == "I") {
+        env->SetIntField(obj, javaFieldID, any_cast<int>(value));
+    } else if (returnType == "D") {
+        env->SetDoubleField(obj, javaFieldID, any_cast<double>(value));
+    } else if (returnType == "F") {
+        env->SetFloatField(obj, javaFieldID, any_cast<float>(value));
+    } else if (returnType == "J") {
+        env->SetLongField(obj, javaFieldID, any_cast<long>(value));
+    } else if (returnType == "Z") {
+        env->SetBooleanField(obj, javaFieldID, any_cast<bool>(value));
+    } else {
+        cout << "Cannot set variable value" << endl;
+    }
+    return obj;
+}
+
+any AjanHelper::getJavaValue(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType) {
+    jfieldID javaFieldID = env->GetFieldID(clazz, fieldID.c_str(), returnType.c_str());
+    if (returnType == "I") {
+        return env->GetIntField(obj, javaFieldID);
+    } else if (returnType == "D") {
+        return env->GetDoubleField(obj, javaFieldID);
+    } else if (returnType == "F") {
+        return env->GetFloatField(obj, javaFieldID);
+    } else if (returnType == "J") {
+        return env->GetLongField(obj, javaFieldID);
+    } else if (returnType == "Z") {
+        return env->GetBooleanField(obj, javaFieldID);
+    } else {
+        cout << "Cannot set variable value" << endl;
+    }
+    return obj;
 }
 
 
