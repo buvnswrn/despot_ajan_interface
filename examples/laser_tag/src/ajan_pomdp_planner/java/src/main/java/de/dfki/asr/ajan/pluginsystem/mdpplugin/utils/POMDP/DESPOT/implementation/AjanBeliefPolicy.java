@@ -9,10 +9,10 @@ import java.util.Vector;
 
 public class AjanBeliefPolicy extends BeliefLowerBound {
     Vector<Vector<Double>> alpha_vectors_; // optional
-    AjanAgent tag_model_; // optional
+    protected AjanAgent tag_model_; // optional
     long pointerToCpp;
 
-    AjanBeliefPolicy(AjanAgent model) {
+    protected AjanBeliefPolicy(AjanAgent model) {
         tag_model_ = model;
         // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
     }

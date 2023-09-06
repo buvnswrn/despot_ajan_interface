@@ -27,16 +27,16 @@ public class History implements Cleaner.Cleanable {
     long Observation(int t) {
         return Observation_(historyPointer, t);
     }
-    int Size() {
+    public int Size() {
         return Size_(historyPointer);
     }
     void Truncate(int d) {
         Truncate_(historyPointer, d);
     }
-    int LastAction() {
+    public int LastAction() {
         return LastAction_(historyPointer);
     }
-    long LastObservation() {
+    public long LastObservation() {
         return LastObservation_(historyPointer);
     }
     History Suffix(int s) {

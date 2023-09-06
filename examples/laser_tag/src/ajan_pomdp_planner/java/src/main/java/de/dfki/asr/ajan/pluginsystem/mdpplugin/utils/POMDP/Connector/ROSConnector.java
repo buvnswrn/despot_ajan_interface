@@ -36,9 +36,9 @@ public class ROSConnector {
         return observation;
     }
 
-    public static int GetReading(int obs, int dir){
-        final int ONE_ = 0x1;
+    public static int GetReading(long obs, long dir){
+        final long ONE_ = 0x1;
         final int BITS_PER_READING_ = 0x7;
-        return (obs>>(dir* BITS_PER_READING_) & (ONE_ <<BITS_PER_READING_ -1));
+        return (int) (obs>>(dir* BITS_PER_READING_) & (ONE_ <<BITS_PER_READING_ -1));
     }
 }

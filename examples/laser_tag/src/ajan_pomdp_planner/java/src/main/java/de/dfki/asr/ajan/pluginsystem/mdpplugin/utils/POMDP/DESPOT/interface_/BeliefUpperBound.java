@@ -1,5 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanBelief;
+
 public interface BeliefUpperBound {
 
     /**
@@ -8,5 +10,5 @@ public interface BeliefUpperBound {
      *
      * @param belief The belief to be evaluated
      */
-    double Value(Belief belief);
+    double Value(AjanBelief belief);
 }

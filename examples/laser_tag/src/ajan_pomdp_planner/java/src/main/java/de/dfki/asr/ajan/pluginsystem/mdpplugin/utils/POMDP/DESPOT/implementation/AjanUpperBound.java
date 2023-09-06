@@ -15,6 +15,11 @@ public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBou
     public AjanUpperBound(long cppReference){
         pointerToCpp = cppReference;
     }
+
+    public AjanUpperBound() {
+    }
+
+
     @Override
     protected double Value(State s) {
         // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
@@ -23,7 +28,7 @@ public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBou
     }
 
     @Override
-    public double Value(Belief belief) {
+    public double Value(AjanBelief belief) {
         // TODO: Implement AjanParticleUpperBound::Value Function for Belief to call JNI.
         double value = 0;
         /*

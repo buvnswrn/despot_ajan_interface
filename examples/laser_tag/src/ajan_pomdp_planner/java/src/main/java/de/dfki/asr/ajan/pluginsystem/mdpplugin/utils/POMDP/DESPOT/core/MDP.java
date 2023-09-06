@@ -13,8 +13,8 @@ public abstract class MDP {
     protected abstract double Reward(int s, int a);
 
     protected native Vector<ValuedAction> ComputeOptimalPoliciesUsingVIAndReturnPolicy(long agentPtr);
-    protected native double ComputeActionValue(long beliefPtr, long modelPtr, int action);
+    public native double ComputeActionValue(long beliefPtr, long modelPtr, int action);
     protected native Vector<ValuedAction> policy(long agentPtr);
-    protected native void ComputeOptimalPolicyUsingVI(long agentPtr);
+    protected native void   ComputeOptimalPolicyUsingVI(long agentPtr);
 
 }

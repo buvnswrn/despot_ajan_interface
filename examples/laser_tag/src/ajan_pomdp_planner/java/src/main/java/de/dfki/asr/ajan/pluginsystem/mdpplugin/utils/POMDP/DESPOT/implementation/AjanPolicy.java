@@ -1,6 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation;
 
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core.History;
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.DSPOMDP;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.DefaultPolicy;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.State;
 
@@ -11,6 +12,9 @@ public class AjanPolicy extends DefaultPolicy {
 
     public AjanPolicy(long cppReference) {
         pointerToCpp = cppReference;
+    }
+
+    public AjanPolicy(DSPOMDP model) {
     }
     protected int Action(Vector<State> particles, History history) {
         // TODO: Implement AjanPolicy::Action Function to call JNI

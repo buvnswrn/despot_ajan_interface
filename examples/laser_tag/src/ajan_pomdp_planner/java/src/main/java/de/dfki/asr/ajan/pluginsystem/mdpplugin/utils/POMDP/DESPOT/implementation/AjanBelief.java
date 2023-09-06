@@ -9,7 +9,7 @@ import java.util.Vector;
 
 public class AjanBelief extends ParticleBelief {
 
-    AjanBelief(Vector<State> particles, DSPOMDP model, Belief prior) {
+    public AjanBelief(Vector<State> particles, DSPOMDP model, Belief prior) {
         super(particles, model, prior, false);
         // TODO: Implement AjanBelief::AjanBelief to call using JNI
     }

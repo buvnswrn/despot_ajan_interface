@@ -10,7 +10,7 @@ public class AjanParticleUpperBound extends ParticleUpperBound {
     public Vector<Double> value_;
     long pointerToCpp;
 
-    AjanParticleUpperBound(AjanAgent model, long cppReference) {
+    protected AjanParticleUpperBound(AjanAgent model, long cppReference) {
         agent_model = model;
         pointerToCpp = cppReference;
         // TODO: Implement AjanParticleUpperBound constructor to call JNI

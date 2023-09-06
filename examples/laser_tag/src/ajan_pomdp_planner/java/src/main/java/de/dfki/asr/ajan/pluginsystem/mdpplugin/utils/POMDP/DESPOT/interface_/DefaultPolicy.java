@@ -6,6 +6,9 @@ import java.util.Vector;
 
 public abstract class DefaultPolicy extends ScenarioLowerBound {
 
+    protected DefaultPolicy() {
+    }
+
     /**
      * Returns an action based on the weighted scenarios and the history
      *
