@@ -11,13 +11,24 @@ using namespace despot;
  * ==============================================================================*/
 [[maybe_unused]] despot::AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, despot::Belief *prior):
 despot::ParticleBelief(particles, model, prior, false),
-tag_model_(model){
+tag_model_(dynamic_cast<const AjanAgent *>(model)){
 // TODO: Implement AjanBelief::AjanBelief to call using JNI
 }
 
 void despot::AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
-    // TODO: Implement AjanBelief::Update using JNI
-    // WARN: Be careful here (as this affects performance)
+    despot::Belief* updated = tag_model_->Tau(this, action, obs);
+
+    for (int i = 0; i < despot::ParticleBelief::particles_.size(); i++)
+        tag_model_->Free(despot::ParticleBelief::particles_[i]);
+    despot::ParticleBelief::particles_.clear();
+
+    const std::vector<despot::State*>& new_particles =
+            static_cast<despot::ParticleBelief*>(updated)->particles();
+    for (int i = 0; i < new_particles.size(); i++)
+        despot::ParticleBelief::particles_.push_back(tag_model_->Copy(new_particles[i]));
+
+    delete updated;
+    // It is better to not call the java end for this
 
     /** call Tau using JNI
         1. Free the particles from the particle belief -> Seems like a typical step
@@ -29,7 +40,7 @@ void despot::AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
             to update a single particle instead of copying and sending all of them.
         6. In Java, assign obj=null; System.gc(); to garbage collect the variables.
     **/
-AjanHelper::getEnv()->CallVoidMethod(javaReferenceObject, AjanHelper::getMethodID(AJAN_BELIEF,Update_), action, obs);
+//AjanHelper::getEnv()->CallVoidMethod(javaReferenceObject, AjanHelper::getMethodID(AJAN_BELIEF,Update_), action, obs);
 }
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_Sample_1

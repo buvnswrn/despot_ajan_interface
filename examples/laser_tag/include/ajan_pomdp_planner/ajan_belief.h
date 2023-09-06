@@ -16,7 +16,7 @@ namespace despot {
 * ==============================================================================*/
     class AjanHelper;
     class AjanBelief : public despot::ParticleBelief {
-        const despot::DSPOMDP *tag_model_;
+        const despot::AjanAgent *tag_model_;
     jobject javaReferenceObject;
 public:
         AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, Belief *prior =
