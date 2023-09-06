@@ -6,7 +6,7 @@ public class Floor {
     int num_rows_, num_cols_;
     protected long nativeptr;
 //    int p_p_floor__;
-//    static int INVALID;
+    public static int INVALID = -1;
 //    Vector<Coord> cells_;
 //    native Vector<Double> ComputeDistances(int source);
 public Floor() {
@@ -43,7 +43,7 @@ public Floor() {
 
     public double Distance(int c1, int c2 ) {
         return Distance( c1, c2, nativeptr);
-    };
+    }
 
     public int CheckJavaCall() {return num_rows(nativeptr);}
 

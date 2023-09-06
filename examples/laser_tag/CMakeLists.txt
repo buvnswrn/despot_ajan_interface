@@ -98,9 +98,9 @@ target_link_libraries(laser_tag_controller ${catkin_LIBRARIES})
 
 
 ## Declare a C++ executable
-#add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag.cpp src/unified_pomdp_planner/unified_laser_tag_world.cpp src/unified_pomdp_planner/main.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_manhattan_upperbound.cpp src/unified_pomdp_planner/tag_sp_particleupperbound.cpp src/unified_pomdp_planner/tag_blind_beliefpolicy.cpp)
-#add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
+add_executable(unified_pomdp_planner src/unified_pomdp_planner/unified_laser_tag.cpp src/unified_pomdp_planner/unified_laser_tag_world.cpp src/unified_pomdp_planner/main.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_belief.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_state.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_shr_policy.cpp src/unified_pomdp_planner/tag_manhattan_upperbound.cpp src/unified_pomdp_planner/tag_sp_particleupperbound.cpp src/unified_pomdp_planner/tag_blind_beliefpolicy.cpp)
+add_dependencies(unified_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
 #add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/cpp/ajan_belief.cpp src/ajan_pomdp_planner/cpp/ajan_state.cpp src/ajan_pomdp_planner/cpp/ajan_agent.cpp src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp src/ajan_pomdp_planner/cpp/ajan_world.cpp src/ajan_pomdp_planner/cpp/ajan_policy.cpp src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp src/ajan_pomdp_planner/cpp/ajan_helper.cpp src/ajan_pomdp_planner/cpp/ajan_helper.h)

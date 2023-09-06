@@ -1,8 +1,6 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core;
 
 import java.lang.ref.Cleaner;
-import java.util.ArrayList;
-import java.util.Vector;
 
 public class History implements Cleaner.Cleanable {
     // One possibility is to just maintain the history address and then get the values using the methods
