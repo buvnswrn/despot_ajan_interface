@@ -1,5 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util;
 
+import static java.lang.Math.pow;
+
 public class DespotPomdpGlobals {
     public static  String TRIVIAL = "TRIVIAL";
     public static  String LOOKAHEAD = "LOOKAHEAD";
@@ -16,4 +18,12 @@ public class DespotPomdpGlobals {
     public static  String MAJORITY_MDP = "MAJORITY-MDP" ;
     public static  String MAJORITY_SP = "MAJORITY-SP" ;
     public static  String AJAN = "AJAN" ;
+
+    public static double Discount(int d) {
+        return pow(config.discount, d);
+    }
+
+    public static double Discount() {
+        return config.discount;
+    }
 }

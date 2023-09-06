@@ -29,7 +29,7 @@ public class AjanPlanner {
         return "simulator";
     }
 
-    private native int RunPlanner(AjanAgent ajanAgent, AjanWorld ajanWorld);
+    protected native int RunPlanner(AjanAgent ajanAgent, AjanWorld ajanWorld);
 
     public static void main(String[] args){
         AjanPlanner planner = new AjanPlanner();
