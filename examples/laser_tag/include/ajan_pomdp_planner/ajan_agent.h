@@ -43,8 +43,7 @@ class AjanAgent: public MDP,
     protected:
         mutable MemoryPool<AjanAgentState> memory_pool_;
         std::vector<AjanAgentState*> states_; // optional
-        AjanHelper *helper;
-        // rob_[s]: robot cell index for state s
+    // rob_[s]: robot cell index for state s
         // opp_[s]: opponent cell index for state s
 
 
@@ -197,6 +196,8 @@ class AjanAgent: public MDP,
         void ComputeDefaultActions(std::string type) const;
 
         std::string WhichDefaultPolicyToUse() const;
+
+        AjanHelper *helper;
     };
 
 }

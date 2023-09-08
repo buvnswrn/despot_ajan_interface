@@ -30,13 +30,21 @@ map <string, jmethodID> AjanHelper::historyMethods;
 map <string, jmethodID> AjanHelper::valuedActionMethods;
 map <string, jmethodID> AjanHelper::ajanBeliefMethods;
 
-void AjanHelper::Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
+void AjanHelper::Init(jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
 
-    cout << "Initializing the Java References" << std::endl;
-    setEnv(env);
+    cout << "Initializing the Java Object References" << std::endl;
     setAjanJavaPlannerObject(plannerObject);
     setAjanJavaAgentObject(agentObject);
     setAjanJavaWorldObject(worldObject);
+
+}
+
+void AjanHelper::S_Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
+    cout << "Initializing the Static Java References" << std::endl;
+    setEnv(env);
+    setAjanJavaPlannerObject_S(plannerObject);
+    setAjanJavaAgentObject_S(agentObject);
+    setAjanJavaWorldObject_S(worldObject);
 
     cout << "Initializing the Java classes" << std::endl;
     setPlannerClass(getEnv()->GetObjectClass(*plannerObject));

@@ -6,6 +6,9 @@ using namespace std;
 
 // region Getter and Setter
 JNIEnv * AjanHelper::ajanJavaEnv;
+jobject * AjanHelper::lastAjanJavaAgentObject;
+jobject * AjanHelper::lastAjanJavaPlannerObject;
+jobject * AjanHelper::lastAjanJavaWorldObject;
 jclass AjanHelper::doubleClass;
 jclass AjanHelper::integerClass;
 jclass AjanHelper::longClass;
@@ -36,6 +39,15 @@ void AjanHelper::setAjanJavaAgentObject(jobject *plannerObject) { ajanJavaAgentO
 
 [[maybe_unused]] jobject AjanHelper::getAjanJavaWorldObject() { return *ajanJavaWorldObject; }
 void AjanHelper::setAjanJavaWorldObject(jobject *plannerObject) { ajanJavaWorldObject = plannerObject; }
+
+jobject * AjanHelper::getLastAjanJavaPlannerObject_S() { return AjanHelper::lastAjanJavaPlannerObject; }
+void AjanHelper::setAjanJavaPlannerObject_S(jobject *plannerObject) { AjanHelper::lastAjanJavaPlannerObject = plannerObject; }
+
+jobject * AjanHelper::getLastAjanJavaAgentObject_S() { return AjanHelper::lastAjanJavaAgentObject; }
+void AjanHelper::setAjanJavaAgentObject_S(jobject *plannerObject) { AjanHelper::lastAjanJavaAgentObject = plannerObject; }
+
+jobject * AjanHelper::getLastAjanJavaWorldObject_S() { return AjanHelper::lastAjanJavaWorldObject; }
+void AjanHelper::setAjanJavaWorldObject_S(jobject *plannerObject) { AjanHelper::lastAjanJavaWorldObject = plannerObject; }
 
 [[maybe_unused]] jobject AjanHelper::getAjanParticleUpperBound() { return *ajanJavaWorldObject; }
 //[[maybe_unused]] void AjanHelper::setAjanParticleUpperBound(jobject *plannerObject) { ajanParticleUpperBound = *plannerObject; }
@@ -80,7 +92,8 @@ jclass AjanHelper::getPolicyClass() { return ajanPolicyClass; }
 void AjanHelper::setPolicyClass(jclass ajanPolicyClass1) { ajanPolicyClass = ajanPolicyClass1; }
 
 jclass AjanHelper::getBeliefPolicyClass() { return ajanBeliefPolicyClass; }
-void AjanHelper::setBeliefPolicyClass(jclass ajanBeliefPolicyClass1) { ajanBeliefPolicyClass = ajanBeliefPolicyClass1; }
+
+[[maybe_unused]] void AjanHelper::setBeliefPolicyClass(jclass ajanBeliefPolicyClass1) { ajanBeliefPolicyClass = ajanBeliefPolicyClass1; }
 
 jclass AjanHelper::getCoordClass() { return coordClass; }
 void AjanHelper::setCoordClass(jclass coordClass1) { coordClass = coordClass1; }

@@ -20,7 +20,8 @@ bool AjanWorld::Connect() {
      * 3. wait for laser tag controller service to show up \n
      * 4.Setup service client
      **/
-    return true;
+    return AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaWorldObject(),
+                                                   AjanHelper::getMethodID(AJAN_WORLD,Connect_));
 }
 
 /**
@@ -37,7 +38,7 @@ State *AjanWorld::Initialize() {
  * Get the state of the system (only applicable for simulators or POMDP world)
  * @return the current state of the system if applicable
  */
-State *AjanWorld::GetCurrentState() {
+[[maybe_unused]] State *AjanWorld::GetCurrentState() {
     // TODO: Implement AjanWorld::GetCurrentState Function to call JNI
     // WARN: Watch out for NULL returning.
     return nullptr;
@@ -54,5 +55,6 @@ bool AjanWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE &obs) {
      * 2. If connected and successfully tagged, exit -> return 1 else continue to observe \n
      * 3. Get the Observations and SetReading to provided obs. and return 0 to continue. \n
      **/
-    return false;
+    return AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaWorldObject(),
+                                                   AjanHelper::getMethodID(AJAN_WORLD,ExecuteAction_),action,obs);;
 }

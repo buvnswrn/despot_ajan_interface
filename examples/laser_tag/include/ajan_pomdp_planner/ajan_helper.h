@@ -49,26 +49,25 @@ namespace despot {
 
 //region AJAN Reference Objects [Non-Static]
         jobject *ajanJavaPlannerObject;
+        static jobject *lastAjanJavaPlannerObject;
 
         [[maybe_unused]]  jobject getAjanJavaPlannerObject();
 
         void setAjanJavaPlannerObject(jobject *plannerObject);
 
         jobject *ajanJavaAgentObject;
+        static jobject *lastAjanJavaAgentObject;
 
         void setAjanJavaAgentObject(jobject *plannerObject);
 
         jobject *ajanJavaWorldObject;
-
-        [[maybe_unused]] jobject getAjanJavaWorldObject();
+        static jobject *lastAjanJavaWorldObject;
 
         void setAjanJavaWorldObject(jobject *plannerObject);
 
 //        [[maybe_unused]] jobject ajanParticleUpperBound;
 
         [[maybe_unused]] jobject getAjanParticleUpperBound();
-
-        [[maybe_unused]] void setAjanParticleUpperBound(jobject *plannerObject);
 
         jobject ajanPolicyObject;
 
@@ -146,7 +145,7 @@ namespace despot {
 
         static jclass ajanBeliefPolicyClass;
 
-        static void setBeliefPolicyClass(jclass BeliefpolicyClass1);
+        [[maybe_unused]] static void setBeliefPolicyClass(jclass BeliefpolicyClass1);
 
         static jclass coordClass;
 
@@ -181,8 +180,6 @@ namespace despot {
 //endregion
 
 //region JNI Cache Methods
-
-        void Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject);
 
         void static getJavaClassReferences();
 
@@ -297,13 +294,17 @@ namespace despot {
 
 //endregion
 
-//region Helper Methods
-        int getAjanAgentNum(const char *methodName, const char *returnType) const;
 
 //endregion
         static JNIEnv *getEnv();
 
         [[maybe_unused]] [[nodiscard]] jobject getAjanJavaAgentObject() const;
+        static jobject * getLastAjanJavaAgentObject_S();
+        static jobject * getLastAjanJavaPlannerObject_S();
+        static void setAjanJavaPlannerObject_S(jobject *plannerObject);
+        static void setAjanJavaAgentObject_S(jobject *plannerObject);
+        static jobject * getLastAjanJavaWorldObject_S();
+        static void setAjanJavaWorldObject_S(jobject *plannerObject);
 
         jmethodID static getMethodID(const string &clazz, const string &methodName);
 
@@ -313,7 +314,7 @@ namespace despot {
 
         static jobject toJavaLongDoubleMap(map<OBS_TYPE, double> &map);
 
-        [[maybe_unused]] jobject getAjanPolicyObject() const;
+        [[maybe_unused]] [[nodiscard]] jobject getAjanPolicyObject() const;
 
         [[maybe_unused]] static jobject toJavaAjanAgentModel(const AjanAgent *model);
 
@@ -331,6 +332,11 @@ namespace despot {
 
         static any getJavaValue(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType);
         static jobject getJavaObject(JNIEnv * env, jclass clazz, jobject obj, const string &fieldID, const string &returnType, any value);
+
+        void Init(jobject *plannerObject, jobject *agentObject, jobject *worldObject);
+        static void S_Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject);
+
+        [[maybe_unused]] jobject getAjanJavaWorldObject();
     };
 }
 #endif //LASER_TAG_AJAN_HELPER_H

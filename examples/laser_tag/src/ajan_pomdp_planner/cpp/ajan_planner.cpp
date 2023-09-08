@@ -12,11 +12,15 @@ using namespace despot;
 using namespace std;
 
 class AjanPlanner : public Planner {
-
+AjanHelper *helper;
 public:
     DSPOMDP* InitializeModel(option::Option* options) override {
         // Initialize POMDP Model here;
-        DSPOMDP* model = new AjanAgent();
+        AjanAgent* model = new AjanAgent();
+        helper = new AjanHelper();
+        model->helper = helper;
+        helper->Init(AjanHelper::getLastAjanJavaPlannerObject_S(), AjanHelper::getLastAjanJavaAgentObject_S(),
+                     AjanHelper::getLastAjanJavaWorldObject_S());
         return model;
     }
 
@@ -28,6 +32,7 @@ public:
         } else {
             cout<<"Create a world as defined and implemented by the user"<<endl;
             auto* world = new AjanWorld();
+            world->helper = helper;
             cout<<"Establish connection with external system"<<endl;
             world->Connect();
             cout<<"Initialize the state of the external system"<<endl;
@@ -57,5 +62,6 @@ int main(int argc, char* argv[]) {
         ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisObject, [[maybe_unused]]  jobject agentObject, [[maybe_unused]]  jobject worldObject) {
     char* argv[] = {strdup("AJAN_Planner") };
     cout<<"Starting the AJAN-DESPOT Planner" <<endl;
+    AjanHelper::S_Init(env, &thisObject, &agentObject, &worldObject);
     return AjanPlanner().RunEvaluation(1, argv);
 }
