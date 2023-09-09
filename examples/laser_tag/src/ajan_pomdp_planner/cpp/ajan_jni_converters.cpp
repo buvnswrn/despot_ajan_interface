@@ -51,11 +51,14 @@ State AjanHelper::fromJavaState(jobject javaState) {
 
 jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState& agentState) {
     jclass ajanAgentStateClass = getStateClass();
+    int state_id = agentState.state_id;
+    int scenario_id = agentState.scenario_id;
+    double weight = agentState.weight;
     jobject ajanAgentState = getEnv()->NewObject(ajanAgentStateClass,
                                                  getMethodID(AJAN_AGENT_STATE,Init_),
-                                                 agentState.state_id,
-                                                 agentState.scenario_id,
-                                                 agentState.weight);
+                                                 state_id,
+                                                 scenario_id,
+                                                 weight);
     return ajanAgentState;
 }
 

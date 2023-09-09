@@ -26,7 +26,9 @@ public:
 
     World* InitializeWorld(std::string& world_type, DSPOMDP* model, option::Option* options) override {
         // TODO: Make JNI Call to get World Type and Instantiate it.
-
+        world_type = AjanHelper::fromJavaString(AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaPlannerObject(),
+                                                                          AjanHelper::getMethodID(AJAN_PLANNER,GetWorldType_)));
+        cout<<"Initialising world of type:"<<world_type<<std::endl;
         if(world_type == "pomdp") {
             return InitializePOMDPWorld(world_type, model, options);
         } else {

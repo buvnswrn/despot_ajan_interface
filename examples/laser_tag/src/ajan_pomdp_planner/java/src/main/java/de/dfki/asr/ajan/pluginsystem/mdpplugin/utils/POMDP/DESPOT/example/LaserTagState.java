@@ -4,7 +4,7 @@ import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation
 
 public class LaserTagState extends AjanAgentState {
 
-    LaserTagState(int state_id, int scenario_id, double weight) {
+    public LaserTagState(int state_id, int scenario_id, double weight) {
         super(state_id,scenario_id,weight);
     }
 
