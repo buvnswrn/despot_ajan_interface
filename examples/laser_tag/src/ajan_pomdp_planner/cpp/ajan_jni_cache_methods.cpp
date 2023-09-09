@@ -36,7 +36,7 @@ void AjanHelper::Init(jobject *plannerObject, jobject *agentObject, jobject *wor
     setAjanJavaPlannerObject(plannerObject);
     setAjanJavaAgentObject(agentObject);
     setAjanJavaWorldObject(worldObject);
-
+    cout<<"Initalizing the Java Object References Complete" <<std::endl;
 }
 
 void AjanHelper::S_Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject) {
@@ -64,6 +64,7 @@ void  AjanHelper::getJavaClassReferences() {
     setCoordClass( getEnv()->FindClass(getSig(COORD).c_str()));
     setFloorClass( getEnv()->FindClass(getSig(FLOOR).c_str()));
     setPolicyClass( getEnv()->FindClass(getSig(AJAN_POLICY).c_str()));
+    setBeliefPolicyClass(getEnv()->FindClass(getSig(AJAN_BELIEF_POLICY).c_str()));
     setParticleUpperBoundClass( getEnv()->FindClass(getSig(AJAN_PARTICLE_UPPER_BOUND).c_str()));
     setUpperBoundClass( getEnv()->FindClass(getSig(AJAN_UPPER_BOUND).c_str()));
     setHistoryClass(getEnv()->FindClass(getSig(HISTORY).c_str()));
@@ -384,7 +385,7 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
 }
 
 void AjanHelper::GetAllAjanBeliefPolicyMethodID() {
-    cout << "Initializing the AJAN Policy methods" << std::endl;
+    cout << "Initializing the AJAN Belief Policy methods" << std::endl;
     const int totalMethod = 2;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
@@ -398,7 +399,7 @@ void AjanHelper::GetAllAjanBeliefPolicyMethodID() {
                                                                                  methodName[0].c_str(),
                                                                                  methodName[1].c_str()));
     }
-    cout << "Initialization of AJAN Policy methods Complete" << std::endl;
+    cout << "Initialization of AJAN Belief Policy methods Complete" << std::endl;
 }
 
 /**

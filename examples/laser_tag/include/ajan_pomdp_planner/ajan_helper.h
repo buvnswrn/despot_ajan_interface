@@ -51,8 +51,6 @@ namespace despot {
         jobject *ajanJavaPlannerObject;
         static jobject *lastAjanJavaPlannerObject;
 
-        [[maybe_unused]]  jobject getAjanJavaPlannerObject();
-
         void setAjanJavaPlannerObject(jobject *plannerObject);
 
         jobject *ajanJavaAgentObject;
@@ -337,6 +335,8 @@ namespace despot {
         static void S_Init(JNIEnv *&env, jobject *plannerObject, jobject *agentObject, jobject *worldObject);
 
         [[maybe_unused]] jobject getAjanJavaWorldObject();
+
+        [[maybe_unused]]  jobject getAjanJavaPlannerObject();
     };
 }
 #endif //LASER_TAG_AJAN_HELPER_H

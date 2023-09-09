@@ -33,5 +33,5 @@ add_library(AjanDespot SHARED ${CPP_SOURCE_FILES})
 target_include_directories(AjanDespot PRIVATE ${JNI_INCLUDE_DIRS})
 
 # set the output directory for the shared library
-set_target_properties(AjanDespot PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/jniLibs")
+set_target_properties(AjanDespot PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/jniLibs/")
 

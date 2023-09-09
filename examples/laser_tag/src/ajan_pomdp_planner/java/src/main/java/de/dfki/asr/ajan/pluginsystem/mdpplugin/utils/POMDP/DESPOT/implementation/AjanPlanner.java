@@ -5,9 +5,9 @@ public class AjanPlanner {
     public AjanAgent ajanAgent;
     public AjanWorld ajanWorld;
 
-//    static {
-//        System.loadLibrary("ajanplanner");
-//    }
+    static {
+        System.loadLibrary("ajan_planner");
+    }
 
     public boolean InitializeModel() {
         ajanAgent = new AjanAgent();

@@ -104,24 +104,24 @@ target_link_libraries(unified_pomdp_planner despot ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
 #add_executable(ajan_pomdp_planner src/ajan_pomdp_planner src/ajan_pomdp_planner/cpp/ajan_belief.cpp src/ajan_pomdp_planner/cpp/ajan_state.cpp src/ajan_pomdp_planner/cpp/ajan_agent.cpp src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp src/ajan_pomdp_planner/cpp/ajan_world.cpp src/ajan_pomdp_planner/cpp/ajan_policy.cpp src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp src/ajan_pomdp_planner/cpp/ajan_helper.cpp src/ajan_pomdp_planner/cpp/ajan_helper.h)
-add_executable(ajan_pomdp_planner src/ajan_pomdp_planner
-        include/ajan_pomdp_planner/ajan_helper.h
-        src/ajan_pomdp_planner/cpp/ajan_getter_setter.cpp
-        src/ajan_pomdp_planner/cpp/ajan_jni_cache_methods.cpp
-        src/ajan_pomdp_planner/cpp/ajan_jni_converters.cpp
-        src/ajan_pomdp_planner/cpp/ajan_belief.cpp
-        src/ajan_pomdp_planner/cpp/ajan_state.cpp
-        src/ajan_pomdp_planner/cpp/ajan_agent.cpp
-        src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp
-        src/ajan_pomdp_planner/cpp/ajan_world.cpp
-        src/ajan_pomdp_planner/cpp/ajan_policy.cpp
-        src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp
-        src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp
-        src/ajan_pomdp_planner/cpp/ajan_planner.cpp
-        src/ajan_pomdp_planner/cpp/ajan_jni_history_helper.cpp
-        src/ajan_pomdp_planner/cpp/ajan_jni_floor_helper.cpp)
-#file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
-#add_executable(ajan_pomdp_planner ${CPP_SOURCE_FILES})
+#add_executable(ajan_pomdp_planner src/ajan_pomdp_planner
+#        include/ajan_pomdp_planner/ajan_helper.h
+#        src/ajan_pomdp_planner/cpp/ajan_getter_setter.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_jni_cache_methods.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_jni_converters.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_belief.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_state.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_agent.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_beliefpolicy.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_world.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_policy.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_upperbound.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_particleupperbound.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_planner.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_jni_history_helper.cpp
+#        src/ajan_pomdp_planner/cpp/ajan_jni_floor_helper.cpp)
+file(GLOB_RECURSE CPP_SOURCE_FILES "src/ajan_pomdp_planner/cpp/*.cpp")
+add_executable(ajan_pomdp_planner ${CPP_SOURCE_FILES})
 add_dependencies(ajan_pomdp_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(ajan_pomdp_planner despot ${catkin_LIBRARIES})
 
@@ -132,7 +132,16 @@ target_link_libraries(ajan_planner despot ${catkin_LIBRARIES})
 # Link the JNI library
 target_include_directories(ajan_planner PRIVATE ${JNI_INCLUDE_DIRS})
 set_target_properties(ajan_planner PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/jniLibs")
-
+#configure_file(ajan_planner "${CMAKE_CURRENT_BINARY_DIR}/jniLibs/libajan_planner.so" "${JAVA_LIB_DIR}/libajan_planner.so" COPYONLY)
+set(JAVA_LIB_DIR "${CMAKE_SOURCE_DIR}/src/ajan_pomdp_planner/java/src/main/lib")
+# Copy the library to the destination directory during the build
+add_custom_command(
+        TARGET ajan_planner POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_CURRENT_BINARY_DIR}/jniLibs/libajan_planner.so"
+        "${JAVA_LIB_DIR}/libajan_planner.so"
+        COMMENT "Copying libajan_planner.so to ${JAVA_LIB_DIR}"
+)
 #############
 ## Testing ##
 #############
