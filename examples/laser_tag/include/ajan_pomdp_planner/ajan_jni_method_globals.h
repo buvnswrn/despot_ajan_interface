@@ -114,7 +114,7 @@ static const string Init_State = "<init>";
 static const string Text_State = "text";
 
 // Method signatures (replace the placeholders with actual types)
-static const string Init_State_Sig = "(IIJ)V";
+static const string Init_State_Sig = "(IID)V";
 static const string Text_State_Sig = "(ID)" + getSig(STRING);
 //endregion
 
