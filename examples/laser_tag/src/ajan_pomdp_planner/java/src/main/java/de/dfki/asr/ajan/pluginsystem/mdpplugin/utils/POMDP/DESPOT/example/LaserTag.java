@@ -51,13 +51,13 @@ public class LaserTag extends AjanAgent {
         noise_sigma_ = 0.5;
         unit_size_ = 1.0;
         current_ = this;
-        Init(BenchmarkMap());
         robot_pos_unknown_ = false;
         transition_probabilities_ = new Vector<Vector<Vector<State>>>();
         reading_distributions_ = new Vector<>();
         states_ = new Vector<>();
         rob_ = new Vector<>();
         opp_ = new Vector<>();
+        Init(BenchmarkMap());
         probs = new Vector<>(NumStates());
         opp_probs = new Vector<>(floor_.NumCells());
         rob_probs = new Vector<>(floor_.NumCells());
@@ -82,12 +82,12 @@ public class LaserTag extends AjanAgent {
         }
         transition_probabilities_.ensureCapacity(NumStates());
         for (int s = 0; s < NumStates(); s++) {
-            transition_probabilities_.get(s).ensureCapacity(NumActions());
             transition_probabilities_.add(s,new Vector<>());
+            transition_probabilities_.get(s).ensureCapacity(NumActions());
 
             HashMap<Integer, Double> opp_distribution = OppTransitionDistribution(s);
             for (int a = 0; a < NumActions(); a++) {
-                transition_probabilities_.get(s).get(a).clear();
+                    transition_probabilities_.get(s).add(a, new Vector<>());
 
                 int next_rob = NextRobPosition(rob_.get(s), opp_.get(s), a);
 
@@ -110,8 +110,8 @@ public class LaserTag extends AjanAgent {
 
 
         for (int s = 0; s < NumStates(); s++) {
-            reading_distributions_.get(s).ensureCapacity(NBEAMS);
             reading_distributions_.add(s, new Vector<>());
+            reading_distributions_.get(s).ensureCapacity(NBEAMS);
 
             for (int d = 0; d < NBEAMS; d++) {
                 double dist = LaserRange(states_.get(s), d);
@@ -124,6 +124,9 @@ public class LaserTag extends AjanAgent {
                             * (gausscdf(max_noise, 0, noise_sigma_)
                             - (reading > 0 ?
                                     gausscdf(min_noise, 0, noise_sigma_) : 0));
+                    if(reading_distributions_.get(s).size() <= d) {
+                        reading_distributions_.get(s).add(d, new Vector<>());
+                    }
                     reading_distributions_.get(s).get(d).add(prob);
                 }
             }
@@ -493,6 +496,7 @@ public class LaserTag extends AjanAgent {
         return states_.get(n);
     }
 
+    @Override
     public AjanBelief InitialBelief(State start, String type) {
         Vector<State> particles =  new Vector<>();
         int N = floor_.NumCells();
