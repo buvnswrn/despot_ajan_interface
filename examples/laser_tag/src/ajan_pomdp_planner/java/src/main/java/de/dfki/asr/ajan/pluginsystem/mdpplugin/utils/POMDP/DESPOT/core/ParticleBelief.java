@@ -21,6 +21,9 @@ public abstract class ParticleBelief extends Belief {
     protected ParticleBelief(Vector<State> particles, DSPOMDP model, Belief prior, boolean split) {
         super(model);
         split_ = split;
+        particles_ = particles;
+        System.out.println("Particles size:"+particles.size());
+        prior_=prior;
     }
 
     public ParticleBelief() {

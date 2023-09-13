@@ -41,7 +41,7 @@ JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POM
 JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor_GetIndex
         (JNIEnv *, jobject, jint x, jint y, jlong floorPtr) {
     auto * floor1 = reinterpret_cast<Floor*>(floorPtr);
-    cout<<"Native:ajan_jni_floor_helper:GetIndex"<<endl;
+//    cout<<"Native:ajan_jni_floor_helper:GetIndex"<<endl;
     return floor1->GetIndex(x,y);
 }
 
@@ -97,7 +97,7 @@ JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_
 JNIEXPORT jint JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor_NumCells
         (JNIEnv * env, jobject thisFloorObject, jlong floorPtr) {
     auto * floor1 = reinterpret_cast<Floor*>(floorPtr);
-    cout<<"Native:ajan_jni_floor_helper:NumCells"<<endl;
+//    cout<<"Native:ajan_jni_floor_helper:NumCells"<<endl;
     return floor1->NumCells();
 }
 

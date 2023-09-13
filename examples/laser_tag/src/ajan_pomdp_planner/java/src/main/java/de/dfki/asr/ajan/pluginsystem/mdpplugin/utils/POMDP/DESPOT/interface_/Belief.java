@@ -1,6 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_;
 
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core.History;
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanAgent;
 
 import java.util.Vector;
 
@@ -53,8 +54,8 @@ public abstract class Belief {
      * Returns a copy of this belief
      * @return pointer to the current belief copy
      */
-    protected native Belief MakeCopy_(long ptr);
-    protected Belief MakeCopy() {
-        return MakeCopy_(pointerToCpp);
+    protected native Belief MakeCopy_(long ptr, AjanAgent agent);
+    protected Belief MakeCopy(AjanAgent agent) {
+        return MakeCopy_(pointerToCpp, agent);
     }
 }

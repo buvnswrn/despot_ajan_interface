@@ -21,13 +21,13 @@ namespace despot {
 /* ==============================================================================
 * AjanUpperBound class
 * ==============================================================================*/
-
+    class AjanAgent;
     class AjanUpperBound : public despot::ParticleUpperBound, public despot::BeliefUpperBound {
     protected:
-        const DSPOMDP *tag_model_;
+        const AjanAgent *tag_model_;
         std::vector<double> value_;
     public:
-        AjanUpperBound(const DSPOMDP *model);
+        AjanUpperBound(const AjanAgent *model);
 //        AjanUpperBound();
 
         using ParticleUpperBound::Value;

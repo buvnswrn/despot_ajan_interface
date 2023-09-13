@@ -235,7 +235,7 @@ namespace despot {
 // TODO: to and from Belief -> might not be possible so use AJAN_Belief (inheritor) instead
 //    [[maybe_unused]] static Belief getBelief(jobject javaBelief);
 // TODO: DESPOT Belief to Java Belief
-        [[maybe_unused]] static jobject toJavaAjanBelief(const Belief *belief);
+        [[maybe_unused]] static jobject toJavaAjanBelief(const Belief *belief,jobject agentModel);
 
 // TODO: to and from Ajan Belief Policy
 // TODO: to and from Ajan Particle Upper Bound

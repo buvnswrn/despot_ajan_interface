@@ -408,7 +408,7 @@ public class LaserTag extends AjanAgent {
         currentObservation = obs_p;
         currentReward = reward_p;
         currentAction = action;
-        currentState = (AjanAgentState) state;
+        currentState = (LaserTagState) state;
         Random random = new Random((long) random_num);
         boolean terminal = Step(state, random.nextDouble(), action, currentReward);
 
@@ -520,6 +520,29 @@ public class LaserTag extends AjanAgent {
         return new ValuedAction(0, -1);
     }
 
+    @Override
+    public TagSHRPolicy CreateScenarioLowerBound(String bound_name, String particle_bound_name, long cppReference) {
+        //TODO: Implement AjanAgent::CreateScenarioUpperBound function to call JNI
+        /*
+         * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
+         * else, compute the default actions based on MDP or SP and use MMAPStatePolicy or ModeStatePolicy or MajorityActionPolicy.
+         */
+        return new TagSHRPolicy(cppReference);
+    }
+
+    @Override
+    public TagSPParticleUpperBound CreateParticleUpperBound(String name, long cppReference ) {
+        //TODO: Implement AjanAgent::CreateParticleUpperBound function to call JNI
+        /*
+         * Based on the name given, initialize TrivialParticleUpperBound,MDPUpperBound or custom upperbound
+         */
+        return new TagSPParticleUpperBound(this, cppReference);
+    }
+
+    public String Test(String bound_name, String particle_bound_name,long cppAddress){
+        System.out.println("Test called"+bound_name+" "+particle_bound_name+" "+cppAddress);
+        return "retrunedValue";
+    }
     @Override
     public void PrintState(State s) {
         LaserTagState state = (LaserTagState) s;

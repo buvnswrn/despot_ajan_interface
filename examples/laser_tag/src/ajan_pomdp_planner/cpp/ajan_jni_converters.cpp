@@ -210,14 +210,15 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     return {action,value};
 }
 
-[[maybe_unused]] jobject AjanHelper::toJavaAjanBelief(const Belief* belief) {
+[[maybe_unused]] jobject AjanHelper::toJavaAjanBelief(const Belief* belief, jobject agentModel ) {
     // converts belief to Ajan Belief in Java. Basically, adds up the particle vector, but more or less the same.
     jobject historyObject = toJavaHistory(belief->history_);
-    jobject modelObject = toJavaAgentModel(belief->model_);
+//    jobject modelObject = toJavaAgentModel(belief->model_);
+    cout<<"casting belief"<<endl;
     const vector<State*>& particles = dynamic_cast<const ParticleBelief*>(belief)->particles();
     jobject particlesObject = toJavaAgentStateVector(particles);
-    jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getMethodID(AJAN_BELIEF,
-                                                                                Init_),
+    cout<<"calling belief constructor"<<endl;
+    jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getEnv()->GetMethodID(getAjanBeliefClass(),Init_.c_str(),Belief_Init_II_Sig.c_str()),
                                                                                 reinterpret_cast<jlong>(belief),
                                                                                 modelObject,
                                                                                 historyObject,
@@ -230,7 +231,10 @@ jobject AjanHelper::toJavaHistory(const History& history) {
 
 despot::AjanBelief* AjanHelper::newBeliefFromAjanBelief(jobject ajanBelief, const despot::DSPOMDP *model, Belief *prior =
 nullptr) {
-    jobject particlesObject = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
+    cout<<"sending commands to java"<<endl;
+    jobject particlesObject = getEnv()->CallObjectMethod(ajanBelief,getEnv()->GetMethodID(getAjanBeliefClass(),Particles_.c_str(),Particles_Sig.c_str()));
+    cout<<"got2:"<<particlesObject<<endl;
+//    jobject particlesObjects = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
     vector<State *> particles = fromJavaAgentStatePointerVector(particlesObject);
     return new AjanBelief(particles, model, prior);
 }

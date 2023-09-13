@@ -11,7 +11,7 @@ namespace despot {
 /* ==============================================================================
 * AjanUpperBound class
 * ==============================================================================*/
-    AjanUpperBound::AjanUpperBound(const DSPOMDP *model):
+    AjanUpperBound::AjanUpperBound(const AjanAgent *model):
     tag_model_(model) {
         // TODO: Implement AjanUpperBound constructor to call JNI
         /**
@@ -39,7 +39,7 @@ namespace despot {
          * Loop through the particles and for each particle (aka. state) sum up the value
             by multiplying current value with pre_computed value_[state.state_id]. Refer paper Guess:Eq.15.
         **/
-        jobject javaBelief = AjanHelper::toJavaAjanBelief(belief);
+        jobject javaBelief = AjanHelper::toJavaAjanBelief(belief, nullptr);
         return AjanHelper::getEnv()->CallDoubleMethod(javaReferenceObject,AjanHelper::getMethodID(AJAN_UPPER_BOUND,Value_),javaBelief);
     }
 }

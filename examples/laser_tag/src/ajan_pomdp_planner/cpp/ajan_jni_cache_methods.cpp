@@ -368,9 +368,10 @@ void AjanHelper::GetAllUpperBoundMethodID() {
  */
 void AjanHelper::GetAllAjanPolicyMethodID() {
     cout << "Initializing the AJAN Policy methods" << std::endl;
-    const int totalMethod = 2;
+    const int totalMethod = 3;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
+            {Init_,Init_Long_Void_Sig},
             {Action_, Action_Sig},
             {SetReferenceToCpp_, SetReferenceToCpp_Sig}
 //            {"TestMethod", "()I"}

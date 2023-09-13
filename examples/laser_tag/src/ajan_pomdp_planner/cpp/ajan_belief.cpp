@@ -56,10 +56,10 @@ void despot::AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
 }
 
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_MakeCopy_1
-        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisBeliefObject, jlong beliefPtr) {
+        ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisBeliefObject, jlong beliefPtr, jobject agentObject) {
     cout<<"JNI:MakeCopy:This method should not be called";
     auto* belief = reinterpret_cast<Belief *>(beliefPtr);
-    return AjanHelper::toJavaAjanBelief(belief->MakeCopy());
+    return AjanHelper::toJavaAjanBelief(belief->MakeCopy(), agentObject);
 }
 
 JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_core_ParticleBelief_getParticles
