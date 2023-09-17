@@ -26,10 +26,10 @@ JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_
 /*
  * Class:     de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface__Belief
  * Method:    MakeCopy_
- * Signature: (J)Lde/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/interface_/Belief;
+ * Signature: (JLde/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/implementation/AjanAgent;)Lde/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/interface_/Belief;
  */
 JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_MakeCopy_1
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jobject, jlong, jobject);
 
 #ifdef __cplusplus
 }

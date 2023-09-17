@@ -41,7 +41,7 @@ namespace despot {
          * 8. Robot may be trapped by the obstacles : If still the actions are zero, then return 0 -> Indicating North. \n
          * 9. Else, choose a random action from the computed variables. \n
          */
-        jobject javaParticlesObject = AjanHelper::toJavaAgentStateVector(particles);
+        jobject javaParticlesObject = AjanHelper::toJavaAgentStateVector(particles, false);
         jobject javaHistoryObject = AjanHelper::toJavaHistory(history);
         return AjanHelper::getEnv()->CallIntMethod(javaReferenceObject,
                                                AjanHelper::getMethodID(AJAN_POLICY,Action_),
