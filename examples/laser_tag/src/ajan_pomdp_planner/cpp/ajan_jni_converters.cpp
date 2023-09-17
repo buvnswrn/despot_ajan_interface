@@ -220,11 +220,10 @@ jobject AjanHelper::toJavaHistory(const History& history) {
     cout<<"calling belief constructor"<<endl;
     jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getEnv()->GetMethodID(getAjanBeliefClass(),Init_.c_str(),Belief_Init_II_Sig.c_str()),
                                                                                 reinterpret_cast<jlong>(belief),
-                                                                                modelObject,
+                                                                                agentModel,
                                                                                 historyObject,
                                                                                 particlesObject);
     getEnv()->DeleteLocalRef(historyObject);
-    getEnv()->DeleteLocalRef(modelObject);
     getEnv()->DeleteLocalRef(particlesObject);
     return beliefObject;
 }

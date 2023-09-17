@@ -17,6 +17,7 @@ static const string OBJECT = "java/lang/Object";
 
 static const string PACKAGE_NAME = "de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/";
 static const string IMPL_PKG = PACKAGE_NAME + "implementation/";
+static const string EXAMPLE_PKG = PACKAGE_NAME + "example/";
 static const string CORE_PKG = PACKAGE_NAME + "core/";
 static const string UTIL_PKG = PACKAGE_NAME + "util/";
 static const string INTF_PKG = PACKAGE_NAME + "interface_/";
@@ -28,8 +29,10 @@ static const string HISTORY = CORE_PKG + "History";
 
 //region implementation
 
-static const string AJAN_AGENT_STATE = IMPL_PKG + "AjanAgentState";
-static const string AJAN_AGENT = IMPL_PKG + "AjanAgent";
+static const string AJAN_AGENT_STATE = EXAMPLE_PKG + "LaserTagState";
+static const string AGENT_STATE = IMPL_PKG + "AjanAgentState";
+static const string AJAN_AGENT_OG = IMPL_PKG + "AjanAgent";
+static const string AJAN_AGENT = EXAMPLE_PKG + "LaserTag";
 static const string AJAN_BELIEF = IMPL_PKG + "AjanBelief";
 static const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
 static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
