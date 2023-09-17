@@ -166,7 +166,9 @@ namespace despot {
     int AjanAgent::GetAction(const State &tagstate) const {
         // TODO: Implement AjanAgent::GetAction to call JNI
         // return default_action_[GetIndex(state)]
-        jobject agentState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) tagstate);
+        cout<<"GetAction: state:"<<tagstate.state_id<<"scenario:"<<tagstate.scenario_id<<" weight:"<<tagstate.weight<<endl;
+        const AjanAgentState & ajanAgentState = static_cast<const AjanAgentState&>(tagstate);
+        jobject agentState = AjanHelper::toJavaAjanAgentState(ajanAgentState, true);
         return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                                    AjanHelper::getMethodID(AJAN_AGENT,GetAction_), agentState);
     }
@@ -180,7 +182,7 @@ namespace despot {
          * 2. Calculate the indices of both robots to state index
          * 3. return the state variable stored for the particular index
          */
-         jobject javaParticles = AjanHelper::toJavaAgentStateVector(particles);
+         jobject javaParticles = AjanHelper::toJavaAgentStateVector(particles, false);
          jobject javaState =  AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                        AjanHelper::getMethodID(AJAN_AGENT,GetMMAP_),javaParticles);
         auto * returnState = new State(AjanHelper::fromJavaState(javaState));
@@ -197,7 +199,8 @@ namespace despot {
          * 3. Assign the given state to be the calculated state_id \n
          * 4. return terminal=true if the tag is done.
          */
-         jobject javaState = AjanHelper::toJavaAjanAgentState(dynamic_cast<const AjanAgentState &>(state));
+        AjanAgentState agentState = static_cast<const AjanAgentState &>(state);
+        jobject javaState = AjanHelper::toJavaAjanAgentState(agentState, false);
          bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),
                                                         AjanHelper::getEnv()->GetMethodID(AjanHelper::getAgentClass(),Step_.c_str(),
                                                                                           ("("+getSig(STATE)+"DID)Z").c_str()),javaState,random_num,action,reward);
@@ -211,13 +214,8 @@ namespace despot {
 
     bool AjanAgent::Step(State &state, double random_num, ACT_TYPE action, double &reward, OBS_TYPE &obs) const {
         //TODO: Implement AjanAgent::Step function to call JNI
-        /**
-         * 1-4. Repeat the steps like for above step function \n
-         * 5. Update the observation as 101 if the terminal has reached or rob and opp is in same state_id i.e. same cell,
-         * else, update the observation:
-         * for each the direction deduct the mass based on the reading_distribution until it is less than Globals::TINY and then set the reading to observation variable.
-         */
-         jobject javaState = AjanHelper::toJavaAjanAgentState(dynamic_cast<const AjanAgentState &>(state));
+        AjanAgentState agentState = static_cast<const AjanAgentState &>(state);
+        jobject javaState = AjanHelper::toJavaAjanAgentState(agentState, false);
          bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),AjanHelper::getMethodID(AJAN_AGENT,Step_),javaState,random_num, action, reward, obs); // TODO: Set values of obs and reward here
          obs = AjanHelper::getEnv()->CallLongMethod(helper->getAjanJavaAgentObject(),
                                                     AjanHelper::getMethodID(AJAN_AGENT,GetCurrentObservation_Agent));
@@ -233,7 +231,9 @@ namespace despot {
 
     double AjanAgent::ObsProb(OBS_TYPE obs, const State &state, ACT_TYPE action) const {
         //TODO: Implement AjanAgent::ObsProb function to call JNI
-        jobject s = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
+        AjanAgentState  ajanAgentState = static_cast<const AjanAgentState&>(state);
+        cout<<"ObsProb: state:"<<state.state_id<<"scenario:"<<state.scenario_id<<"weight:"<<state.weight<<endl;
+        jobject s = AjanHelper::toJavaAjanAgentState(ajanAgentState, true);
         return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,ObsProb_),obs,s,action);
     }
@@ -250,7 +250,7 @@ namespace despot {
         /**
          * Update the particles with rob and opp particle weight and create a particle belief with it.
          */
-         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) start);
+         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) start, false);
          jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                 AjanHelper::getMethodID(AJAN_AGENT, InitialBelief_),javaState, type.c_str());
          AjanBelief * ajanBelief = AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr);
@@ -404,14 +404,14 @@ namespace despot {
 
     void AjanAgent::PrintState(const State &state, ostream &out) const {
         //TODO: Implement AjanAgent::PrintState function to call JNI
-        jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
+        jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state, false);
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintState_),javaState);
     }
 
     void AjanAgent::PrintObs(const State &state, OBS_TYPE obs, ostream &out) const {
         //TODO: Implement AjanAgent::PrintObs function to call JNI
-        jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state);
+        jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state, false);
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintObs_),javaState,obs);
     }

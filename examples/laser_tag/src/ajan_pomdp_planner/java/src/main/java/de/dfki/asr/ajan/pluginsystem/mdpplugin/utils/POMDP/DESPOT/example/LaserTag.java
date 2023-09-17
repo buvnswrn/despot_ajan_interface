@@ -325,7 +325,8 @@ public class LaserTag extends AjanAgent {
 
             for (int j = 0; j < distribution.size(); j++) {
                 State next = distribution.get(j);
-                double p = state.weight * next.weight * ObsProb(obs, states_.get(next.state_id), action);
+                double p = state.weight * next.weight;
+                p*= ObsProb(obs, states_.get(next.state_id), action);
                 double temp = probs.get(next.state_id)!=null?probs.get(next.state_id):0;
                 probs.add(next.state_id, temp+p);
                 sum += p;

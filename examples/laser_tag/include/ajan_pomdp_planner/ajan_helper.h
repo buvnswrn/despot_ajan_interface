@@ -227,7 +227,7 @@ namespace despot {
         [[maybe_unused]] static DSPOMDP *fromJavaAgentModel(jobject modelObject);
 
 // TODO: Check Ajan Agent State
-        static jobject toJavaAjanAgentState(const AjanAgentState &agentState);
+        static jobject toJavaAjanAgentState(const AjanAgentState &agentState, bool print);
 
         [[maybe_unused]] static AjanAgentState fromJavaAjanAgentState(jobject javaAgentState);
 
@@ -259,7 +259,7 @@ namespace despot {
         [[maybe_unused]] static Coord fromJavaCoord(jobject javaCoord);
 
 // TODO: CPP Vector to Java Vector : mainly vector<state> (may be vector(particles))
-        [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles);
+        [[maybe_unused]] static jobject toJavaAgentStateVector(const vector<State *> &particles, bool print);
 
         [[maybe_unused]] static jobject toJavaValuedActionVector(const vector<ValuedAction>& policy);
 
@@ -321,6 +321,7 @@ namespace despot {
         static vector<State *> fromJavaAgentStatePointerVector(jobject javaAgentStateVector);
 
         static despot::AjanBelief *newBeliefFromAjanBelief(jobject ajanBelief, const DSPOMDP *model, Belief *prior);
+        static despot::ParticleBelief *newParticleBeliefFromAjanBelief(jobject ajanBelief, const DSPOMDP *model, Belief *prior);
 
         static jclass getBeliefPolicyClass();
 

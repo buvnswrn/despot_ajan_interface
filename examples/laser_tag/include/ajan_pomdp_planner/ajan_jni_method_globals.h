@@ -195,7 +195,7 @@ static const string Belief_Init_II = "<init>";
 // Method signature (replace the placeholders with actual types)
 static const string Particles_Sig = "()"+ getSig(VECTOR);
 static const string Update_Sig = "(IJ)V";
-static const string Belief_Init_II_Sig = "(J"+ getSig(AJAN_AGENT)+ getSig(HISTORY)+ getSig(VECTOR)+")V";
+static const string Belief_Init_II_Sig = "(J"+ getSig(AJAN_AGENT_OG)+ getSig(HISTORY)+ getSig(VECTOR)+")V";
 //endregion
 
 //region AjanBeleifPolicy methods

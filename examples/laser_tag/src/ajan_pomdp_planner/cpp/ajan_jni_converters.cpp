@@ -49,11 +49,15 @@ State AjanHelper::fromJavaState(jobject javaState) {
     return agentState;
 }
 
-jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState& agentState) {
+jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState &agentState, bool print) {
     jclass ajanAgentStateClass = getStateClass();
     int state_id = agentState.state_id;
     int scenario_id = agentState.scenario_id;
     double weight = agentState.weight;
+    if(print){
+        cout<<"state:"<<agentState.state_id<<" scenario:"<<agentState.scenario_id<<" weight:"<<agentState.weight<<endl;
+        AjanHelper::stateCounter++;
+    }
     jobject ajanAgentState = getEnv()->NewObject(ajanAgentStateClass,
                                                  getMethodID(AJAN_AGENT_STATE,Init_),
                                                  state_id,
@@ -101,10 +105,10 @@ jobject AjanHelper::toJavaInteger(const int value){
     return coord;
 }
 
-[[maybe_unused]] jobject AjanHelper::toJavaAgentStateVector(const vector<State *> &particles) {
+[[maybe_unused]] jobject AjanHelper::toJavaAgentStateVector(const vector<State *> &particles, bool print) {
     jobject vectorObject = getEnv()->NewObject(getVectorClass(), getMethodID(VECTOR,Init_));
     for (auto particle : particles) {
-        jobject ajanStateObject = toJavaAjanAgentState((AjanAgentState &&) particle); // WARN: Potential scope issue here
+        jobject ajanStateObject = toJavaAjanAgentState( static_cast<AjanAgentState&&>(*particle), print); // WARN: Potential scope issue here
         getEnv()->CallBooleanMethod(vectorObject, getMethodID(VECTOR,Add), ajanStateObject);
         getEnv()->DeleteLocalRef(ajanStateObject);
     }
@@ -216,7 +220,10 @@ jobject AjanHelper::toJavaHistory(const History& history) {
 //    jobject modelObject = toJavaAgentModel(belief->model_);
     cout<<"casting belief"<<endl;
     const vector<State*>& particles = dynamic_cast<const ParticleBelief*>(belief)->particles();
-    jobject particlesObject = toJavaAgentStateVector(particles);
+//    for (int i = 0; i < particles.size(); ++i) {
+//        cout<<"casting belief complete:"<<particles.size()<<" ,weight:"<<particles[i]->weight<<",state:"<<particles[i]->state_id<<",scenario:"<<particles[i]->scenario_id<<endl;
+//    }
+    jobject particlesObject = toJavaAgentStateVector(particles, false);
     cout<<"calling belief constructor"<<endl;
     jobject beliefObject = getEnv()->NewObject(getAjanBeliefClass(),getEnv()->GetMethodID(getAjanBeliefClass(),Init_.c_str(),Belief_Init_II_Sig.c_str()),
                                                                                 reinterpret_cast<jlong>(belief),
@@ -235,7 +242,21 @@ nullptr) {
     cout<<"got2:"<<particlesObject<<endl;
 //    jobject particlesObjects = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
     vector<State *> particles = fromJavaAgentStatePointerVector(particlesObject);
+    cout<<"Creating ajan belief"<<endl;
     return new AjanBelief(particles, model, prior);
+}
+
+despot::ParticleBelief* AjanHelper::newParticleBeliefFromAjanBelief(jobject ajanBelief, const despot::DSPOMDP *model, Belief *prior =
+nullptr) {
+    cout<<"calling java particles"<<endl;
+    jobject particlesObject = getEnv()->CallObjectMethod(ajanBelief,getEnv()->GetMethodID(getAjanBeliefClass(),Particles_.c_str(),Particles_Sig.c_str()));
+    cout<<"got2:"<<particlesObject<<endl;
+//    jobject particlesObjects = getEnv()->CallObjectMethod(ajanBelief, getMethodID(AJAN_BELIEF,Particles_));
+    vector<State *> particles = fromJavaAgentStatePointerVector(particlesObject);
+    cout<<"Creating particle belief"<<endl;
+    ParticleBelief* returnBelief = new ParticleBelief(particles, model, prior);
+    cout<<"particle belief created"<<endl;
+    return returnBelief;
 }
 
 //[[maybe_unused]] Belief AjanHelper::getBelief(jobject javaBelief) {

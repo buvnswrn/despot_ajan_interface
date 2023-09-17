@@ -34,13 +34,13 @@ static const string AGENT_STATE = IMPL_PKG + "AjanAgentState";
 static const string AJAN_AGENT_OG = IMPL_PKG + "AjanAgent";
 static const string AJAN_AGENT = EXAMPLE_PKG + "LaserTag";
 static const string AJAN_BELIEF = IMPL_PKG + "AjanBelief";
-static const string AJAN_BELIEF_POLICY = IMPL_PKG + "AjanBeliefPolicy";
-static const string AJAN_PARTICLE_UPPER_BOUND = IMPL_PKG + "AjanParticleUpperBound";
+static const string AJAN_BELIEF_POLICY = EXAMPLE_PKG + "TagBlindBeliefPolicy";
+static const string AJAN_PARTICLE_UPPER_BOUND = EXAMPLE_PKG + "TagSPParticleUpperBound";
 static const string AJAN_PARTICLE_LOWER_BOUND = IMPL_PKG + "AjanParticleLowerBound";
-static const string AJAN_POLICY = IMPL_PKG + "AjanPolicy";
-static const string AJAN_UPPER_BOUND = IMPL_PKG + "AjanUpperBound";
-[[maybe_unused]] static const string AJAN_WORLD = IMPL_PKG + "AjanWorld";
-[[maybe_unused]] static const string AJAN_PLANNER = IMPL_PKG + "AjanPlanner";
+static const string AJAN_POLICY = EXAMPLE_PKG + "TagSHRPolicy";
+static const string AJAN_UPPER_BOUND = EXAMPLE_PKG + "TagManhattanUpperBound";
+[[maybe_unused]] static const string AJAN_WORLD = EXAMPLE_PKG + "TagWorld";
+[[maybe_unused]] static const string AJAN_PLANNER = EXAMPLE_PKG + "LaserTagPlanner";
 
 //endregion
 

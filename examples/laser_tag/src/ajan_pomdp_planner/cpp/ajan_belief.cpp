@@ -11,7 +11,7 @@ using namespace despot;
  * ==============================================================================*/
 [[maybe_unused]] despot::AjanBelief::AjanBelief(std::vector<despot::State *> particles, const despot::DSPOMDP *model, despot::Belief *prior):
 despot::ParticleBelief(particles, model, prior, false),
-tag_model_(dynamic_cast<const AjanAgent *>(model)){
+tag_model_(static_cast<const AjanAgent *>(model)){
 // TODO: Implement AjanBelief::AjanBelief to call using JNI
 }
 
@@ -46,7 +46,7 @@ void despot::AjanBelief::Update(despot::ACT_TYPE action, despot::OBS_TYPE obs) {
 [[maybe_unused]] JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_Sample_1
         ([[maybe_unused]] JNIEnv * env, [[maybe_unused]] jobject thisBeliefObject, jlong beliefPtr, jint num) {
     auto* belief = reinterpret_cast<Belief *>(beliefPtr);
-    return AjanHelper::toJavaAgentStateVector(belief->Sample(num));
+    return AjanHelper::toJavaAgentStateVector(belief->Sample(num), false);
 }
 
 [[maybe_unused]] JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_interface_1_Belief_Update_1
