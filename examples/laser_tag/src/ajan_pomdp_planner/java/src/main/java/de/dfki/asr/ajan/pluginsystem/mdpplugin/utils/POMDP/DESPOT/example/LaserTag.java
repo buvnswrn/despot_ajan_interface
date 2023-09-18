@@ -1,9 +1,7 @@
 package de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.example;
 
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.core.Globals;
-import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanAgent;
-import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanAgentState;
-import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.AjanBelief;
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.implementation.*;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.State;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.ValuedAction;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Compass;
@@ -59,8 +57,17 @@ public class LaserTag extends AjanAgent {
         opp_ = new Vector<>();
         Init(BenchmarkMap());
         probs = new Vector<>(NumStates());
+        for (int i = 0; i < NumStates(); i++) {
+            probs.add(0.0);
+        }
         opp_probs = new Vector<>(floor_.NumCells());
+        for (int i = 0; i < NumStates(); i++) {
+            opp_probs.add(0.0);
+        }
         rob_probs = new Vector<>(floor_.NumCells());
+        for (int i = 0; i < NumStates(); i++) {
+            rob_probs.add(0.0);
+        }
         default_action_ = new Vector<>();
     }
 
