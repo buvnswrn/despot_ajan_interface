@@ -56,7 +56,7 @@ public class TagSHRPolicy extends AjanPolicy {
 // Don't double back and don't go into walls
         for (int d = 0; d < 4; d++) {
             if (!Compass.Opposite(d, history.LastAction())
-                    && floor_.Inside(Coord.Add(rob , Compass.DIRECTIONS[d]))) {
+                    && floor_.Inside(Coord.Add(rob , Compass.DIRECTIONS[d], false))) {
                 actions.add(d);
             }
         }
@@ -64,7 +64,7 @@ public class TagSHRPolicy extends AjanPolicy {
 // Have to double back
         if (actions.size() == 0) {
             for (int d = 0; d < 4; d++) {
-                if (floor_.Inside(Coord.Add(rob , Compass.DIRECTIONS[d])))
+                if (floor_.Inside(Coord.Add(rob , Compass.DIRECTIONS[d], false)))
                     actions.add(d);
             }
         }

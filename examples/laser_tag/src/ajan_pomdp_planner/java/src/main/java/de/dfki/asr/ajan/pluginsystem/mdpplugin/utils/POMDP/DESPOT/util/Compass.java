@@ -19,6 +19,6 @@ public enum Compass {
     }
 
     public static boolean Opposite(int dir1, int dir2) {
-        return Add(DIRECTIONS[dir1], DIRECTIONS[dir2]).equals(new Coord(0, 0));
+        return Coord.equals(Add(DIRECTIONS[dir1], DIRECTIONS[dir2], true),new Coord(0, 0));
     }
 }

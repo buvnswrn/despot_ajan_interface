@@ -12,6 +12,7 @@ import java.util.*;
 
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSConnector.*;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Ajan_Util_Helper.gausscdf;
+import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Coord.notEquals;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.MDP_;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.SP;
 import static java.lang.Double.min;
@@ -144,8 +145,9 @@ public class LaserTag extends AjanAgent {
                 opp_.get(state.state_id));
         int d = 1;
         while (true) {
-            Coord coord = Coord.Muliply(Coord.Add(rob,Compass.DIRECTIONS[dir]), d);
-            if (floor_.GetIndex(coord) == -1 || coord == opp)
+            Coord coord = Coord.Add(rob,Coord.Muliply(Compass.DIRECTIONS[dir], d),true);
+            int index = floor_.GetIndex(coord);
+            if ( index == -1 || coord.equals(opp))
                 break;
             d++;
         }
@@ -202,42 +204,42 @@ public class LaserTag extends AjanAgent {
 
         if (opp.x == rob.x) {
             int index =
-                    floor_.Inside(Coord.Add(opp,new Coord(1, 0))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(1, 0))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp,new Coord(1, 0), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(1, 0), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.2);
 
             index =
-                    floor_.Inside(Coord.Add(opp , new Coord(-1, 0))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(-1, 0))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp , new Coord(-1, 0), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(-1, 0), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.2);
         } else {
             int dx = opp.x > rob.x ? 1 : -1;
             int index =
-                    floor_.Inside(Coord.Add(opp , new Coord(dx, 0))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(dx, 0))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp , new Coord(dx, 0), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(dx, 0), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.4);
         }
 
         if (opp.y == rob.y) {
             int index =
-                    floor_.Inside(Coord.Add(opp , new Coord(0, 1))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(0, 1))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp , new Coord(0, 1), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(0, 1), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.2);
 
             index =
-                    floor_.Inside(Coord.Add(opp , new Coord(0, -1))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(0, -1))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp , new Coord(0, -1), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(0, -1), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.2);
         } else {
             int dy = opp.y > rob.y ? 1 : -1;
             int index =
-                    floor_.Inside(Coord.Add(opp , new Coord(0, dy))) ?
-                            floor_.GetIndex(Coord.Add(opp , new Coord(0, dy))) : floor_.GetIndex(opp);
+                    floor_.Inside(Coord.Add(opp , new Coord(0, dy), false)) ?
+                            floor_.GetIndex(Coord.Add(opp , new Coord(0, dy), false)) : floor_.GetIndex(opp);
             temp = distribution.get(index)!=null?distribution.get(index):0;
             distribution.put(index, temp + 0.4);
         }
@@ -247,8 +249,8 @@ public class LaserTag extends AjanAgent {
         return distribution;
     }
     private int NextRobPosition(int rob, int opp, int a) {
-        Coord pos = Coord.Add(floor_.GetCell(rob) , Compass.DIRECTIONS[a]);
-        if(a != TagAction() && (floor_.Inside(pos) && pos != (floor_.GetCell(opp))))
+        Coord pos = Coord.Add(floor_.GetCell(rob) , Compass.DIRECTIONS[a], false);
+        if(a != TagAction() && (floor_.Inside(pos) && notEquals(pos,floor_.GetCell(opp))))
             return floor_.GetIndex(pos);
         return rob;
     }

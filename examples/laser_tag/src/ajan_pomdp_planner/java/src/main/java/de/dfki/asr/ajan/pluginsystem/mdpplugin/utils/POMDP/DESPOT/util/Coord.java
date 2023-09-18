@@ -12,15 +12,24 @@ public class Coord {
     }
 
     public static Coord Muliply(Coord c, int v){
-        c.x *= v;
-        c.y *= v;
-        return c;
+        return new Coord(c.x*v,c.y*v);
     }
 
-    public static Coord Add(Coord first, Coord second){
+    public static Coord Add(Coord first, Coord second, boolean returnNew){
+        if(returnNew){
+            return new Coord(first.x+ second.x, first.y+second.y);
+        }
         first.x += second.x;
         first.y += second.y;
         return first;
+    }
+
+    public static boolean equals(Coord first, Coord second) {
+        return (first.x == second.x) && (first.y == second.y);
+    }
+
+    public static boolean notEquals(Coord first, Coord second) {
+        return (first.x != second.x) || (first.y != second.y);
     }
 
     public static int ManhattanDistance(Coord c1, Coord c2) {
