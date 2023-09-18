@@ -318,7 +318,7 @@ namespace despot {
 
         [[maybe_unused]] static AjanAgent *fromJavaAjanAgentModel(jobject modelObject);
 
-        static vector<State *> fromJavaAgentStatePointerVector(jobject javaAgentStateVector);
+        static vector<State *> fromJavaAgentStatePointerVector(jobject javaAgentStateVector, bool allocate);
 
         static despot::AjanBelief *newBeliefFromAjanBelief(jobject ajanBelief, const DSPOMDP *model, Belief *prior);
         static despot::ParticleBelief *newParticleBeliefFromAjanBelief(jobject ajanBelief, const DSPOMDP *model, Belief *prior);
@@ -338,6 +338,8 @@ namespace despot {
         [[maybe_unused]] jobject getAjanJavaWorldObject();
 
         [[maybe_unused]]  jobject getAjanJavaPlannerObject();
+
+        static vector<State *> getParticles(jobject ajanBelief);
     };
 }
 #endif //LASER_TAG_AJAN_HELPER_H

@@ -253,9 +253,18 @@ namespace despot {
          jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) start, false);
          jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                 AjanHelper::getMethodID(AJAN_AGENT, InitialBelief_),javaState, type.c_str());
-         AjanBelief * ajanBelief = AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr);
-         ajanBelief->state_indexer(this);
-        return ajanBelief;
+//         auto * ajanBelief = AjanHelper::newParticleBeliefFromAjanBelief(returnBelief,this, nullptr);
+         vector<State*> particles = AjanHelper::getParticles(returnBelief);
+         vector<State*> new_particles;
+        for (int i = 0; i < particles.size(); i++) {
+            int state_id = particles[i]->state_id;
+            double weight = particles[i]->weight;
+            new_particles.push_back(static_cast<AjanAgentState*>(Allocate(state_id, weight)));
+        }
+//         ajanBelief->state_indexer(this);
+        auto belief_= new ParticleBelief(new_particles, this, nullptr);
+        belief_->state_indexer(this);
+        return belief_;
     }
 
     double AjanAgent::GetMaxReward() const {
