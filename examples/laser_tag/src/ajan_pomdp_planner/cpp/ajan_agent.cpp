@@ -112,7 +112,8 @@ namespace despot {
         jobject returnBelief = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT, Tau_),javaBelief,action,obs);
         // TODO: Have to work more in here - not sure until now how to manipulate or convert to and from particle belief and so on
-        return AjanHelper::newBeliefFromAjanBelief(returnBelief,this, nullptr); // Whenevr you send, send a AjanBelief, so it has the java object
+        auto returnValue =  AjanHelper::newParticleBeliefFromAjanBelief(returnBelief,this, nullptr); // Whenevr you send, send a AjanBelief, so it has the java object
+        return returnValue;
     }
 
     void AjanAgent::Observe(const Belief *belief, ACT_TYPE action, map<OBS_TYPE, double> &obss) const {

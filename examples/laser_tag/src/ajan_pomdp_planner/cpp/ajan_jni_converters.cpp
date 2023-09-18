@@ -56,7 +56,6 @@ jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState &agentState, bool 
     double weight = agentState.weight;
     if(print){
         cout<<"state:"<<agentState.state_id<<" scenario:"<<agentState.scenario_id<<" weight:"<<agentState.weight<<endl;
-        AjanHelper::stateCounter++;
     }
     jobject ajanAgentState = getEnv()->NewObject(ajanAgentStateClass,
                                                  getMethodID(AJAN_AGENT_STATE,Init_),

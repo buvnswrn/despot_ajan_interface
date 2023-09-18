@@ -18,7 +18,6 @@ using namespace despot;
     }
 
     double AjanParticleUpperBound::Value(const despot::State &s) const {
-        // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
         // Return precomputed value_[state.state_id];
         jobject javaState = AjanHelper::toJavaState(s);
         return AjanHelper::getEnv()->CallDoubleMethod(javaReferenceObject, AjanHelper::getMethodID(AJAN_PARTICLE_UPPER_BOUND,Value_), javaState);
