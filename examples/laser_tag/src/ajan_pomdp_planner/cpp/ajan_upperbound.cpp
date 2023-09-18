@@ -21,7 +21,6 @@ namespace despot {
     }
 
     double AjanUpperBound::Value(const despot::State &s) const {
-        // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
         // Return precomputed value_[state.state_id];
         jobject javaState = AjanHelper::toJavaState(s);
         return AjanHelper::getEnv()->CallDoubleMethod(javaReferenceObject,
@@ -33,7 +32,6 @@ namespace despot {
     }
 
     double AjanUpperBound::Value(const despot::Belief *belief) const {
-        // TODO: Implement AjanParticleUpperBound::Value Function for Belief to call JNI.
         double value = 0;
         /**
          * Loop through the particles and for each particle (aka. state) sum up the value

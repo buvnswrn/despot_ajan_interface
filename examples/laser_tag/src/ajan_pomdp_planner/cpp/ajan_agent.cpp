@@ -15,7 +15,6 @@ namespace despot {
  * ==============================================================================*/
 
     AjanAgent::AjanAgent() {
-        // TODO: Implement AjanAgent constructor to call JNI
         // read the Benchmark map
         // run init function
     }
@@ -24,14 +23,12 @@ namespace despot {
     //region MDP Functions
 
     int AjanAgent::NumStates() const {
-        // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of cells
         return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                               AjanHelper::getMethodID(AJAN_AGENT,NumStates_));
     }
 
     int AjanAgent::NumActions() const {
-        // TODO: Implement AjanAgent::NumStates to call JNI
         // Return number of actions
         return AjanHelper::getEnv()->CallIntMethod(helper->getAjanJavaAgentObject(),
                                                    AjanHelper::getMethodID(AJAN_AGENT,NumActions_));
@@ -40,7 +37,6 @@ namespace despot {
     const std::vector<State> &AjanAgent::TransitionProbability(int s, ACT_TYPE a) const {
         static vector<State > vectorOfStates;
         vectorOfStates.clear();
-        // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // return transition_probabilities_[s][a];
         jobject transProb = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                    AjanHelper::getMethodID(AJAN_AGENT,TransitionProbability_),s,a);
@@ -49,7 +45,6 @@ namespace despot {
     }
 
     double AjanAgent::Reward(int s, ACT_TYPE a) const {
-        // TODO: Implement AjanAgent::TransitionProbability to call JNI
         // If action is tag, and tagged -> tag reward else - tag reward else reward  = -1 (longer it takes, lower is the reward)
         return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                       AjanHelper::getMethodID(AJAN_AGENT,Reward_),s, a);
@@ -58,7 +53,6 @@ namespace despot {
 
     //region BeliefMDP
     BeliefLowerBound *AjanAgent::CreateBeliefLowerBound(std::string name) const {
-        // TODO: Implement AjanAgent::CreateBeliefLowerBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
         /**
          * Use some built-in bound - TrivialBeliefLowerBound
@@ -80,7 +74,6 @@ namespace despot {
     }
 
     BeliefUpperBound *AjanAgent::CreateBeliefUpperBound(std::string name) const {
-        // TODO: Implement AjanAgent::CreateBeliefUpperBound to call JNI
         // OPTIMIZE: Check how to use built-in bounds
         if (name == TRIVIAL) {
             return new TrivialBeliefUpperBound(this);
@@ -110,7 +103,6 @@ namespace despot {
     }
 
     Belief *AjanAgent::Tau(const Belief *belief, ACT_TYPE action, OBS_TYPE obs) const {
-        // TODO: Implement AjanAgent::Tau to call JNI
         // WARN: See how to manipulate belief and history particles efficiently
         /**
          * Calculates the sum of current weight * next weight * observation probability given state and action.
@@ -124,7 +116,6 @@ namespace despot {
     }
 
     void AjanAgent::Observe(const Belief *belief, ACT_TYPE action, map<OBS_TYPE, double> &obss) const {
-        // TODO: Change the implmentation or test it when actual logic is written for the Observe function
         jobject javaAjanBelief = AjanHelper::toJavaAjanBelief(belief, helper->getAjanJavaAgentObject()); // Conversion might not be needed.
         jobject javaObsMap = AjanHelper::toJavaLongDoubleMap(obss);
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
@@ -133,7 +124,6 @@ namespace despot {
     }
 
     double AjanAgent::StepReward(const Belief *belief, ACT_TYPE action) const {
-        // TODO: Implement AjanAgent::StepReward to call JNI
         // WARN: Careful about the history manipulation
         // Calculate the cumulative reward until here according to the actions given.
         // Consider passing belief as a memory address
@@ -147,12 +137,10 @@ namespace despot {
     //region StateIndexer
         // inline functions
     int AjanAgent::GetIndex(const State* state) const {
-        // TODO: Implement AjanAgent::GetIndex to call JNI
         //return state->state_id;
         return 0;
     }
     const State* AjanAgent::GetState(int index) const {
-        // TODO: Implement AjanAgent::GetState to call JNI
         //return states_[index];
         jobject ajanState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                    AjanHelper::getMethodID(AJAN_AGENT,GetState_),index);
@@ -164,7 +152,6 @@ namespace despot {
 
     //region StatePolicy
     int AjanAgent::GetAction(const State &tagstate) const {
-        // TODO: Implement AjanAgent::GetAction to call JNI
         // return default_action_[GetIndex(state)]
         cout<<"GetAction: state:"<<tagstate.state_id<<"scenario:"<<tagstate.scenario_id<<" weight:"<<tagstate.weight<<endl;
         const AjanAgentState & ajanAgentState = static_cast<const AjanAgentState&>(tagstate);
@@ -176,7 +163,6 @@ namespace despot {
 
     //region MMAPInferencer
     const State *AjanAgent::GetMMAP(const vector<State *> &particles) const {
-        // TODO: Implement AjanAgent::GetMMAP to call JNI
         /**
          * 1. Calculate most likely rob and opp position coordinate
          * 2. Calculate the indices of both robots to state index
@@ -192,7 +178,6 @@ namespace despot {
 
     //region POMDP
     bool AjanAgent::Step(State &state, double random_num, ACT_TYPE action, double &reward) const {
-        //TODO: Implement AjanAgent::Step function to call JNI
         /**
          * 1. Compute the reward after calculating the distance of rob and opp \n
          * 2. Compute the sum of weight for random_num of next states and get the state_id of state that has greater weight than the calculated sum \n
@@ -213,10 +198,9 @@ namespace despot {
     }
 
     bool AjanAgent::Step(State &state, double random_num, ACT_TYPE action, double &reward, OBS_TYPE &obs) const {
-        //TODO: Implement AjanAgent::Step function to call JNI
         AjanAgentState agentState = static_cast<const AjanAgentState &>(state);
         jobject javaState = AjanHelper::toJavaAjanAgentState(agentState, false);
-         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),AjanHelper::getMethodID(AJAN_AGENT,Step_),javaState,random_num, action, reward, obs); // TODO: Set values of obs and reward here
+         bool returnValue = AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaAgentObject(),AjanHelper::getMethodID(AJAN_AGENT,Step_),javaState,random_num, action, reward, obs);
          obs = AjanHelper::getEnv()->CallLongMethod(helper->getAjanJavaAgentObject(),
                                                     AjanHelper::getMethodID(AJAN_AGENT,GetCurrentObservation_Agent));
          reward = AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
@@ -230,7 +214,6 @@ namespace despot {
     }
 
     double AjanAgent::ObsProb(OBS_TYPE obs, const State &state, ACT_TYPE action) const {
-        //TODO: Implement AjanAgent::ObsProb function to call JNI
         AjanAgentState  ajanAgentState = static_cast<const AjanAgentState&>(state);
         cout<<"ObsProb: state:"<<state.state_id<<"scenario:"<<state.scenario_id<<"weight:"<<state.weight<<endl;
         jobject s = AjanHelper::toJavaAjanAgentState(ajanAgentState, true);
@@ -239,14 +222,12 @@ namespace despot {
     }
 
     State *AjanAgent::CreateStartState(std::string type) const {
-        //TODO: Implement AjanAgent::CreateStartState function to call JNI
         //return a random state
         int n = Random::RANDOM.NextInt(states_.size());
         return new AjanAgentState(*states_[n]);
     }
 
     Belief *AjanAgent::InitialBelief(const State *start, std::string type) const {
-        //TODO: Implement AjanAgent::InitialBelief function to call JNI
         /**
          * Update the particles with rob and opp particle weight and create a particle belief with it.
          */
@@ -268,14 +249,12 @@ namespace despot {
     }
 
     double AjanAgent::GetMaxReward() const {
-        // TODO: Implement AjanAgent::GetMaxReward function to call JNI
         // return TAG_REWARD;
         return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                       AjanHelper::getMethodID(AJAN_AGENT,GetMaxReward_));
     }
 
     ValuedAction AjanAgent::GetBestAction() const {
-        // TODO: Implement AjanAgent::GetMaxReward function to call JNI
         //return ValuedAction(0, -1);
         jobject returnValuedAction = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                             AjanHelper::getMethodID(AJAN_AGENT,GetBestAction_));
@@ -283,7 +262,6 @@ namespace despot {
     }
 
     ParticleUpperBound *AjanAgent::CreateParticleUpperBound(std::string name) const {
-        //TODO: Implement AjanAgent::CreateParticleUpperBound function to call JNI
         /**
          * Based on the name given, initialize TrivialParticleUpperBound,MDPUpperBound or custom upperbound
          */
@@ -314,7 +292,6 @@ namespace despot {
     }
 
     ScenarioUpperBound *AjanAgent::CreateScenarioUpperBound(std::string name, std::string particle_bound_name) const {
-        //TODO: Implement AjanAgent:: function to call JNI
         /**
          * Based on the name given, initialize LookaheadUpperBound or custom upperbound.
          */
@@ -334,7 +311,6 @@ namespace despot {
     }
 
     ScenarioLowerBound *AjanAgent::CreateScenarioLowerBound(std::string name, std::string particle_bound_name) const {
-        //TODO: Implement AjanAgent::CreateScenarioUpperBound function to call JNI
         /**
          * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
          * else, compute the default actions based on MDP or SP and use MMAPStatePolicy or ModeStatePolicy or MajorityActionPolicy.
@@ -412,34 +388,29 @@ namespace despot {
     }
 
     void AjanAgent::PrintState(const State &state, ostream &out) const {
-        //TODO: Implement AjanAgent::PrintState function to call JNI
         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state, false);
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintState_),javaState);
     }
 
     void AjanAgent::PrintObs(const State &state, OBS_TYPE obs, ostream &out) const {
-        //TODO: Implement AjanAgent::PrintObs function to call JNI
         jobject javaState = AjanHelper::toJavaAjanAgentState((AjanAgentState &&) state, false);
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintObs_),javaState,obs);
     }
 
     void AjanAgent::PrintAction(ACT_TYPE action, ostream &out) const {
-        //TODO: Implement AjanAgent::PrintAction function to call JNI
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintAction_),action);
     }
 
     void AjanAgent::PrintBelief(const Belief &belief, ostream &out) const {
-        //TODO: Implement AjanAgent::PrintBelief function to call JNI
         jobject javaBelief = AjanHelper::toJavaAjanBelief(&belief,helper->getAjanJavaAgentObject());
         AjanHelper::getEnv()->CallVoidMethod(helper->getAjanJavaAgentObject(),
                                              AjanHelper::getMethodID(AJAN_AGENT, PrintBelief_),javaBelief);
     }
 
     State *AjanAgent::Allocate(int state_id, double weight) const {
-        //TODO: Implement AjanAgent::Allocate function to call JNI
         AjanAgentState* state = memory_pool_.Allocate();
         state->state_id = state_id;
         state->weight = weight;
@@ -447,7 +418,6 @@ namespace despot {
     }
 
     State *AjanAgent::Copy(const State *particle) const {
-        //TODO: Implement AjanAgent::Copy function to call JNI
         AjanAgentState* state = memory_pool_.Allocate();
         *state = *static_cast<const AjanAgentState*>(particle);
         state->SetAllocated();
@@ -455,12 +425,10 @@ namespace despot {
     }
 
     void AjanAgent::Free(State *particle) const {
-        //TODO: Implement AjanAgent::Free function to call JNI
         memory_pool_.Free(static_cast<AjanAgentState*>(particle));
     }
 
     int AjanAgent::NumActiveParticles() const {
-        //TODO: Implement AjanAgent::NumActiveParticles function to call JNI
         return memory_pool_.num_allocated();
     }
     //endregion

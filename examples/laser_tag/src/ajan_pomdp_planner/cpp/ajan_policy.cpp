@@ -23,7 +23,6 @@ namespace despot {
 
         despot::ACT_TYPE AjanPolicy::Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
                                         despot::History &history) const {
-        // TODO: Implement AjanPolicy::Action Function to call JNI
         /**
          * 1. See whether RandomStreams are important or not.
          * 2. Do not pass RandomStreams to JNI \n

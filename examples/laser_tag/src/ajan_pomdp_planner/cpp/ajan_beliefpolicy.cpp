@@ -23,7 +23,6 @@ namespace despot {
     AjanBeliefPolicy::AjanBeliefPolicy(const despot::AjanAgent *model, jobject agentObject) :
             BeliefLowerBound(model),
             tag_model_(model){
-        // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
 //        jobject javaModel = AjanHelper::toJavaAgentModel(tag_model_);
         javaReferenceObject = AjanHelper::getEnv()->NewObject(AjanHelper::getBeliefPolicyClass(),AjanHelper::getMethodID(AJAN_BELIEF_POLICY,Init_),
                                                               agentObject,reinterpret_cast<jlong>(this));
@@ -32,7 +31,6 @@ namespace despot {
     despot::ValuedAction AjanBeliefPolicy::Value(const despot::Belief *belief) const {
         jobject javaBelief = AjanHelper::toJavaAjanBelief(belief,tag_model_->helper->getAjanJavaAgentObject());
         jobject javaValuedAction = AjanHelper::getEnv()->CallObjectMethod(javaReferenceObject,AjanHelper::getMethodID(AJAN_BELIEF_POLICY,Value_Belief), javaBelief);
-        // TODO: Implement AjanBeliefPolicy::Value to call JNI
         /**
          * Needs to call ComputeActionValue Function of MDP. Check on how to do that.
         **/

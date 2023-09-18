@@ -17,7 +17,6 @@ namespace despot {
     }
 
     std::string AjanAgentState::text() const {
-        // TODO: Implement AjanAgentState::text using JNI
         return to_string(state_id);
     }
 }
