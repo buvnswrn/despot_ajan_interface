@@ -10,8 +10,7 @@ import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Floor;
 
 import java.util.*;
 
-import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSConnector.GetReading;
-import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSConnector.SetReading;
+import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSConnector.*;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Ajan_Util_Helper.gausscdf;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.MDP_;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.SP;
@@ -110,7 +109,7 @@ public class LaserTag extends AjanAgent {
         }
 
         for (int i = 0; i < NBEAMS; i++) {
-            same_loc_obs_ = SetReading(same_loc_obs_, 101, i);
+            same_loc_obs_ = SetReading_(same_loc_obs_, 101, i);
         }
 
         reading_distributions_.ensureCapacity(NumStates());
@@ -436,7 +435,7 @@ public class LaserTag extends AjanAgent {
                         if(mass < Globals.TINY)
                             break;
                     }
-                    currentObservation = SetReading(currentObservation, reading, dir);
+                    currentObservation = SetReading_(currentObservation, reading, dir);
                 }
             }
         }
@@ -488,7 +487,7 @@ public class LaserTag extends AjanAgent {
 
         double prod = 1.0;
         for (int dir = 0; dir < NBEAMS; dir++) {
-            int reading = GetReading(obs, dir);
+            int reading = GetReading_(obs, dir);
             if (reading >= LaserRange(state, dir) / unit_size_)
                 return 0;
             double prob_mass = reading_distributions_.get(state.state_id).get(dir).get(reading);
@@ -579,7 +578,7 @@ public class LaserTag extends AjanAgent {
     @Override
     public void PrintObs(State state, long obs) {
         for (int i = 0; i < NBEAMS; i++)
-            System.out.print(GetReading(obs, i)+ " ");
+            System.out.print(GetReading_(obs, i)+ " ");
         System.out.println();
     }
 

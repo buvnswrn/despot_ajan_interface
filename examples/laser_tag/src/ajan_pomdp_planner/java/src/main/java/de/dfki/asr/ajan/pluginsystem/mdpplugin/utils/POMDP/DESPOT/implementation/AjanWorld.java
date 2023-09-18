@@ -74,7 +74,7 @@ public class AjanWorld extends World {
                 currentObservation = 0;
                 System.out.println("Tag action received");
                 for (int dir = 0; dir < NUM_LASER_DIRECTIONS; dir++) {
-                    currentObservation = SetReading(currentObservation,
+                    currentObservation = SetReading_(currentObservation,
 //                            ((Number)variables.get(TERMINATION_OBSERVATION)).longValue(),dir);
                             101,dir);
                     System.out.println("Observation:"+currentObservation+","+101+","+dir);
@@ -94,9 +94,14 @@ public class AjanWorld extends World {
                 System.out.println("SouthWest: "+ observations.get(6));
                 System.out.println("NorthWest: "+ observations.get(7));
                 for (int dir = 0; dir < 8; dir++) {
-                    currentObservation = SetReading(currentObservation,(int) observations.get(dir), dir);
+                    currentObservation = SetReading_(currentObservation,(int) observations.get(dir), dir);
                     System.out.println("Observation:"+currentObservation+","+observations.get(dir)+","+dir);
                     // OPTIMIZE: Check for converting the data type to long instead of int
+                }
+                int reading;
+                for(int dir = 0; dir < 8; dir++){
+                    reading = GetReading_(currentObservation, dir);
+                    System.out.println("In Direction:"+dir+", reading:"+reading);
                 }
                 return false; // continue
             }

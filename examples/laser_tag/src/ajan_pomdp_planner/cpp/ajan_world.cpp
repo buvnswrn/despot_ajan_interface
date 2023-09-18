@@ -55,6 +55,11 @@ bool AjanWorld::ExecuteAction(ACT_TYPE action, OBS_TYPE &obs) {
      * 2. If connected and successfully tagged, exit -> return 1 else continue to observe \n
      * 3. Get the Observations and SetReading to provided obs. and return 0 to continue. \n
      **/
-    return AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaWorldObject(),
+     // not getting the obseervation variable here
+    bool returnValue= AjanHelper::getEnv()->CallBooleanMethod(helper->getAjanJavaWorldObject(),
                                                    AjanHelper::getMethodID(AJAN_WORLD,ExecuteAction_),action,obs);;
+    obs = AjanHelper::getEnv()->CallLongMethod(helper->getAjanJavaWorldObject(),
+                                                       AjanHelper::getMethodID(AJAN_WORLD,GetCurrentObservation_World));
+    cout<<"Observation received:"<<obs<<endl;
+    return returnValue;
 }

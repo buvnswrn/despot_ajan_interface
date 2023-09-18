@@ -27,6 +27,9 @@ public class ROSConnector {
         return postRequest(URI);
     }
 
+    public static native long SetReading_(long observation, long reading, long dir);
+    public static native int GetReading_(long obs, long dir);
+
     public static long SetReading(long observation, long reading, long dir){
         final long ONE_ = 0x1;
         final int BITS_PER_READING_ = 0x7;
@@ -39,6 +42,6 @@ public class ROSConnector {
     public static int GetReading(long obs, long dir){
         final long ONE_ = 0x1;
         final int BITS_PER_READING_ = 0x7;
-        return (int) (obs>>(dir* BITS_PER_READING_) & (ONE_ <<BITS_PER_READING_ -1));
+        return (int) (((int) obs>>(dir* BITS_PER_READING_)) & (ONE_ <<BITS_PER_READING_ -1));
     }
 }
