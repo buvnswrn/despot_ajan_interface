@@ -23,6 +23,7 @@ public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBou
     protected double Value(State s) {
         // TODO: Implement AjanParticleUpperBound::Value Function for Particle to call JNI.
         // Return precomputed value_[state.state_id];
+        System.err.println("AjanUpperBound.Value(State) is not implemented");
         return 0.0;
     }
 
@@ -33,11 +34,13 @@ public class AjanUpperBound extends ParticleUpperBound implements BeliefUpperBou
          * Loop through the particles and for each particle (aka. state) sum up the value
          by multiplying current value with pre_computed value_[state.state_id]. Refer paper Guess:Eq.15.
          **/
+        System.err.println("AjanUpperBound.Value(AjanBelief) is not implemented");
         return 0;
     }
 
     @Override
     public double Value(Vector<State> particles, History history) throws ExecutionControl.NotImplementedException {
+        System.err.println("AjanUpperBound.Value(particles,history) is not implemented");
         return 0;
     }
 

@@ -14,12 +14,12 @@ public class AjanBeliefPolicy extends BeliefLowerBound {
 
     protected AjanBeliefPolicy(AjanAgent model) {
         tag_model_ = model;
-        // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
+        tag_model_.ComputeBlindAlpha(tag_model_.agentModelPointer);
     }
     AjanBeliefPolicy(AjanAgent model, long ptr) {
         tag_model_ = model;
+        tag_model_.ComputeBlindAlpha(tag_model_.agentModelPointer);
         pointerToCpp = ptr;
-        // TODO: Implement AjanBeliefPolicy constructor to call JNI and ask for Policy
     }
     @Override
     protected ValuedAction Value(Belief belief) {
@@ -29,6 +29,7 @@ public class AjanBeliefPolicy extends BeliefLowerBound {
         /*
          * Needs to call ComputeActionValue Function of MDP. Check on how to do that.
          **/
+        System.err.println("AjanBeliefPolicy.Value(Belief) Not Implemented");
         return new ValuedAction(bestAction, bestValue);
     }
     public void SetReferenceToCpp_(long ptr) {

@@ -21,7 +21,7 @@ namespace despot {
         despot::Floor floor_;
 
     public:
-        AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound);
+        AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound, jobject javaAgentObject);
 
         despot::ACT_TYPE Action(const std::vector<despot::State *> &particles, despot::RandomStreams &streams,
                                 despot::History &history) const;
