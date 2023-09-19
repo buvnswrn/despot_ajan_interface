@@ -7,14 +7,18 @@ import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.interface_.Val
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Compass;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Coord;
 import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Floor;
+import de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Random;
 
-import java.util.*;
+import java.util.Vector;
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.Connector.ROSConnector.*;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Ajan_Util_Helper.gausscdf;
 import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.Coord.notEquals;
-import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.MDP_;
-import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.SP;
+import static de.dfki.asr.ajan.pluginsystem.mdpplugin.utils.POMDP.DESPOT.util.DespotPomdpGlobals.*;
 import static java.lang.Double.min;
 import static java.lang.Math.sqrt;
 
@@ -141,8 +145,10 @@ public class LaserTag extends AjanAgent {
     }
 
     double LaserRange(State state, int dir) {
-        Coord rob = floor_.GetCell(rob_.get(state.state_id)), opp = floor_.GetCell(
-                opp_.get(state.state_id));
+        int r_i = rob_.get(state.state_id);
+        Coord rob = floor_.GetCell(r_i);
+        int o_i = opp_.get(state.state_id);
+        Coord opp = floor_.GetCell(o_i);
         int d = 1;
         while (true) {
             Coord coord = Coord.Add(rob,Coord.Muliply(Compass.DIRECTIONS[dir], d),true);
@@ -151,9 +157,10 @@ public class LaserTag extends AjanAgent {
                 break;
             d++;
         }
-        int x = Compass.DIRECTIONS[dir].x, y = Compass.DIRECTIONS[dir].y;
-
-        return d * sqrt(x * x + y * y);
+        int x = Compass.DIRECTIONS[dir].x;
+        int y = Compass.DIRECTIONS[dir].y;
+        double returnValue = d * sqrt(x * x + y * y);
+        return returnValue;
     }
 
     private String BenchmarkMap() {
@@ -184,8 +191,7 @@ public class LaserTag extends AjanAgent {
             map.setCharAt(h * (width +1) -1, '\n');
 
         for (int i = 0; i < obstacles;) {
-            Random random = new Random();
-            int p = random.nextInt(map.length());
+            int p = Random.RANDOM.NextInt(map.length());
             if (map.charAt(p) != '\n' && map.charAt(p) != '#') {
                 map.setCharAt(p, '#');
                 i++;
@@ -336,7 +342,7 @@ public class LaserTag extends AjanAgent {
                 double p = state.weight * next.weight;
                 p*= ObsProb(obs, states_.get(next.state_id), action);
                 double temp = probs.get(next.state_id)!=null?probs.get(next.state_id):0;
-                probs.add(next.state_id, temp+p);
+                probs.set(next.state_id, temp+p);
                 sum += p;
             }
         }
@@ -419,7 +425,7 @@ public class LaserTag extends AjanAgent {
         currentAction = action;
         currentState = (LaserTagState) state;
         Random random = new Random((long) random_num);
-        boolean terminal = Step(state, random.nextDouble(), action, currentReward);
+        boolean terminal = Step(state, random.NextDouble(), action, currentReward);
 
         if(terminal) {
             currentObservation = same_loc_obs_;
@@ -430,7 +436,7 @@ public class LaserTag extends AjanAgent {
                 Vector<Vector<Double>> distribution = reading_distributions_.get(state.state_id);
                 currentObservation = 0;
                 for (int dir = 0; dir<NBEAMS; dir++) {
-                    double mass = random.nextDouble();
+                    double mass = random.NextDouble();
                     int reading = 0;
                     for(; reading<distribution.get(dir).size(); reading++) {
                         mass -= distribution.get(dir).get(reading);
@@ -451,7 +457,7 @@ public class LaserTag extends AjanAgent {
         currentState = (AjanAgentState) state;
 
         Random random = new Random((long) random_num);
-        random_num = random.nextDouble();
+        random_num = random.NextDouble();
 
         LaserTagState state1 = (LaserTagState) state;
 
@@ -500,8 +506,7 @@ public class LaserTag extends AjanAgent {
 
     @Override
     public State CreateStartState(String type) {
-        Random random = new Random();
-        int n = random.nextInt(states_.size());
+        int n = Random.RANDOM.NextInt(states_.size());
         return states_.get(n);
     }
 
@@ -536,7 +541,7 @@ public class LaserTag extends AjanAgent {
          * Based on the name given, initialize TrivialParticleLowerBound,RandomPolicy or custom upperbound. If the same_loc_obs_ is not equal to number of cells on the floor, then use custom policy.
          * else, compute the default actions based on MDP or SP and use MMAPStatePolicy or ModeStatePolicy or MajorityActionPolicy.
          */
-        return new TagSHRPolicy(cppReference);
+        return new TagSHRPolicy(cppReference, this);
     }
 
     @Override
@@ -663,15 +668,15 @@ public class LaserTag extends AjanAgent {
             default_action_.ensureCapacity(num_states);
 
             for (int s = 0; s < num_states; s++) {
-                default_action_.add(s, policy.get(s).action);
+                default_action_.set(s, policy.get(s).action);
             }
         } else if (Objects.equals(type, SP)) {
             // Follow the shortest path from the robot to the opponent
             default_action_.ensureCapacity(NumStates());
             for (int s = 0; s < NumStates(); s++) {
-                default_action_.add(s, 0);
+                default_action_.set(s, 0);
                 if (Objects.equals(rob_.get(s), opp_.get(s))) {
-                    default_action_.add(s, TagAction());
+                    default_action_.set(s, TagAction());
                 } else {
                     double cur_dist = floor_.Distance(rob_.get(s), opp_.get(s));
                     for (int a = 0; a < 4; a++) {
@@ -679,7 +684,7 @@ public class LaserTag extends AjanAgent {
                         double dist = floor_.Distance(next, opp_.get(s));
 
                         if (dist < cur_dist) {
-                            default_action_.add(s, a);
+                            default_action_.set(s, a);
                             break;
                         }
                     }
@@ -689,44 +694,60 @@ public class LaserTag extends AjanAgent {
             System.err.println("Unsupported default action type "+ type );
         }
     }
+    @Override
+    public String WhichDefaultPolicyToUse(){
+        // do the computation here and use the corresponding policy
+        if(same_loc_obs_!=floor_.NumCells())
+            return AJAN;
+        if(same_loc_obs_== floor_.NumCells())
+            return MODE_MDP;
+        return UNSUPPORTED;
+    }
     Coord MostLikelyOpponentPosition(Vector<State> particles) {
         for (int i = 0; i < particles.size(); i++) {
             LaserTagState tagstate = (LaserTagState) particles.get(i);
             double temp = opp_probs.get(opp_.get(tagstate.state_id)) !=null?opp_probs.get(opp_.get(tagstate.state_id)):0;
-            opp_probs.add(opp_.get(tagstate.state_id), temp+ tagstate.weight);
+            opp_probs.set(opp_.get(tagstate.state_id), temp+ tagstate.weight);
         }
 
         double maxWeight = 0;
         int opp = -1;
-        for (int i = 0; i < opp_probs.size(); i++) {
+        int n = opp_probs.size();
+        for (int i = 0; i < n; i++) {
             if (opp_probs.get(i) > maxWeight) {
                 maxWeight = opp_probs.get(i);
                 opp = i;
             }
-            opp_probs.add(i, 0.0);
+            opp_probs.set(i, 0.0);
         }
 
-        return floor_.GetCell(opp);
+        Coord oppCoord = floor_.GetCell(opp);
+        return oppCoord;
     }
 
     Coord MostLikelyRobPosition(Vector<State> particles) {
         double maxWeight = 0;
         int rob = -1;
+        try{
         for (int i = 0; i < particles.size(); i++) {
             LaserTagState tagstate = (LaserTagState) particles.get(i);
             int id = rob_.get(tagstate.state_id);
             double temp = rob_probs.get(id) !=null?rob_probs.get(id):0;
-            rob_probs.add(id, temp + tagstate.weight);
+            rob_probs.set(id, temp + tagstate.weight);
             if (rob_probs.get(id) > maxWeight) {
                 maxWeight = rob_probs.get(id);
                 rob = id;
             }
         }
-
-        for (int i = 0; i < rob_probs.size(); i++) {
-            rob_probs.add(i, 0.0);
+        int n = rob_probs.size();
+        for (int i = 0; i < n; i++) {
+            rob_probs.set(i, 0.0);
+        } }
+        catch (Exception e) {
+            System.err.println("Error in MostLikelyRobPosition:"+e.toString());
         }
-        return floor_.GetCell(rob);
+        Coord oppCoord = floor_.GetCell(rob);
+        return oppCoord;
     }
     //endregion
 

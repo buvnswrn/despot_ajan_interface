@@ -9,14 +9,15 @@
 using namespace despot;
 namespace despot {
 
-    AjanPolicy::AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound) :
+    AjanPolicy::AjanPolicy(const despot::DSPOMDP *model, despot::ParticleLowerBound *bound, jobject javaReferenceAgentObject) :
                 DefaultPolicy(model, bound),
                 tag_model_(dynamic_cast<const despot::AjanAgent *>(model)) {
             javaReferenceObject = AjanHelper::getEnv()->NewObject(AjanHelper::getPolicyClass(),
                                                                  AjanHelper::getMethodID(
                                                                          AJAN_POLICY,
                                                                          Init_),
-                                                                         reinterpret_cast<jlong>(this));
+                                                                         reinterpret_cast<jlong>(this),
+                                                                         javaReferenceAgentObject); // need to send model reference
 //            floor_ = tag_model_->floor(); // have to be changed
 //        cout<<"ISIDE TAGSHRPolciy"<<endl;
         }

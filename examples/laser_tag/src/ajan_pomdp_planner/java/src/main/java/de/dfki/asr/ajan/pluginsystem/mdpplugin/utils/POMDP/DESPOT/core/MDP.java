@@ -16,5 +16,6 @@ public abstract class MDP {
     public native double ComputeActionValue(long beliefPtr, long modelPtr, int action);
     protected native Vector<ValuedAction> policy(long agentPtr);
     protected native void   ComputeOptimalPolicyUsingVI(long agentPtr);
+    public native void ComputeBlindAlpha(long agentPtr);
 
 }

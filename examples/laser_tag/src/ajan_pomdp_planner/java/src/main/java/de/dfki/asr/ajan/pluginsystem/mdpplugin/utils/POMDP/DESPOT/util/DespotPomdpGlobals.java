@@ -18,6 +18,7 @@ public class DespotPomdpGlobals {
     public static  String MAJORITY_MDP = "MAJORITY-MDP" ;
     public static  String MAJORITY_SP = "MAJORITY-SP" ;
     public static  String AJAN = "AJAN" ;
+    public static  String UNSUPPORTED = "Unsupported Policy" ;
 
     public static double Discount(int d) {
         return pow(config.discount, d);
