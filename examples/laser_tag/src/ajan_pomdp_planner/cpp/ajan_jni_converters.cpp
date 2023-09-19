@@ -38,6 +38,24 @@ State AjanHelper::fromJavaState(jobject javaState) {
     return state;
 }
 
+void AjanHelper::updateJavaState(jobject javaState, State& state){
+    jfieldID j_state_id = getEnv()->GetFieldID(getStateClass(), "state_id", "I");
+    jfieldID j_scenario_id = getEnv()->GetFieldID(getStateClass(), "scenario_id", "I");
+    jfieldID j_weight = getEnv()->GetFieldID(getStateClass(), "weight", "D");
+    int state_id = getEnv()->GetIntField(javaState, j_state_id);
+    int scenario_id = getEnv()->GetIntField(javaState, j_scenario_id);
+    double weight = getEnv()->GetDoubleField(javaState, j_weight);
+    if(state_id !=state.state_id){
+//        cout<<"State id is different:"<<state_id<<","<<state.state_id<<endl;
+        state.state_id = state_id;
+    }
+    if(scenario_id !=state.scenario_id){
+//        cout<<"Scenario id is different:"<<scenario_id<<","<<state.scenario_id<<endl;
+        state.scenario_id = scenario_id;
+    }
+    state.weight = weight;
+}
+
 [[maybe_unused]] AjanAgentState AjanHelper::fromJavaAjanAgentState(jobject javaAgentState) {
     AjanAgentState agentState;
     jfieldID state_id = getEnv()->GetFieldID(getStateClass(), "state_id", "I");
@@ -55,7 +73,7 @@ jobject AjanHelper::toJavaAjanAgentState(const AjanAgentState &agentState, bool 
     int scenario_id = agentState.scenario_id;
     double weight = agentState.weight;
     if(print){
-        cout<<"state:"<<agentState.state_id<<" scenario:"<<agentState.scenario_id<<" weight:"<<agentState.weight<<endl;
+//        cout<<"state:"<<agentState.state_id<<" scenario:"<<agentState.scenario_id<<" weight:"<<agentState.weight<<endl;
     }
     jobject ajanAgentState = getEnv()->NewObject(ajanAgentStateClass,
                                                  getMethodID(AJAN_AGENT_STATE,Init_),
@@ -151,6 +169,7 @@ jobject AjanHelper::toJavaInteger(const int value){
     for (int i = 0; i < size; i++) {
         jobject state = getEnv()->CallObjectMethod(javaAgentStateVector, getMethod, i);
         State cstate = (const State &) fromJavaState(state);
+        cstate.SetAllocated();
         vectorOfStates.push_back(cstate);
         getEnv()->DeleteLocalRef(state);
     }
@@ -165,8 +184,8 @@ AjanHelper::fromJavaAgentStatePointerVector(jobject javaAgentStateVector, bool a
     for (int i = 0; i < size; i++) {
         jobject state = getEnv()->CallObjectMethod(javaAgentStateVector, getMethod, i);
         State * cstate = new State((const State &) fromJavaState(state));
-        if(allocate)
-            cstate->SetAllocated();
+//        if(allocate)
+        cstate->SetAllocated();
         vectorOfStates.push_back(cstate);
         getEnv()->DeleteLocalRef(state);
     }

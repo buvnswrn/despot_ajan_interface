@@ -146,6 +146,7 @@ static const string Add = "add";
 static const string Size_Sig = "()I";
 static const string Init_Void_Sig = "()V";
 static const string Init_Long_Void_Sig = "(J)V";
+static const string Init_Long_Agent_Void_Sig = "(J"+ getSig(AJAN_AGENT)+")V";
 static const string Init_Int_Int_Void_Sig = "(II)V";
 static const string Init_Int_Long_Void_Sig = "(IJ)V";
 static const string Get_Sig = "(I)" + getSig(OBJECT);

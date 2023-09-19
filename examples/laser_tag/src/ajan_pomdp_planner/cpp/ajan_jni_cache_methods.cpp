@@ -371,7 +371,7 @@ void AjanHelper::GetAllAjanPolicyMethodID() {
     const int totalMethod = 3;
     string methodNames1[totalMethod][2] = {
 //            {"Action", "(" + getSig(VECTOR) + "J)I",},
-            {Init_,Init_Long_Void_Sig},
+            {Init_,Init_Long_Agent_Void_Sig},
             {Action_, Action_Sig},
             {SetReferenceToCpp_, SetReferenceToCpp_Sig}
 //            {"TestMethod", "()I"}

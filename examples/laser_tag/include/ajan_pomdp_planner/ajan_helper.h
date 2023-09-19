@@ -147,8 +147,6 @@ namespace despot {
 
         static jclass coordClass;
 
-        static jclass getCoordClass();
-
         static void setCoordClass(jclass coordClass1);
 
         static jclass floorClass;
@@ -252,6 +250,7 @@ namespace despot {
         [[maybe_unused]] static jobject toJavaState(const State &state);
 
         static State fromJavaState(jobject javaState);
+        static void updateJavaState(jobject javaState, State& state);
 
 // TODO: To and From Coord
         [[maybe_unused]] static jobject toJavaCoord(Coord coord);
@@ -340,6 +339,8 @@ namespace despot {
         [[maybe_unused]]  jobject getAjanJavaPlannerObject();
 
         static vector<State *> getParticles(jobject ajanBelief);
+
+        static jclass getCoordClass();
     };
 }
 #endif //LASER_TAG_AJAN_HELPER_H

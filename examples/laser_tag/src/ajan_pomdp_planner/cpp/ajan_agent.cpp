@@ -145,7 +145,7 @@ namespace despot {
         //return states_[index];
         jobject ajanState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                    AjanHelper::getMethodID(AJAN_AGENT,GetState_),index);
-        const State * statePtr = new State(AjanHelper::fromJavaState(ajanState));
+        const State * statePtr = new State(AjanHelper::fromJavaState(ajanState)); // TODO: getting new state is not indented here. So, may be maintain a pointer and update it?
         return statePtr;
     }
 
@@ -192,7 +192,8 @@ namespace despot {
                                                                                           ("("+getSig(STATE)+"DID)Z").c_str()),javaState,random_num,action,reward);
         jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                         AjanHelper::getMethodID(AJAN_AGENT,GetCurrentState_Agent));
-        state = AjanHelper::fromJavaState(javaAgentState);
+//        AjanHelper::updateJavaState(javaAgentState,state);
+//        state.SetAllocated();
         reward = AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                         AjanHelper::getMethodID(AJAN_AGENT,GetCurrentReward_Agent));
         return returnValue;
@@ -210,13 +211,14 @@ namespace despot {
                                                       AjanHelper::getMethodID(AJAN_AGENT,GetCurrentAction_Agent));
          jobject javaAgentState = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                          AjanHelper::getMethodID(AJAN_AGENT,GetCurrentState_Agent));
-         state = AjanHelper::fromJavaState(javaAgentState);
+//         AjanHelper::updateJavaState(javaAgentState, state); // TODO:Check fromJavaState, may be use pointers to store the state?
+//         state.SetAllocated();
          return returnValue;
     }
 
     double AjanAgent::ObsProb(OBS_TYPE obs, const State &state, ACT_TYPE action) const {
         AjanAgentState  ajanAgentState = static_cast<const AjanAgentState&>(state);
-        cout<<"ObsProb: state:"<<state.state_id<<"scenario:"<<state.scenario_id<<"weight:"<<state.weight<<endl;
+//        cout<<"ObsProb: state:"<<state.state_id<<"scenario:"<<state.scenario_id<<"weight:"<<state.weight<<endl;
         jobject s = AjanHelper::toJavaAjanAgentState(ajanAgentState, true);
         return AjanHelper::getEnv()->CallDoubleMethod(helper->getAjanJavaAgentObject(),
                                                AjanHelper::getMethodID(AJAN_AGENT,ObsProb_),obs,s,action);
@@ -239,12 +241,11 @@ namespace despot {
          vector<State*> particles = AjanHelper::getParticles(returnBelief);
          vector<State*> new_particles;
         for (int i = 0; i < particles.size(); i++) {
-            int state_id = particles[i]->state_id;
-            double weight = particles[i]->weight;
-            new_particles.push_back(static_cast<AjanAgentState*>(Allocate(state_id, weight)));
+            AjanAgentState* astate = static_cast<AjanAgentState*>(particles[i]);
+            new_particles.push_back(Copy(astate));
         }
-//         ajanBelief->state_indexer(this);
         auto belief_= new ParticleBelief(new_particles, this, nullptr);
+//         ajanBelief->state_indexer(this);
         belief_->state_indexer(this);
         return belief_;
     }
@@ -326,7 +327,7 @@ namespace despot {
              return new RandomPolicy(model, CreateParticleLowerBound(particle_bound_name));
          } else if ( name == SHR || name == AJAN) {
              // have to check for smae_loc_obs_ to be equal or not and then use it. May be use computedefault actions and use this one
-             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
+             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name), helper->getAjanJavaAgentObject());
 //             jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
 //                                AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
 //                                                                    name.c_str(),
@@ -362,7 +363,7 @@ namespace despot {
          } else if (name == DEFAULT) {
              string policyToUse = WhichDefaultPolicyToUse(); // Ask AJAN on which policy to use and use it. Calculate whether same_loc_obs is equal or not there.
              if(policyToUse == AJAN){
-             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name));
+             auto * ajanPolicy = new AjanPolicy(model, CreateParticleLowerBound(particle_bound_name), helper->getAjanJavaAgentObject());
                  jobject javaAjanPolicy = AjanHelper::getEnv()->CallObjectMethod(helper->getAjanJavaAgentObject(),
                                                                                  AjanHelper::getMethodID(AJAN_AGENT,CreateScenarioLowerBound_),
                                                                                  AjanHelper::getEnv()->NewStringUTF(name.c_str()),

@@ -24,6 +24,7 @@ namespace despot {
             BeliefLowerBound(model),
             tag_model_(model){
 //        jobject javaModel = AjanHelper::toJavaAgentModel(tag_model_);
+        const_cast<despot::AjanAgent *>(tag_model_)->ComputeBlindAlpha();
         javaReferenceObject = AjanHelper::getEnv()->NewObject(AjanHelper::getBeliefPolicyClass(),AjanHelper::getMethodID(AJAN_BELIEF_POLICY,Init_),
                                                               agentObject,reinterpret_cast<jlong>(this));
     }

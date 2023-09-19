@@ -32,9 +32,7 @@ JNIEXPORT jobject JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POM
     auto * floor1 = reinterpret_cast<Floor*>(floorPtr);
     Coord coord = floor1->GetCell(x);
     jclass s = env->FindClass("de/dfki/asr/ajan/pluginsystem/mdpplugin/utils/POMDP/DESPOT/util/Coord");
-    jobject jcoord = env->AllocObject(s);
-    jcoord = AjanHelper::getJavaObject(env,s, jcoord, "x","I",coord.x);
-    jcoord = AjanHelper::getJavaObject(env,s, jcoord, "y","I",coord.y);
+    jobject jcoord = env->NewObject(s, env->GetMethodID(s,"<init>","(II)V"),coord.x, coord.y);
     return jcoord;
 }
 
@@ -55,7 +53,7 @@ JNIEXPORT jboolean JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_PO
 JNIEXPORT jboolean JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor_Inside__IIJ
         (JNIEnv * env, jobject thisFloorObject, jint x, jint y, jlong floorPtr) {
     auto * floor1 = reinterpret_cast<Floor*>(floorPtr);
-    cout<<"Native:ajan_jni_floor_helper:Inside"<<endl;
+//    cout<<"Native:ajan_jni_floor_helper:Inside"<<endl;
     return floor1->Inside(x, y);
 }
 
@@ -69,7 +67,7 @@ JNIEXPORT void JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_
 JNIEXPORT jdouble JNICALL Java_de_dfki_asr_ajan_pluginsystem_mdpplugin_utils_POMDP_DESPOT_util_Floor_Distance
         (JNIEnv * env, jobject thisFloorObject, jint c1, jint c2, jlong floorPtr) {
     auto * floor1 = reinterpret_cast<Floor*>(floorPtr);
-    cout<<"Native:ajan_jni_floor_helper:Distance"<<endl;
+//    cout<<"Native:ajan_jni_floor_helper:Distance"<<endl;
     return floor1->Distance(c1, c2);
 }
 
